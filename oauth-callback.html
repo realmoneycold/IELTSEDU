@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signing In — IELTS Practice</title>
+  <link rel="icon" type="image/png" href="./favicon/image.png">
+  <style>
+    body {
+      font-family: 'Satoshi', sans-serif;
+      background: #F9F5FF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: white;
+      padding: 48px;
+      border-radius: 32px;
+      box-shadow: 0 20px 60px rgba(139,92,246,0.12);
+      text-align: center;
+      max-width: 400px;
+    }
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid #F5F1FF;
+      border-top-color: #8B5CF6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 24px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    h2 { margin: 0 0 8px; color: #111827; font-size: 22px; }
+    p { margin: 0; color: #6B7280; font-size: 15px; }
+    .error { color: #EF4444; }
+  </style>
+</head>
+<body>
+  <div class="card" id="status-card">
+    <div class="spinner" id="spinner"></div>
+    <h2 id="title">Signing you in...</h2>
+    <p id="message">Please wait while we prepare your dashboard.</p>
+  </div>
+
+  <script>
+    (function() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get('token');
+        const role = params.get('role');
+        const userB64 = params.get('user');
+        const error = params.get('error');
+
+        function showError(msg) {
+          document.getElementById('spinner').style.display = 'none';
+          document.getElementById('title').textContent = 'Sign-in Failed';
+          document.getElementById('title').className = 'error';
+          document.getElementById('message').textContent = msg || 'Something went wrong. Please try again.';
+        }
+
+        function redirect(to) {
+          window.location.replace(to);
+        }
+
+        if (error) {
+          showError('Authentication was cancelled or failed.');
+          setTimeout(() => redirect('./login.html?error=oauth_failed'), 2000);
+          return;
+        }
+
+        if (!token) {
+          showError('No authentication token received.');
+          setTimeout(() => redirect('./login.html?error=oauth_failed'), 2000);
+          return;
+        }
+
+        // Store credentials for auth-guard and dashboard
+        localStorage.setItem('authToken', token);
+        localStorage.setItem('role', (role || 'student').toLowerCase());
+
+        if (userB64) {
+          try {
+            const user = JSON.parse(atob(userB64));
+            localStorage.setItem('user', JSON.stringify(user));
+            // Also store individual keys that dashboard.html reads on startup
+            if (user.full_name) localStorage.setItem('userName', user.full_name);
+            if (user.email)    localStorage.setItem('userEmail', user.email);
+            if (user.username) localStorage.setItem('userHandle', '@' + user.username);
+            if (user.id)       localStorage.setItem('userId', String(user.id));
+          } catch (e) {
+            console.warn('Could not decode user payload:', e);
+          }
+        }
+
+        // Clear query params from history
+        if (window.history.replaceState) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        // Route by role
+        let dest = './dashboard.html';
+        const r = (role || 'student').toLowerCase();
+        if (r === 'ceo') dest = './ceo.html';
+        else if (r === 'admin') dest = './admin.html';
+        else if (r === 'centre') dest = './centre.html';
+
+        redirect(dest);
+      } catch (err) {
+        console.error('OAuth callback error:', err);
+        document.body.innerHTML = '<div style="padding:40px;text-align:center;"><h2 style="color:#EF4444;">Something went wrong</h2><p>Please try signing in again.</p><a href="./login.html" style="color:#8B5CF6;font-weight:bold;">Go to Login</a></div>';
+      }
+    })();
+  </script>
+</body>
+</html>

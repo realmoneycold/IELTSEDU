@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Room | IELTS Practice</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/petite-vue@0.4.1/dist/petite-vue.iife.js" defer init></script>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700;900&family=Satoshi:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8B5CF6;
+            --secondary: #FF6B35;
+        }
+        body { font-family: 'Satoshi', sans-serif; }
+        h1, h2, h3, h4, .font-heading { font-family: 'Archivo', sans-serif; }
+        
+        .cc-scroll::-webkit-scrollbar { width: 6px; }
+        .cc-scroll::-webkit-scrollbar-track { background: transparent; }
+        .cc-scroll::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 10px; }
+        .cc-scroll::-webkit-scrollbar-thumb:hover { background: #8B5CF6; }
+
+        /* Reading Passage Styles */
+        .passage-content p { margin-bottom: 1.5rem; line-height: 1.8; color: #374151; font-size: 1.05rem; }
+        .passage-content h3 { font-family: 'Archivo', sans-serif; font-size: 1.5rem; font-weight: 900; margin-top: 2rem; margin-bottom: 1rem; color: #111827; }
+        
+        /* Question Input Highlight */
+        .q-input { border: 2px solid #E5E7EB; border-radius: 8px; padding: 4px 12px; font-weight: 700; color: #8B5CF6; width: 120px; outline: none; transition: all 0.2s; }
+        .q-input:focus { border-color: #8B5CF6; box-shadow: 0 0 0 3px rgba(139,92,246,0.2); }
+        .q-input.answered { background-color: #F5F3FF; border-color: #C4B5FD; }
+
+        /* Multiple Choice Custom Radio */
+        .mcq-label { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; border: 2px solid #F3F4F6; border-radius: 16px; cursor: pointer; transition: all 0.2s; font-weight: 500; color: #4B5563; }
+        .mcq-label:hover { border-color: #DDD6FE; background: #FAF5FF; }
+        .mcq-input:checked + .mcq-label { border-color: #8B5CF6; background: #F5F3FF; color: #111827; box-shadow: 0 4px 12px rgba(139,92,246,0.1); }
+        .mcq-radio-box { width: 24px; height: 24px; border: 2px solid #D1D5DB; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; margin-top: 2px; }
+        .mcq-input:checked + .mcq-label .mcq-radio-box { border-color: #8B5CF6; background: #8B5CF6; }
+        .mcq-input:checked + .mcq-label .mcq-radio-box::after { content: ''; width: 10px; height: 10px; background: white; border-radius: 50%; }
+        .mcq-input { display: none; }
+    </style>
+</head>
+<body class="bg-[#F9F5FF] text-[#111827] h-screen flex flex-col overflow-hidden" v-scope="TestEngine()">
+
+    <!-- Header -->
+    <header class="h-16 bg-white border-b border-gray-100 px-6 flex items-center justify-between shrink-0 shadow-sm z-50">
+        <div class="flex items-center gap-4">
+            <button onclick="window.history.back()" class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-500 hover:bg-gray-100 hover:text-[#8B5CF6] transition-colors">
+                <iconify-icon icon="ph:arrow-left-bold" class="text-xl"></iconify-icon>
+            </button>
+            <div class="h-6 w-px bg-gray-200"></div>
+            <div>
+                <h1 class="font-heading font-black text-lg text-dark leading-none">{{ testMetadata.title }}</h1>
+                <p class="text-xs font-bold text-gray-400 mt-1 uppercase tracking-widest">{{ currentSectionTitle }}</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-6">
+            <!-- Timer -->
+            <div class="flex items-center gap-3 bg-gray-50 px-5 py-2.5 rounded-2xl border border-gray-100">
+                <iconify-icon icon="ph:timer-bold" :class="isTimeLow ? 'text-[#FF6B35] animate-pulse' : 'text-gray-400'" class="text-xl"></iconify-icon>
+                <span :class="isTimeLow ? 'text-[#FF6B35]' : 'text-gray-700'" class="font-heading font-black text-xl tracking-wide tabular-nums">{{ formattedTime }}</span>
+            </div>
+            
+            <button @click="submitTest" class="bg-[#8B5CF6] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#7C3AED] hover:shadow-lg hover:shadow-purple-500/30 transition-all flex items-center gap-2">
+                Submit <iconify-icon icon="ph:paper-plane-right-fill"></iconify-icon>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Split Pane -->
+    <main class="flex-1 flex overflow-hidden flex-col md:flex-row relative">
+        
+        <!-- Left Pane: Passage (Reading) -->
+        <div class="w-full md:w-1/2 h-[50vh] md:h-full overflow-y-auto bg-gray-50/50 border-r border-gray-200 p-8 md:p-12 cc-scroll">
+            <div class="max-w-2xl mx-auto passage-content">
+                <span class="inline-block px-3 py-1 bg-white border border-gray-200 rounded-lg text-xs font-black text-gray-500 uppercase tracking-widest mb-6 shadow-sm">Reading Passage 1</span>
+                
+                <h2 class="font-heading font-black text-4xl mb-8 leading-tight">The Evolution of Human Chronotypes</h2>
+                
+                <p>The concept of chronotypes—the natural inclination of your body to sleep at a certain time—has fascinated chronobiologists for decades. Historically, human sleep patterns were dictated entirely by the solar cycle. However, the advent of artificial lighting during the industrial revolution radically altered these innate behavioral patterns, leading to what we now categorize as 'early birds' (larks) and 'night owls'.</p>
+                
+                <p>Research indicates that chronotypes are largely determined by genetics. The PER3 gene, in particular, plays a crucial role in managing our circadian rhythms. Individuals possessing a longer variant of this gene are statistically more likely to be morning-oriented, whereas those with a shorter variant tend to peak in alertness much later in the day.</p>
+
+                <h3>Societal Implications</h3>
+                
+                <p>Modern society is overwhelmingly structured around the lark chronotype. Standard working and schooling hours (typically 9 AM to 5 PM) force night owls to routinely operate during their suboptimal cognitive windows. This phenomenon, termed 'social jetlag', has been correlated with numerous health issues including cardiovascular disease, metabolic syndrome, and chronic sleep deprivation.</p>
+
+                <p>Despite these societal biases, night owls possess distinct evolutionary advantages. Some anthropological theories suggest that maintaining a diverse range of chronotypes within an early human tribe ensured that someone was always awake to guard against nocturnal predators. Furthermore, contemporary studies have linked the night owl chronotype to higher scores on divergent thinking tasks, suggesting a correlation with creativity.</p>
+                
+                <br><br><br> <!-- Bottom padding buffer -->
+            </div>
+        </div>
+
+        <!-- Right Pane: Questions -->
+        <div class="w-full md:w-1/2 h-[50vh] md:h-full overflow-y-auto bg-white p-8 md:p-12 cc-scroll relative" id="questionsPane">
+            <div class="max-w-xl mx-auto pb-40">
+                <div class="mb-8">
+                    <h3 class="font-heading font-black text-2xl mb-2">Questions 1 - 4</h3>
+                    <p class="text-sm font-bold text-gray-500">Do the following statements agree with the information given in the reading passage?</p>
+                    <div class="mt-4 bg-gray-50 p-4 rounded-xl border border-gray-100 text-sm font-medium text-gray-600">
+                        <ul class="space-y-1">
+                            <li><strong class="text-dark">TRUE</strong> - if the statement agrees with the information</li>
+                            <li><strong class="text-dark">FALSE</strong> - if the statement contradicts the information</li>
+                            <li><strong class="text-dark">NOT GIVEN</strong> - if there is no information on this</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Multiple Choice Block -->
+                <div class="space-y-10">
+                    
+                    <!-- Question 1 -->
+                    <div id="q1" class="border-b border-gray-100 pb-8 transition-colors duration-300" :class="activeQuestion === 1 ? 'bg-purple-50/30 -mx-6 px-6 rounded-2xl pt-4 border-transparent' : ''">
+                        <div class="flex gap-4">
+                            <span class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center font-black text-sm text-gray-500 shrink-0 border border-gray-200 mt-0.5">1</span>
+                            <div>
+                                <p class="font-bold text-lg text-dark mb-4 leading-snug">Artificial lighting was the sole cause of the division between early birds and night owls.</p>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    <label>
+                                        <input type="radio" name="q1" class="mcq-input" value="TRUE" v-model="answers[1]" @change="markAnswered(1)">
+                                        <div class="mcq-label"><div class="mcq-radio-box"></div> TRUE</div>
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="q1" class="mcq-input" value="FALSE" v-model="answers[1]" @change="markAnswered(1)">
+                                        <div class="mcq-label"><div class="mcq-radio-box"></div> FALSE</div>
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="q1" class="mcq-input" value="NOT GIVEN" v-model="answers[1]" @change="markAnswered(1)">
+                                        <div class="mcq-label"><div class="mcq-radio-box"></div> NOT GIVEN</div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div id="q2" class="border-b border-gray-100 pb-8 transition-colors duration-300" :class="activeQuestion === 2 ? 'bg-purple-50/30 -mx-6 px-6 rounded-2xl pt-4 border-transparent' : ''">
+                        <div class="flex gap-4">
+                            <span class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center font-black text-sm text-gray-500 shrink-0 border border-gray-200 mt-0.5">2</span>
+                            <div>
+                                <p class="font-bold text-lg text-dark mb-4 leading-snug">The PER3 gene is completely responsible for an individual's chronotype.</p>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    <label>
+                                        <input type="radio" name="q2" class="mcq-input" value="TRUE" v-model="answers[2]" @change="markAnswered(2)">
+                                        <div class="mcq-label"><div class="mcq-radio-box"></div> TRUE</div>
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="q2" class="mcq-input" value="FALSE" v-model="answers[2]" @change="markAnswered(2)">
+                                        <div class="mcq-label"><div class="mcq-radio-box"></div> FALSE</div>
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="q2" class="mcq-input" value="NOT GIVEN" v-model="answers[2]" @change="markAnswered(2)">
+                                        <div class="mcq-label"><div class="mcq-radio-box"></div> NOT GIVEN</div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="mt-12 mb-8">
+                    <h3 class="font-heading font-black text-2xl mb-2">Questions 3 - 5</h3>
+                    <p class="text-sm font-bold text-gray-500">Complete the sentences below. Choose <strong class="text-dark">NO MORE THAN TWO WORDS</strong> from the passage for each answer.</p>
+                </div>
+
+                <!-- Fill in the blanks Block -->
+                <div class="space-y-8">
+                    <!-- Question 3 -->
+                    <div id="q3" class="transition-colors duration-300" :class="activeQuestion === 3 ? 'bg-purple-50/30 -mx-6 px-6 rounded-2xl py-4 border-transparent' : ''">
+                        <div class="flex gap-4 items-center">
+                            <span class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center font-black text-sm text-gray-500 shrink-0 border border-gray-200">3</span>
+                            <p class="font-medium text-lg leading-loose">
+                                Traditional working hours force night owls to act outside their optimal cognitive periods, causing a phenomenon known as <input type="text" class="q-input" :class="{ 'answered': answers[3] }" v-model="answers[3]" @focus="activeQuestion = 3" @input="markAnswered(3)">.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 4 -->
+                    <div id="q4" class="transition-colors duration-300" :class="activeQuestion === 4 ? 'bg-purple-50/30 -mx-6 px-6 rounded-2xl py-4 border-transparent' : ''">
+                        <div class="flex gap-4 items-center">
+                            <span class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center font-black text-sm text-gray-500 shrink-0 border border-gray-200">4</span>
+                            <p class="font-medium text-lg leading-loose">
+                                Having a mix of early birds and night owls in a tribe helped protect them from <input type="text" class="q-input" :class="{ 'answered': answers[4] }" v-model="answers[4]" @focus="activeQuestion = 4" @input="markAnswered(4)"> during the night.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Question 5 -->
+                    <div id="q5" class="transition-colors duration-300" :class="activeQuestion === 5 ? 'bg-purple-50/30 -mx-6 px-6 rounded-2xl py-4 border-transparent' : ''">
+                        <div class="flex gap-4 items-center">
+                            <span class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center font-black text-sm text-gray-500 shrink-0 border border-gray-200">5</span>
+                            <p class="font-medium text-lg leading-loose">
+                                Studies suggest that night owls may excel in <input type="text" class="q-input" :class="{ 'answered': answers[5] }" v-model="answers[5]" @focus="activeQuestion = 5" @input="markAnswered(5)"> tasks.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Sticky Bottom Question Palette -->
+        <div class="absolute bottom-0 left-0 md:left-1/2 right-0 bg-white/80 backdrop-blur-xl border-t border-gray-100 p-4 shadow-[0_-20px_40px_rgba(0,0,0,0.05)] z-40 transition-transform duration-300" :class="isPaletteOpen ? 'translate-y-0' : 'translate-y-[100%]'">
+            <button @click="isPaletteOpen = !isPaletteOpen" class="absolute -top-10 left-1/2 -translate-x-1/2 bg-white/80 backdrop-blur-md rounded-t-xl px-4 py-1.5 border border-b-0 border-gray-200 text-gray-500 hover:text-dark shadow-[0_-10px_15px_rgba(0,0,0,0.02)]">
+                <iconify-icon icon="ph:dots-nine-bold" class="text-xl"></iconify-icon>
+            </button>
+            
+            <div class="max-w-xl mx-auto flex items-center justify-between">
+                <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-2 text-xs font-bold text-gray-500"><div class="w-3 h-3 rounded bg-gray-100 border border-gray-200"></div> Unanswered</div>
+                    <div class="flex items-center gap-2 text-xs font-bold text-gray-500"><div class="w-3 h-3 rounded bg-[#8B5CF6]"></div> Answered</div>
+                    <div class="flex items-center gap-2 text-xs font-bold text-gray-500"><div class="w-3 h-3 rounded bg-[#FF6B35]"></div> Review</div>
+                </div>
+            </div>
+
+            <div class="max-w-xl mx-auto mt-4 flex flex-wrap gap-2">
+                <!-- Generate dots for each question -->
+                <button v-for="n in 40" :key="n" @click="scrollToQuestion(n)" 
+                    class="w-10 h-10 rounded-xl text-sm font-black flex items-center justify-center transition-all focus:outline-none"
+                    :class="[
+                        answers[n] ? 'bg-[#8B5CF6] text-white hover:bg-[#7C3AED]' : 'bg-gray-100 text-gray-400 hover:bg-gray-200 border border-gray-200/50',
+                        markedForReview.includes(n) ? 'ring-2 ring-offset-2 ring-[#FF6B35]' : '',
+                        activeQuestion === n ? 'ring-2 ring-offset-2 ring-[#8B5CF6]' : ''
+                    ]"
+                    :style="n > 5 ? 'opacity: 0.5; pointer-events: none;' : ''">
+                    {{ n }}
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        function TestEngine() {
+            return {
+                testMetadata: { title: 'Cambridge Test 14' },
+                currentSectionTitle: 'Reading Part 1',
+                timeLeft: 60 * 60, // 60 minutes
+                answers: {}, // map of qNum -> answer string
+                markedForReview: [],
+                activeQuestion: 1,
+                isPaletteOpen: true,
+                timerInterval: null,
+                
+                get formattedTime() {
+                    const h = Math.floor(this.timeLeft / 3600);
+                    const m = Math.floor((this.timeLeft % 3600) / 60);
+                    const s = this.timeLeft % 60;
+                    if (h > 0) return `${h}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                    return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                },
+                get isTimeLow() {
+                    return this.timeLeft < 300; // less than 5 mins
+                },
+                
+                markAnswered(qNum) {
+                    this.activeQuestion = qNum;
+                },
+
+                scrollToQuestion(n) {
+                    this.activeQuestion = n;
+                    const el = document.getElementById('q' + n);
+                    const pane = document.getElementById('questionsPane');
+                    if(el && pane) {
+                        pane.scrollTo({
+                            top: el.offsetTop - pane.offsetTop - 20,
+                            behavior: 'smooth'
+                        });
+                    }
+                },
+
+                submitTest() {
+                    if(confirm("Are you sure you want to submit your test?")) {
+                        alert("Test Submitted! In a real environment, you'd go to the analytics page.");
+                        // window.location.href = 'analytics-review.html';
+                    }
+                },
+                
+                mounted() {
+                    this.timerInterval = setInterval(() => {
+                        if (this.timeLeft > 0) {
+                            this.timeLeft--;
+                        } else {
+                            clearInterval(this.timerInterval);
+                            alert("Time is up! Submitting test.");
+                        }
+                    }, 1000);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

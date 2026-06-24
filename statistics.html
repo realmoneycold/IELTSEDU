@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics - IELTS Practice</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; color: #333; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { font-size: 28px; margin-bottom: 8px; }
+        .subtitle { color: #666; margin-bottom: 24px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .stat-label { font-size: 14px; color: #666; margin-bottom: 8px; }
+        .stat-value { font-size: 32px; font-weight: 700; color: #1a1a2e; }
+        .stat-change { font-size: 13px; margin-top: 4px; }
+        .stat-change.positive { color: #10b981; }
+        .stat-change.negative { color: #ef4444; }
+        .section { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 20px; }
+        .section h2 { font-size: 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+        .skill-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+        .skill-item { padding: 16px; border-radius: 8px; background: #f8f9fa; }
+        .skill-name { font-weight: 600; margin-bottom: 8px; }
+        .skill-score { font-size: 24px; font-weight: 700; color: #1a1a2e; }
+        .progress-bar { height: 6px; background: #e5e7eb; border-radius: 3px; margin-top: 8px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); border-radius: 3px; transition: width 0.3s; }
+        .weakness-list { list-style: none; }
+        .weakness-item { padding: 12px; border-left: 3px solid #ef4444; background: #fef2f2; margin-bottom: 8px; border-radius: 0 8px 8px 0; }
+        .weakness-priority { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+        .weakness-priority.high { background: #fecaca; color: #991b1b; }
+        .weakness-priority.medium { background: #fed7aa; color: #9a3412; }
+        .recommendation { font-size: 13px; color: #666; margin-top: 4px; }
+        .streak-display { display: flex; align-items: center; gap: 16px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white; }
+        .streak-number { font-size: 48px; font-weight: 700; }
+        .streak-label { font-size: 14px; opacity: 0.9; }
+        .loading { text-align: center; padding: 40px; color: #666; }
+        .error { padding: 16px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; color: #991b1b; margin-bottom: 16px; }
+        .chart-container { position: relative; height: 300px; margin-top: 20px; }
+        .two-column { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        .criteria-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 16px; }
+        .criteria-card h3 { font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .criteria-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+        .criteria-item:last-child { border-bottom: none; }
+        .criteria-name { font-size: 14px; color: #555; }
+        .criteria-score { font-weight: 700; font-size: 16px; }
+        .criteria-score.low { color: #ef4444; }
+        .criteria-score.medium { color: #f59e0b; }
+        .criteria-score.good { color: #10b981; }
+        .focus-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; margin-left: 8px; }
+        .focus-badge.weakness { background: #fecaca; color: #991b1b; }
+        .focus-badge.strength { background: #d1fae5; color: #065f46; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Your Progress</h1>
+        <p class="subtitle">Track your IELTS preparation journey</p>
+
+        <div id="loading" class="loading">Loading your statistics...</div>
+        <div id="error" class="error" style="display: none;"></div>
+
+        <div id="content" style="display: none;">
+            <!-- Overview Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Tests</div>
+                    <div class="stat-value" id="totalTests">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Average Score</div>
+                    <div class="stat-value" id="avgScore">0.0</div>
+                    <div class="stat-change positive" id="scoreTrend">+0% vs last week</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Study Time</div>
+                    <div class="stat-value" id="studyTime">0h</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Current Streak</div>
+                    <div class="stat-value" id="streak">0</div>
+                    <div class="stat-change">days in a row</div>
+                </div>
+            </div>
+
+            <!-- Study Streak -->
+            <div class="section">
+                <h2>🔥 Study Streak</h2>
+                <div class="streak-display">
+                    <div>
+                        <div class="streak-number" id="streakNumber">0</div>
+                        <div class="streak-label">days current streak</div>
+                    </div>
+                    <div>
+                        <div class="streak-label">Longest: <span id="longestStreak">0</span> days</div>
+                        <div class="streak-label">Total study days: <span id="totalDays">0</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Score Progression & Criteria Analysis -->
+            <div class="two-column">
+                <div class="section">
+                    <h2>📈 Score Progression (IELTS Bands)</h2>
+                    <div class="chart-container">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Criteria to Work On -->
+                <div>
+                    <div class="criteria-card" id="criteriaToWorkOn">
+                        <h3>⚠️ Criteria to Work On</h3>
+                        <div id="criteriaWeaknesses">
+                            <div style="color: #666; font-size: 13px;">Complete speaking tests to see your focus areas</div>
+                        </div>
+                    </div>
+                    
+                    <div class="criteria-card" id="criteriaStrengths">
+                        <h3>✅ Your Strengths</h3>
+                        <div id="criteriaStrengthsList">
+                            <div style="color: #666; font-size: 13px;">Complete speaking tests to see your strengths</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weakness Analysis -->
+            <div class="section">
+                <h2>⚠️ Focus Areas</h2>
+                <ul class="weakness-list" id="weaknessList"></ul>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="section">
+                <h2>📝 Recent Tests</h2>
+                <div id="recentActivity"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = '/api';
+
+        async function loadStatistics() {
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            if (!token) {
+                showError('Please log in to view your statistics');
+                return;
+            }
+
+            try {
+                const [overviewRes, weaknessesRes, progressRes] = await Promise.all([
+                    fetch(`${API_BASE_URL}/statistics/overview`, { headers: { 'Authorization': `Bearer ${token}` } }),
+                    fetch(`${API_BASE_URL}/statistics/weaknesses`, { headers: { 'Authorization': `Bearer ${token}` } }),
+                    fetch(`${API_BASE_URL}/statistics/progress`, { headers: { 'Authorization': `Bearer ${token}` } })
+                ]);
+
+                if (!overviewRes.ok) throw new Error('Failed to load statistics');
+
+                const overview = await overviewRes.json();
+                const weaknesses = await weaknessesRes.json();
+                const progress = await progressRes.json();
+
+                // DEBUG: Log all API responses
+                console.log('[DEBUG] Overview API response:', overview);
+                console.log('[DEBUG] Overview data:', overview.data);
+                console.log('[DEBUG] Skill statistics:', overview.data?.skillStatistics);
+                console.log('[DEBUG] Progress API response:', progress);
+                console.log('[DEBUG] Progress data:', progress.data);
+                console.log('[DEBUG] Daily progress:', progress.data?.dailyProgress);
+                console.log('[DEBUG] Skill progress:', progress.data?.skillProgress);
+
+                renderOverview(overview.data);
+                renderWeaknesses(weaknesses.data);
+                renderProgress(progress.data);
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+
+            } catch (error) {
+                showError('Failed to load statistics: ' + error.message);
+            }
+        }
+
+        function renderOverview(data) {
+            document.getElementById('totalTests').textContent = data.overview.totalTests;
+            
+            // Calculate overall current score as average of all 4 skills (L+R+W+S)/4
+            let totalBandScore = 0;
+            let skillCount = 0;
+            const skillStats = data.skillStatistics || [];
+            
+            // Convert percentage scores to IELTS bands (0-9) and average them
+            skillStats.forEach(skill => {
+                if (skill.averageScore > 0) {
+                    // Convert percentage (0-100) to IELTS band (0-9)
+                    const bandScore = (skill.averageScore / 100) * 9;
+                    totalBandScore += bandScore;
+                    skillCount++;
+                }
+            });
+            
+            // Calculate overall average across all skills and round to nearest 0.5 (IELTS standard)
+            const rawOverall = skillCount > 0 ? (totalBandScore / skillCount) : 0;
+            const overallBand = Math.round(rawOverall * 2) / 2;
+            
+            // Display the overall IELTS band score
+            document.getElementById('avgScore').textContent = overallBand.toFixed(1);
+            document.querySelector('#avgScore').parentElement.querySelector('.stat-label').textContent = 'Current Overall Band';
+            
+            // Store for other uses
+            window.calculatedOverallBand = overallBand;
+            
+            document.getElementById('studyTime').textContent = Math.floor(data.overview.totalStudyTimeMinutes / 60) + 'h';
+            
+            const streak = data.studyStreak || {};
+            document.getElementById('streak').textContent = streak.currentStreak || 0;
+            document.getElementById('streakNumber').textContent = streak.currentStreak || 0;
+            document.getElementById('longestStreak').textContent = streak.longestStreak || 0;
+            document.getElementById('totalDays').textContent = streak.totalStudyDays || 0;
+
+            // Render skill grid
+            const skillGrid = document.getElementById('skillGrid');
+            skillGrid.innerHTML = '';
+            data.skillStatistics.forEach(skill => {
+                const skillDiv = document.createElement('div');
+                skillDiv.className = 'skill-item';
+                const percentage = Math.min((skill.averageScore / 9) * 100, 100);
+                skillDiv.innerHTML = `
+                    <div class="skill-name">${skill.skill}</div>
+                    <div class="skill-score">${skill.averageScore.toFixed(1)}</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: ${percentage}%"></div></div>
+                    <div style="font-size: 12px; color: #666; margin-top: 4px;">${skill.totalAttempts} tests</div>
+                `;
+                skillGrid.appendChild(skillDiv);
+            });
+
+            // Render recent activity - show IELTS bands for speaking tests
+            const recentDiv = document.getElementById('recentActivity');
+            recentDiv.innerHTML = data.recentActivity.map(test => {
+                const isSpeaking = test.testType && test.testType.includes('SPEAKING');
+                const score = isSpeaking ? (test.score ? test.score.toFixed(1) : 'N/A') : (test.percentageScore ? test.percentageScore.toFixed(0) + '%' : 'N/A');
+                const scoreColor = isSpeaking 
+                    ? (test.score >= 7 ? '#10b981' : test.score >= 6 ? '#f59e0b' : '#ef4444')
+                    : (test.percentageScore > 70 ? '#10b981' : test.percentageScore > 50 ? '#f59e0b' : '#ef4444');
+                return `
+                <div style="padding: 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-weight: 600;">${test.testName}</div>
+                        <div style="font-size: 13px; color: #666;">${new Date(test.completedAt).toLocaleDateString()}</div>
+                    </div>
+                    <div style="font-weight: 700; color: ${scoreColor}">
+                        ${isSpeaking ? 'Band ' + score : score}
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        function renderWeaknesses(data) {
+            const list = document.getElementById('weaknessList');
+            if (!data.weaknesses || data.weaknesses.length === 0) {
+                list.innerHTML = '<li class="weakness-item" style="border-left-color: #10b981; background: #f0fdf4;"><strong>Great job!</strong> No major weaknesses detected. Keep practicing!</li>';
+                return;
+            }
+
+            list.innerHTML = data.weaknesses.map(w => `
+                <li class="weakness-item">
+                    <span class="weakness-priority ${w.priority >= 4 ? 'high' : 'medium'}">${w.priority >= 4 ? 'HIGH' : 'MEDIUM'}</span>
+                    <div><strong>${w.skillArea.replace(/_/g, ' ')}</strong></div>
+                    <div class="recommendation">${w.recommendation || 'Keep practicing this skill area'}</div>
+                </li>
+            `).join('');
+        }
+
+        function renderProgress(data) {
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            
+            // Check if there's no data
+            if (!data.dailyProgress || data.dailyProgress.length === 0) {
+                document.getElementById('progressChart').parentElement.innerHTML = 
+                    '<div style="text-align:center;padding:40px;color:#666;">' +
+                    '<div style="font-size:48px;margin-bottom:10px;">📊</div>' +
+                    '<div>No progress data yet.</div>' +
+                    '<div style="font-size:13px;margin-top:8px;">Complete some tests to see your score progression!</div>' +
+                    '</div>';
+                return;
+            }
+            
+            // Get all unique dates for labels (chronological order)
+            const allDates = data.dailyProgress.map(d => d.date);
+            const labels = allDates.map(d => d.slice(5)); // MM-DD format
+            
+            // Skill colors matching dashboard
+            const skillColors = {
+                'LISTENING': { border: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
+                'READING': { border: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
+                'WRITING': { border: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
+                'SPEAKING': { border: '#8b5cf6', bg: 'rgba(139, 92, 246, 0.1)' }
+            };
+            
+            // Build datasets for each skill from skillProgress (cumulative averages)
+            const datasets = [];
+            const skillProgress = data.skillProgress || {};
+            
+            Object.keys(skillProgress).forEach(skillType => {
+                const skillData = skillProgress[skillType];
+                const color = skillColors[skillType] || { border: '#667eea', bg: 'rgba(102, 126, 234, 0.1)' };
+                
+                // Create data points aligned with all dates
+                // Use cumulative running average (score field) not individual test score
+                const dataPoints = allDates.map(date => {
+                    const entry = skillData.find(d => d.date === date);
+                    return entry ? entry.score : null; // cumulative average up to that point
+                });
+                
+                // Only add dataset if there's actual data
+                const hasData = dataPoints.some(p => p !== null);
+                if (hasData) {
+                    datasets.push({
+                        label: skillType.charAt(0) + skillType.slice(1).toLowerCase(),
+                        data: dataPoints,
+                        borderColor: color.border,
+                        backgroundColor: color.bg,
+                        fill: false,
+                        tension: 0.3,
+                        spanGaps: true, // Connect lines across missing data points
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    });
+                }
+            });
+            
+            // If no skill-specific data, fall back to overall average from dailyProgress
+            if (datasets.length === 0) {
+                const overallScores = allDates.map(date => {
+                    const entry = data.dailyProgress.find(d => d.date === date);
+                    return entry ? entry.averageScore : null;
+                });
+                datasets.push({
+                    label: 'Overall Average',
+                    data: overallScores,
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                });
+            }
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Your Average Score Progression',
+                            font: { size: 14 }
+                        },
+                        legend: { 
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const val = context.parsed.y;
+                                    return val ? context.dataset.label + ' Avg: Band ' + val.toFixed(1) : context.dataset.label + ': No data';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 9,
+                            min: 0,
+                            ticks: {
+                                stepSize: 0.5,
+                                callback: function(value) {
+                                    return value.toFixed(1);
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Cumulative Average Band Score'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Render criteria analysis from localStorage if available
+            renderCriteriaAnalysis();
+        }
+        
+        function renderCriteriaAnalysis() {
+            // Get AI results from localStorage
+            let aiResults = {};
+            try {
+                aiResults = JSON.parse(localStorage.getItem('allparts_ai_results') || '{}');
+            } catch(e) { return; }
+            
+            // Collect all criteria scores
+            const criteriaScores = {
+                fluencyAndCoherence: { total: 0, count: 0, name: 'Fluency & Coherence' },
+                lexicalResource: { total: 0, count: 0, name: 'Lexical Resource' },
+                grammaticalRangeAndAccuracy: { total: 0, count: 0, name: 'Grammar' },
+                pronunciation: { total: 0, count: 0, name: 'Pronunciation' }
+            };
+            
+            ['p1', 'p2', 'p3'].forEach(function(partKey) {
+                if (aiResults[partKey]) {
+                    aiResults[partKey].forEach(function(r) {
+                        if (r.assessment) {
+                            const a = r.assessment;
+                            if (a.fluencyAndCoherence) {
+                                criteriaScores.fluencyAndCoherence.total += parseFloat(a.fluencyAndCoherence.score || a.fluencyAndCoherence.band || 0);
+                                criteriaScores.fluencyAndCoherence.count++;
+                            }
+                            if (a.lexicalResource) {
+                                criteriaScores.lexicalResource.total += parseFloat(a.lexicalResource.score || a.lexicalResource.band || 0);
+                                criteriaScores.lexicalResource.count++;
+                            }
+                            if (a.grammaticalRangeAndAccuracy) {
+                                criteriaScores.grammaticalRangeAndAccuracy.total += parseFloat(a.grammaticalRangeAndAccuracy.score || a.grammaticalRangeAndAccuracy.band || 0);
+                                criteriaScores.grammaticalRangeAndAccuracy.count++;
+                            }
+                            if (a.pronunciation) {
+                                criteriaScores.pronunciation.total += parseFloat(a.pronunciation.score || a.pronunciation.band || 0);
+                                criteriaScores.pronunciation.count++;
+                            }
+                        }
+                    });
+                }
+            });
+            
+            // Calculate averages and sort
+            const averages = Object.keys(criteriaScores).map(function(key) {
+                const c = criteriaScores[key];
+                return {
+                    key: key,
+                    name: c.name,
+                    avg: c.count > 0 ? (c.total / c.count).toFixed(1) : 0,
+                    count: c.count
+                };
+            }).filter(function(c) { return c.count > 0; });
+            
+            if (averages.length === 0) return;
+            
+            // Sort by average (lowest first for weaknesses, highest for strengths)
+            averages.sort(function(a, b) { return a.avg - b.avg; });
+            
+            // Get weaknesses (bottom 2 or those below 6.0)
+            const weaknesses = averages.filter(function(c) { return c.avg < 6.0; });
+            if (weaknesses.length === 0) weaknesses.push(averages[0]); // At least show the lowest
+            
+            // Get strengths (top 2 or those above 7.0)
+            const strengths = averages.slice().reverse().filter(function(c) { return c.avg >= 7.0; });
+            if (strengths.length === 0) strengths.push(averages[averages.length - 1]); // At least show the highest
+            
+            // Render weaknesses
+            const weaknessesDiv = document.getElementById('criteriaWeaknesses');
+            weaknessesDiv.innerHTML = weaknesses.slice(0, 2).map(function(c) {
+                const scoreClass = c.avg < 5 ? 'low' : (c.avg < 6.5 ? 'medium' : 'good');
+                return '<div class="criteria-item">' +
+                    '<span class="criteria-name">' + c.name + '</span>' +
+                    '<span class="criteria-score ' + scoreClass + '">' + c.avg + '</span>' +
+                    '</div>';
+            }).join('');
+            
+            // Render strengths
+            const strengthsDiv = document.getElementById('criteriaStrengthsList');
+            strengthsDiv.innerHTML = strengths.slice(0, 2).map(function(c) {
+                return '<div class="criteria-item">' +
+                    '<span class="criteria-name">' + c.name + '</span>' +
+                    '<span class="criteria-score good">' + c.avg + '</span>' +
+                    '</div>';
+            }).join('');
+        }
+
+        function showError(message) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').textContent = message;
+            document.getElementById('error').style.display = 'block';
+        }
+
+        loadStatistics();
+    </script>
+</body>
+</html>

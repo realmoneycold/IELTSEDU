@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Practice | Education Centres</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/petite-vue@0.4.1/dist/petite-vue.iife.js" defer init></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    
+    <style>
+        @import url('https://api.fontshare.com/v2/css?f[]=clash-grotesk@700,600,400&f[]=satoshi@700,500,400&display=swap');
+
+        :root {
+            --lavender-main: #8B5CF6;
+            --brand-orange: #FF6B35;
+            --bg-soft: #F9F5FF;
+            --dark: #111827;
+        }
+
+        body {
+            font-family: 'Satoshi', sans-serif;
+            background-color: var(--bg-soft);
+            color: var(--dark);
+            margin: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, h5, h6, .font-display {
+            font-family: 'Clash Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .scroll-reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .transition-playful {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .card-lift:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px -10px rgba(139, 92, 246, 0.15);
+        }
+
+        .btn-bounce:hover {
+            transform: scale(1.05);
+        }
+
+        .orange-text {
+            color: var(--brand-orange);
+        }
+
+        /* Custom Badges */
+        .purple-badge { background-color: #F5F1FF; color: #8B5CF6; }
+        .orange-badge { background-color: #FFF8F5; color: #FF6B35; }
+        .blue-badge { background-color: #EFF6FF; color: #3B82F6; }
+        .green-badge { background-color: #F0FDF4; color: #22C55E; }
+        .academy-badge { background-color: #FEF3C7; color: #D97706; }
+
+        /* Custom scrollbar for list */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #E5E7EB;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #8B5CF6;
+        }
+
+        /* Pill specific styles */
+        .filter-pill {
+            padding: 0.5rem 1rem;            /* px-4 py-2 */
+            border-radius: 0.75rem;          /* rounded-xl */
+            font-size: 0.875rem;             /* text-sm */
+            font-weight: 700;                /* font-bold */
+            border-width: 2px;
+            border-style: solid;
+            transition: all 0.2s ease;       /* transition-all */
+            cursor: pointer;
+            white-space: nowrap;             /* whitespace-nowrap */
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;                     /* gap-2 */
+        }
+        .filter-pill.inactive {
+            background-color: #ffffff;       /* bg-white */
+            border-color: #F3F4F6;           /* border-gray-100 */
+            color: #6B7280;                  /* text-gray-500 */
+        }
+        .filter-pill.inactive:hover {
+            border-color: #E9D5FF;           /* hover:border-purple-200 */
+            color: #9333EA;                  /* hover:text-purple-600 */
+        }
+        .filter-pill.active {
+            background-color: #111827;       /* bg-gray-900 */
+            border-color: #111827;           /* border-gray-900 */
+            color: #ffffff;                  /* text-white */
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); /* shadow-lg */
+        }
+
+        /* Map Marker Overrides */
+        .map-marker {
+            background: white;
+            border: 2px solid white;
+            border-radius: 14px;
+            padding: 6px 10px;
+            font-family: 'Satoshi', sans-serif;
+            font-weight: 800;
+            font-size: 14px;
+            color: #111827;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+            text-align: center;
+            white-space: nowrap;
+            transform-origin: center bottom;
+        }
+        .map-marker:hover {
+            transform: scale(1.1) translateY(-4px);
+            border-color: #8B5CF6;
+            color: #8B5CF6;
+        }
+        .map-marker.pm-active {
+            background: #8B5CF6;
+            color: white;
+            border-color: #8B5CF6;
+            transform: scale(1.15) translateY(-4px);
+            z-index: 1000 !important;
+            box-shadow: 0 12px 24px rgba(139, 92, 246, 0.4);
+        }
+        .map-marker.pm-active::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px 6px 0;
+            border-style: solid;
+            border-color: #8B5CF6 transparent transparent transparent;
+        }
+
+        /* Leaflet Popup Aesthetics */
+        .leaflet-popup-content-wrapper {
+            border-radius: 24px !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+            box-shadow: 0 24px 48px -12px rgba(139, 92, 246, 0.25) !important;
+            border: 2px solid #F5F1FF;
+        }
+        .leaflet-popup-content {
+            margin: 0 !important;
+            width: 280px !important;
+        }
+        .leaflet-popup-tip-container {
+            display: none !important;
+        }
+        .leaflet-popup-close-button {
+            top: 12px !important;
+            right: 12px !important;
+            color: white !important;
+            font-size: 20px !important;
+            width: 28px !important;
+            height: 28px !important;
+            background: rgba(0,0,0,0.2) !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+            line-height: 1 !important;
+            padding: 0 !important;
+            transition: all 0.2s !important;
+        }
+        .leaflet-popup-close-button:hover {
+            background: rgba(0,0,0,0.4) !important;
+        }
+        .leaflet-container a.leaflet-popup-close-button {
+            padding: 0 !important;
+        }
+</style>
+</head>
+<body>
+    <!-- Header -->
+    <div v-scope="{ activeItem:'centres',homeHref:'/',coursesHref:'/courses',examHref:'/exam-dates',centresHref:'/education-centres',contactHref:'/contact',signupHref:'/signup',loginHref:'/login',mobileMenuOpen:false }">
+        <nav class="flex items-center justify-between px-4 md:px-8 lg:px-16 py-4 md:py-8 bg-white shadow-sm relative z-[1000]">
+            <div class="flex items-center gap-12">
+                <a href="/" class="text-3xl font-black flex items-center uppercase tracking-tighter">
+                    <span class="text-black border-r-4 border-[#FF6B35] pr-3 mr-3">IELTS</span>
+                    <span class="text-black/60 text-lg tracking-[0.2em] font-bold">PRACTICE</span>
+                </a>
+                <div class="hidden lg:flex items-center gap-8 font-semibold text-gray-600">
+                    <a :href="homeHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'home' }">Home</a>
+                    <a :href="coursesHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'courses' }">Courses</a>
+                    <a :href="examHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'exam' }">Exam &amp; Mock dates</a>
+                    <a :href="centresHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'centres' }">Educational Centres</a>
+                    <a :href="contactHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'contact' }">Contact</a>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 md:gap-6">
+                <a :href="signupHref" class="font-bold hover:text-[#FF6B35] transition-colors hidden sm:inline">Sign up</a>
+                <a :href="loginHref" class="bg-[#FF6B35] text-white px-5 md:px-8 py-2.5 md:py-3 rounded-2xl font-bold hover:bg-[#e85a2a] transition-all transform hover:scale-105 text-sm md:text-base">
+                    Login
+                </a>
+                <button @click="mobileMenuOpen = !mobileMenuOpen" class="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-50 transition-colors text-gray-700">
+                    <iconify-icon icon="ph:list-bold" class="text-2xl" v-show="!mobileMenuOpen"></iconify-icon>
+                    <iconify-icon icon="ph:x-bold" class="text-2xl" v-show="mobileMenuOpen"></iconify-icon>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div v-show="mobileMenuOpen" class="lg:hidden fixed inset-0 top-[72px] z-[90] bg-white/95 backdrop-blur-xl border-t border-purple-50 p-6 space-y-2 animate-[fadeIn_0.2s_ease-out]">
+            <a :href="homeHref" @click="mobileMenuOpen = false" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg hover:bg-purple-50 transition-colors" :class="{ 'text-[#FF6B35] bg-purple-50/50': activeItem === 'home', 'text-gray-700': activeItem !== 'home' }">
+                <iconify-icon icon="ph:house-bold" class="text-xl"></iconify-icon> Home
+            </a>
+            <a :href="coursesHref" @click="mobileMenuOpen = false" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg hover:bg-purple-50 transition-colors" :class="{ 'text-[#FF6B35] bg-purple-50/50': activeItem === 'courses', 'text-gray-700': activeItem !== 'courses' }">
+                <iconify-icon icon="ph:graduation-cap-bold" class="text-xl"></iconify-icon> Courses
+            </a>
+            <a :href="examHref" @click="mobileMenuOpen = false" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg hover:bg-purple-50 transition-colors" :class="{ 'text-[#FF6B35] bg-purple-50/50': activeItem === 'exam', 'text-gray-700': activeItem !== 'exam' }">
+                <iconify-icon icon="ph:calendar-bold" class="text-xl"></iconify-icon> Exam &amp; Mock dates
+            </a>
+            <a :href="centresHref" @click="mobileMenuOpen = false" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg hover:bg-purple-50 transition-colors" :class="{ 'text-[#FF6B35] bg-purple-50/50': activeItem === 'centres', 'text-gray-700': activeItem !== 'centres' }">
+                <iconify-icon icon="ph:buildings-bold" class="text-xl"></iconify-icon> Educational Centres
+            </a>
+            <a :href="contactHref" @click="mobileMenuOpen = false" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg hover:bg-purple-50 transition-colors" :class="{ 'text-[#FF6B35] bg-purple-50/50': activeItem === 'contact', 'text-gray-700': activeItem !== 'contact' }">
+                <iconify-icon icon="ph:envelope-bold" class="text-xl"></iconify-icon> Contact
+            </a>
+            <div class="pt-4 border-t border-purple-50 space-y-2">
+                <a :href="signupHref" @click="mobileMenuOpen = false" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg text-gray-700 hover:bg-purple-50 transition-colors">
+                    <iconify-icon icon="ph:user-plus-bold" class="text-xl"></iconify-icon> Sign up
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Strip -->
+    <section class="px-4 md:px-8 lg:px-16 pt-6 pb-6 shrink-0 relative z-10">
+        <div class="max-w-[1440px] mx-auto bg-gray-900 rounded-[32px] p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative shadow-2xl">
+            <!-- Glows -->
+            <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-[#FF6B35] rounded-full mix-blend-screen filter blur-[80px] opacity-40"></div>
+            <div class="absolute right-20 top-0 w-64 h-64 bg-[#8B5CF6] rounded-full mix-blend-screen filter blur-[80px] opacity-40"></div>
+            
+            <div class="relative z-10 flex-1">
+                <h1 class="text-white text-3xl md:text-4xl font-black mb-2 flex items-center gap-3">
+                    Education Centres 
+                    <span class="px-3 py-1 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-xs tracking-widest uppercase font-bold text-purple-300">Map View</span>
+                </h1>
+                <p class="text-gray-400 font-medium text-lg">Find trusted IELTS preparation partners and official venues near you.</p>
+            </div>
+            
+            <div class="relative z-10 flex gap-4 shrink-0">
+                <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl px-5 py-3 flex items-center gap-4">
+                    <div class="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center text-purple-400 text-xl">
+                        <iconify-icon icon="ph:buildings-fill"></iconify-icon>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-black text-white leading-none">19</div>
+                        <div class="text-[10px] text-gray-400 uppercase tracking-widest font-bold mt-1">Total Centres</div>
+                    </div>
+                </div>
+                <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl px-5 py-3 flex items-center gap-4 hidden sm:flex">
+                    <div class="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center text-orange-400 text-xl">
+                        <iconify-icon icon="ph:map-trifold-fill"></iconify-icon>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-black text-white leading-none">6</div>
+                        <div class="text-[10px] text-gray-400 uppercase tracking-widest font-bold mt-1">Active Cities</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Split Layout -->
+    <section class="px-4 md:px-8 lg:px-16 pb-16 flex-1 flex flex-col">
+        <div class="max-w-[1440px] mx-auto w-full flex-1 flex flex-col lg:flex-row gap-6 min-h-[500px] h-[calc(100vh-200px)] max-h-[700px] scroll-reveal active relative z-0">
+            
+            <!-- Left Panel: List & Filters -->
+            <div class="w-full lg:w-[480px] xl:w-[540px] bg-white rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-2 border-purple-50 flex flex-col overflow-hidden shrink-0 z-10">
+                
+                <!-- Filter Header -->
+                <div class="p-6 border-b border-gray-100 space-y-5 bg-white">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-bold text-gray-400 uppercase tracking-wider" id="resultLbl">8 centres found</span>
+                    </div>
+                    
+                    <!-- Search Bar -->
+                    <div class="relative">
+                        <iconify-icon icon="ph:magnifying-glass-bold" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></iconify-icon>
+                        <input type="text" id="searchInput" placeholder="Search by name, city or district..." 
+                               class="w-full bg-gray-50 border-2 border-transparent focus:border-purple-200 focus:bg-white rounded-2xl py-3 pl-12 pr-4 font-bold text-gray-700 outline-none transition-all placeholder:font-medium">
+                    </div>
+
+                    <!-- Pills -->
+                    <div class="flex flex-wrap gap-2">
+                        <button class="filter-pill active" data-filter="all">All</button>
+                        <button class="filter-pill inactive" data-filter="Official">
+                            <iconify-icon icon="ph:certificate-fill" class="text-purple-500"></iconify-icon> Official
+                        </button>
+                        <button class="filter-pill inactive" data-filter="Partner">
+                            <iconify-icon icon="ph:handshake-fill" class="text-orange-500"></iconify-icon> Partner
+                        </button>
+                        <button class="filter-pill inactive" data-filter="Academy">
+                            <iconify-icon icon="ph:star-fill" class="text-amber-500"></iconify-icon> Academy
+                        </button>
+                        <button class="filter-pill inactive" data-filter="Online">
+                            <iconify-icon icon="ph:laptop-fill" class="text-blue-500"></iconify-icon> Online
+                        </button>
+                        <button class="filter-pill inactive" id="openToggle">
+                            <iconify-icon icon="ph:clock-fill" class="text-green-500"></iconify-icon> Open Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sort Bar -->
+                <div class="px-6 py-3 bg-gray-50 flex justify-between items-center border-b border-gray-100">
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider" id="sortLbl">Showing all centres</span>
+                    <div class="relative">
+                        <select id="sortSel" class="bg-white border border-gray-200 rounded-xl py-1.5 pl-3 pr-8 text-xs font-bold text-gray-700 outline-none appearance-none cursor-pointer shadow-sm focus:border-purple-300">
+                            <option value="rating">⭐ Top Rated</option>
+                            <option value="name">A-Z Name</option>
+                            <option value="price">Price Low-High</option>
+                            <option value="reviews">Most Reviews</option>
+                        </select>
+                        <iconify-icon icon="ph:caret-down-bold" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs"></iconify-icon>
+                    </div>
+                </div>
+
+                <!-- Cards Container -->
+                <div class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar bg-gray-50/50 max-h-[400px]" id="cardsWrap">
+                    <!-- Cards dynamically injected here -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="noResults" class="hidden flex-col items-center justify-center h-full p-8 text-center bg-gray-50/50">
+                    <div class="w-20 h-20 bg-white rounded-full shadow-sm flex items-center justify-center text-gray-300 text-4xl mb-4">
+                        <iconify-icon icon="ph:buildings-duotone"></iconify-icon>
+                    </div>
+                    <h4 class="text-xl font-black text-gray-900 mb-2">No centres found</h4>
+                    <p class="text-gray-500 font-medium text-sm">Try adjusting your search or filters to find what you're looking for.</p>
+                </div>
+            </div>
+
+            <!-- Right Panel: Map -->
+            <div class="flex-1 bg-gray-200 rounded-[32px] overflow-hidden border-2 border-purple-50 shadow-inner relative min-h-[350px] lg:min-h-[350px] max-h-[700px] z-0">
+                <div id="map" class="absolute inset-0"></div>
+                
+                <!-- Floating Map Controls (Optional aesthetic addition) -->
+                <div class="absolute bottom-6 left-6 z-[400] bg-white/90 backdrop-blur-md p-3 rounded-2xl shadow-xl border border-white/50 hidden sm:block">
+                    <div class="flex items-center gap-3 text-xs font-bold text-gray-600">
+                        <span class="flex items-center gap-1"><div class="w-3 h-3 rounded-full bg-[#8B5CF6]"></div> Official</span>
+                        <span class="flex items-center gap-1"><div class="w-3 h-3 rounded-full bg-[#FF6B35]"></div> Partner</span>
+                        <span class="flex items-center gap-1"><div class="w-3 h-3 rounded-full bg-[#D97706]"></div> Academy</span>
+                        <span class="flex items-center gap-1"><div class="w-3 h-3 rounded-full bg-[#3B82F6]"></div> Online</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="px-6 md:px-16 py-24 bg-white border-t border-purple-50 mt-auto">
+        <div class="max-w-[1360px] mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 items-start">
+                <div class="lg:col-span-5">
+                    <div class="text-3xl font-black flex items-center uppercase tracking-tighter mb-8">
+                        <span class="text-black border-r-4 border-[#FF6B35] pr-3 mr-3">IELTS</span>
+                        <span class="text-black/60 text-lg tracking-[0.2em] font-bold">PRACTICE</span>
+                    </div>
+                    <p class="text-gray-400 text-lg font-medium max-w-sm mb-10 leading-relaxed">
+                        Empowering students worldwide to achieve their dreams through innovative, technology-driven IELTS preparation tools.
+                    </p>
+                    <div class="flex gap-4">
+                        <a id="soc-1" href="https://t.me/ieltspractice_net" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:telegram-logo-bold"></iconify-icon></a>
+                        <a id="soc-2" href="https://x.com/ieltspracticeUz" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:twitter-logo-bold"></iconify-icon></a>
+                        <a id="soc-3" href="https://www.instagram.com/ieltspractice_net?igsh=MWR3OGw3ZmxjcjF1Ng%3D%3D&utm_source=qr" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:instagram-logo-bold"></iconify-icon></a>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-3 grid grid-cols-2 gap-10">
+                    <div>
+                        <h6 class="font-black uppercase text-xs tracking-widest text-gray-400 mb-8">Quick Links</h6>
+                        <ul class="space-y-4 font-bold text-gray-700">
+                            <li><a id="foot-1" href="/" class="hover:text-purple-600 transition-colors">Home</a></li>
+                            <li><a id="foot-2" href="/courses" class="hover:text-purple-600 transition-colors">Courses</a></li>
+                            <li><a id="foot-3" href="/education-centres" class="hover:text-purple-600 transition-colors">Centers</a></li>
+                            <li><a id="foot-4" href="/dashboard" class="hover:text-purple-600 transition-colors">Mock Exams</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h6 class="font-black uppercase text-xs tracking-widest text-gray-400 mb-8">Support</h6>
+                        <ul class="space-y-4 font-bold text-gray-700">
+                            <li><a id="foot-5" href="#" class="hover:text-purple-600 transition-colors">Help Center</a></li>
+                            <li><a id="foot-6" href="#" class="hover:text-purple-600 transition-colors">FAQ</a></li>
+                            <li><a id="foot-7" href="/privacypolicy" class="hover:text-purple-600 transition-colors">Privacy</a></li>
+                            <li><a id="foot-8" href="/termsconditions" class="hover:text-purple-600 transition-colors">Terms</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-4 bg-[#F5F1FF] p-8 rounded-[40px]">
+                    <h6 class="font-black uppercase text-xs tracking-widest text-purple-600 mb-6">Contact Us</h6>
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-purple-600 shadow-sm"><iconify-icon icon="ph:envelope-bold"></iconify-icon></div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase">Email</p>
+                                <p class="font-black">support@ieltsedu.net</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-orange-600 shadow-sm"><iconify-icon icon="ph:phone-bold"></iconify-icon></div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase">Phone</p>
+                                <p class="font-black">+998 (88) 532 4701</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-24 pt-10 border-t border-purple-50 flex flex-col md:flex-row justify-between items-center gap-6 text-xs font-black text-gray-400 tracking-widest">
+                <div>© 2026 IELTSPRACTICE LEARNING PLATFORM</div>
+                <div class="flex gap-8">
+                        <span style="color: #6B7280;">Created by <a href="https://xalimov-ahrorbek-portfolio.netlify.app/" target="_blank" style="color: #374151; text-decoration: underline; font-weight: 700; transition: color 0.3s;">Xalimov Ahrorbek</a></span>
+                    <a id="copy-1" href="/privacypolicy" class="hover:text-purple-600 transition-colors">PRIVACY POLICY</a>
+                    <a id="copy-2" href="/termsconditions" class="hover:text-purple-600 transition-colors">TERMS OF SERVICE</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Animation Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+
+        // Data Source
+        const CENTRES = [
+            { id: 1, name: "British Council Tashkent", type: "Official", city: "Tashkent", district: "Yunusabad", rating: 4.9, reviews: 312, students: "2,400+", courses: 3, price: 450000, open: true, icon: "🏛️", bg: "#F5F1FF", lat: 41.3111, lng: 69.2797 },
+            { id: 2, name: "IDP Education Tashkent", type: "Official", city: "Tashkent", district: "Mirzo Ulugbek", rating: 4.8, reviews: 278, students: "1,900+", courses: 2, price: 420000, open: true, icon: "🎓", bg: "#F5F1FF", lat: 41.3205, lng: 69.3120 },
+            { id: 3, name: "IELTSPRACTICE Hub", type: "Partner", city: "Tashkent", district: "Chilonzor", rating: 4.7, reviews: 189, students: "950+", courses: 4, price: 280000, open: true, icon: "📚", bg: "#FFF8F5", lat: 41.2880, lng: 69.2060 },
+            { id: 4, name: "Global Education Samarkand", type: "Partner", city: "Samarkand", district: "Centre", rating: 4.6, reviews: 145, students: "620+", courses: 2, price: 320000, open: false, icon: "🕌", bg: "#FFF8F5", lat: 39.6542, lng: 66.9758 },
+            { id: 5, name: "Fergana Language Academy", type: "Partner", city: "Fergana", district: "Mustaqillik", rating: 4.5, reviews: 98, students: "410+", courses: 2, price: 150000, open: true, icon: "✏️", bg: "#FFF8F5", lat: 40.3864, lng: 71.7864 },
+            { id: 6, name: "Bukhara IELTS Centre", type: "Partner", city: "Bukhara", district: "Old City", rating: 4.4, reviews: 76, students: "300+", courses: 2, price: 200000, open: true, icon: "🏰", bg: "#FFF8F5", lat: 39.7747, lng: 64.4286 },
+            { id: 7, name: "Online IELTS Pro", type: "Online", city: "Nationwide", district: "Remote", rating: 4.7, reviews: 423, students: "5,000+", courses: 5, price: 180000, open: true, icon: "💻", bg: "#EFF6FF", lat: 41.2600, lng: 69.2200 },
+            { id: 8, name: "Namangan Study Centre", type: "Partner", city: "Namangan", district: "Central", rating: 4.3, reviews: 54, students: "220+", courses: 2, price: 130000, open: false, icon: "🏫", bg: "#FFF8F5", lat: 40.9983, lng: 71.6726 },
+            // Termez Educational Centers
+            { id: 9, name: "Winners Academy", type: "Academy", city: "Termez", district: "At-Termizi St", rating: 5.0, reviews: 150, students: "900+", courses: 4, price: 220000, open: true, icon: "🏆", bg: "#FEF3C7", lat: 37.2352601, lng: 67.2790339 },
+            { id: 20, name: "Winners Academy Dubai filial", type: "Academy", city: "Termez", district: "Barkamol Avlod", rating: 5.0, reviews: 85, students: "450+", courses: 3, price: 220000, open: true, icon: "🏆", bg: "#FEF3C7", lat: 37.2331663, lng: 67.2778863 },
+            { id: 21, name: "Winners Academy Center filial", type: "Academy", city: "Termez", district: "Shofor St", rating: 5.0, reviews: 92, students: "510+", courses: 3, price: 220000, open: true, icon: "🏆", bg: "#FEF3C7", lat: 37.2108026, lng: 67.2743129 },
+            { id: 22, name: "Winners Academy Avtovokzal filial", type: "Academy", city: "Termez", district: "Avtovokzal", rating: 5.0, reviews: 74, students: "380+", courses: 3, price: 220000, open: true, icon: "🏆", bg: "#FEF3C7", lat: 37.2353509, lng: 67.2577221 },
+            { id: 23, name: "Winners Academy Yashil Dunyo filial", type: "Academy", city: "Termez", district: "Yashil Dunyo", rating: 5.0, reviews: 63, students: "290+", courses: 3, price: 220000, open: true, icon: "🏆", bg: "#FEF3C7", lat: 37.2485623, lng: 67.3114196 },
+            { id: 24, name: "Winners Academy Limonariya filial", type: "Academy", city: "Termez", district: "Limonariya", rating: 5.0, reviews: 58, students: "210+", courses: 3, price: 220000, open: true, icon: "🏆", bg: "#FEF3C7", lat: 37.3048803, lng: 67.1955187 },
+            { id: 25, name: "Burhanov School", type: "Academy", city: "Termez", district: "Alisher Navoi", rating: 5.0, reviews: 112, students: "650+", courses: 4, price: 200000, open: true, icon: "🎓", bg: "#FEF3C7", lat: 37.2418768, lng: 67.3007292 },
+            { id: 10, name: "Imperial Academy", type: "Academy", city: "Termez", district: "Barkamol Avlod", rating: 5.0, reviews: 96, students: "720+", courses: 3, price: 240000, open: true, icon: "👑", bg: "#FEF3C7", lat: 37.2230, lng: 67.2810 },
+            { id: 11, name: "London Academy", type: "Academy", city: "Termez", district: "Islam Karimov", rating: 5.0, reviews: 142, students: "1,100+", courses: 5, price: 260000, open: true, icon: "🇬🇧", bg: "#FEF3C7", lat: 37.2195, lng: 67.2850 },
+            { id: 12, name: "Oxbridge", type: "Academy", city: "Termez", district: "Ibn Sino", rating: 5.0, reviews: 88, students: "680+", courses: 3, price: 250000, open: true, icon: "🎓", bg: "#FEF3C7", lat: 37.2180, lng: 67.2750 },
+            { id: 13, name: "Level Up", type: "Academy", city: "Termez", district: "At-Termiziy St", rating: 5.0, reviews: 115, students: "900+", courses: 4, price: 200000, open: true, icon: "⬆️", bg: "#FEF3C7", lat: 37.2240, lng: 67.2790 },
+            { id: 14, name: "Ziyo Termiz", type: "Academy", city: "Termez", district: "Alisher Navoi", rating: 4.0, reviews: 67, students: "540+", courses: 3, price: 180000, open: true, icon: "💡", bg: "#FEF3C7", lat: 37.2200, lng: 67.2820 },
+            { id: 15, name: "WebForte Academy", type: "Academy", city: "Termez", district: "Islam Karimov", rating: 4.0, reviews: 74, students: "420+", courses: 2, price: 280000, open: true, icon: "💻", bg: "#FEF3C7", lat: 37.2170, lng: 67.2860 },
+            { id: 16, name: "Seul School", type: "Academy", city: "Termez", district: "Alisher Navoi", rating: 5.0, reviews: 52, students: "380+", courses: 2, price: 230000, open: true, icon: "🇰🇷", bg: "#FEF3C7", lat: 37.2225, lng: 67.2840 },
+            { id: 17, name: "Harvard Private School", type: "Academy", city: "Termez", district: "Islam Karimov", rating: 4.0, reviews: 43, students: "290+", courses: 2, price: 300000, open: true, icon: "🎓", bg: "#FEF3C7", lat: 37.2185, lng: 67.2800 },
+            { id: 18, name: "Bilimdon Study", type: "Academy", city: "Termez", district: "5th Micro-district", rating: 4.0, reviews: 38, students: "250+", courses: 2, price: 160000, open: true, icon: "📖", bg: "#FEF3C7", lat: 37.2250, lng: 67.2760 },
+            { id: 19, name: "New Period LC", type: "Partner", city: "Termez", district: "Termez", rating: 5.0, reviews: 152, students: "600+", courses: 4, price: 250000, open: true, icon: "🏫", bg: "#FFF8F5", lat: 37.506129, lng: 67.060249 },
+        ];
+
+        // State
+        let activeType = 'all';
+        let onlyOpen = false;
+        let activeId = null;
+        let favs = new Set();
+        let leafMarkers = {};
+        let mapInstance = null;
+
+        // Helper Functions
+        function getBadgeClass(type) {
+            if(type === 'Official') return 'purple-badge';
+            if(type === 'Partner') return 'orange-badge';
+            if(type === 'Online') return 'blue-badge';
+            if(type === 'Academy') return 'academy-badge';
+            return 'bg-gray-100 text-gray-600';
+        }
+
+        function starsHtml(r) {
+            let h = '<div class="flex gap-0.5 text-orange-400">';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= Math.floor(r)) h += '<iconify-icon icon="ph:star-fill"></iconify-icon>';
+                else if (i - r < 1) h += '<iconify-icon icon="ph:star-half-fill"></iconify-icon>';
+                else h += '<iconify-icon icon="ph:star-fill" class="text-gray-200"></iconify-icon>';
+            }
+            return h + '</div>';
+        }
+
+        function toggleFav(e, id) {
+            e.stopPropagation();
+            if (favs.has(id)) favs.delete(id);
+            else favs.add(id);
+            
+            const btn = document.getElementById('fav-' + id);
+            if (btn) {
+                btn.classList.toggle('text-red-500', favs.has(id));
+                btn.classList.toggle('bg-red-50', favs.has(id));
+                btn.innerHTML = `<iconify-icon icon="${favs.has(id) ? 'ph:heart-fill' : 'ph:heart-bold'}"></iconify-icon>`;
+            }
+        }
+
+        function selectCentre(id) {
+            activeId = id;
+            const c = CENTRES.find(x => x.id === id);
+            if (!c) return;
+
+            // Update Cards Styling
+            document.querySelectorAll('.centre-card').forEach(el => {
+                el.classList.remove('ring-2', 'ring-purple-500', 'bg-purple-50/20');
+                el.classList.add('border-gray-100');
+            });
+            const card = document.getElementById('card-' + id);
+            if (card) {
+                card.classList.remove('border-gray-100');
+                card.classList.add('ring-2', 'ring-purple-500', 'bg-purple-50/20');
+                card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            // Update Markers
+            Object.keys(leafMarkers).forEach(mid => {
+                leafMarkers[mid].el.classList.toggle('pm-active', Number(mid) === id);
+            });
+
+            // Pan Map
+            if (mapInstance) {
+                mapInstance.flyTo([c.lat, c.lng], 13, { duration: 1.2 });
+                setTimeout(() => {
+                    if (leafMarkers[id]) leafMarkers[id].marker.openPopup();
+                }, 1200);
+            }
+        }
+
+        function renderCards(list) {
+            const wrap = document.getElementById('cardsWrap');
+            const noRes = document.getElementById('noResults');
+            const resultLbl = document.getElementById('resultLbl');
+            const sortLbl = document.getElementById('sortLbl');
+
+            if (!list.length) {
+                wrap.innerHTML = '';
+                wrap.classList.add('hidden');
+                noRes.classList.remove('hidden');
+                noRes.classList.add('flex');
+                resultLbl.textContent = '0 centres found';
+                sortLbl.textContent = 'No centres found';
+                return;
+            }
+
+            wrap.classList.remove('hidden');
+            noRes.classList.add('hidden');
+            noRes.classList.remove('flex');
+            resultLbl.textContent = `${list.length} centre${list.length !== 1 ? 's' : ''} found`;
+            sortLbl.textContent = `Showing ${list.length} centre${list.length !== 1 ? 's' : ''}`;
+
+            wrap.innerHTML = list.map((c, i) => `
+                <div class="centre-card bg-white border-2 border-gray-100 hover:border-purple-200 rounded-[24px] p-4 flex gap-4 cursor-pointer transition-playful card-lift relative ${activeId === c.id ? 'ring-2 ring-purple-500 bg-purple-50/20 border-transparent' : ''}" 
+                     id="card-${c.id}" 
+                     style="animation: fadeUp 0.4s ease forwards ${i * 0.05}s" 
+                     onclick="selectCentre(${c.id})">
+                    
+                    <!-- Thumbnail -->
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-[20px] flex items-center justify-center text-4xl shrink-0 border border-black/5"
+                         style="background: ${c.bg}">${c.icon}</div>
+                    
+                    <!-- Content -->
+                    <div class="flex-1 min-w-0 pr-8">
+                        <div class="flex flex-wrap gap-1.5 mb-2">
+                            <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-lg ${getBadgeClass(c.type)}">${c.type}</span>
+                            ${c.open ? `<span class="text-[9px] sm:text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-lg green-badge flex items-center gap-1.5"><div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>Open</span>` : ''}
+                        </div>
+                        <h3 class="font-black text-gray-900 text-base sm:text-lg truncate mb-1">${c.name}</h3>
+                        <div class="flex items-center gap-1.5 text-sm mb-2.5">
+                            ${starsHtml(c.rating)} 
+                            <span class="font-black text-gray-900 text-xs">${c.rating}</span> 
+                            <span class="text-gray-400 font-bold text-[10px]">(${c.reviews})</span>
+                        </div>
+                        <div class="flex items-center gap-4 text-[11px] text-gray-500 font-bold">
+                            <span class="flex items-center gap-1"><iconify-icon icon="ph:users-fill" class="text-purple-500 text-sm"></iconify-icon> ${c.students}</span>
+                            <span class="flex items-center gap-1"><iconify-icon icon="ph:map-pin-fill" class="text-orange-500 text-sm"></iconify-icon> ${c.city}</span>
+                        </div>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="absolute bottom-4 right-4 text-right">
+                        <div class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">From</div>
+                        <div class="text-base sm:text-lg font-black text-[#111827] leading-none mt-0.5">${Math.round(c.price / 1000)}k <span class="text-[9px] text-gray-400">UZS</span></div>
+                    </div>
+
+                    <!-- Fav Button -->
+                    <button class="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 hover:border-red-100 transition-colors z-10 ${favs.has(c.id) ? 'text-red-500 bg-red-50 border-red-100' : ''}" 
+                            id="fav-${c.id}"
+                            onclick="toggleFav(event, ${c.id})">
+                        <iconify-icon icon="${favs.has(c.id) ? 'ph:heart-fill' : 'ph:heart-bold'}"></iconify-icon>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function applyFilters() {
+            const q = document.getElementById('searchInput').value.toLowerCase().trim();
+            const sort = document.getElementById('sortSel').value;
+
+            let list = CENTRES.filter(c => {
+                if (activeType !== 'all' && c.type !== activeType) return false;
+                if (onlyOpen && !c.open) return false;
+                if (q && !c.name.toLowerCase().includes(q) && 
+                         !c.city.toLowerCase().includes(q) && 
+                         !c.district.toLowerCase().includes(q)) return false;
+                return true;
+            });
+
+            if (sort === 'rating') list.sort((a,b) => b.rating - a.rating);
+            if (sort === 'name') list.sort((a,b) => a.name.localeCompare(b.name));
+            if (sort === 'price') list.sort((a,b) => a.price - b.price);
+            if (sort === 'reviews') list.sort((a,b) => b.reviews - a.reviews);
+
+            // Sync map markers visibility
+            CENTRES.forEach(c => {
+                const show = list.some(x => x.id === c.id);
+                if (leafMarkers[c.id]) leafMarkers[c.id].el.style.display = show ? '' : 'none';
+            });
+
+            renderCards(list);
+        }
+
+        // Event Listeners Setup
+        function setupEvents() {
+            // Pills
+            document.querySelectorAll('.filter-pill[data-filter]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.filter-pill[data-filter]').forEach(b => {
+                        b.classList.remove('active');
+                        b.classList.add('inactive');
+                    });
+                    e.currentTarget.classList.remove('inactive');
+                    e.currentTarget.classList.add('active');
+                    activeType = e.currentTarget.dataset.filter;
+                    applyFilters();
+                });
+            });
+
+            // Open Toggle
+            const openBtn = document.getElementById('openToggle');
+            openBtn.addEventListener('click', () => {
+                onlyOpen = !onlyOpen;
+                if(onlyOpen) {
+                    openBtn.classList.remove('inactive');
+                    openBtn.classList.add('active');
+                } else {
+                    openBtn.classList.remove('active');
+                    openBtn.classList.add('inactive');
+                }
+                applyFilters();
+            });
+
+            // Search & Sort
+            document.getElementById('searchInput').addEventListener('input', applyFilters);
+            document.getElementById('sortSel').addEventListener('change', applyFilters);
+        }
+
+        // Initialize Map
+        function initMap() {
+            if (typeof L === 'undefined') return;
+
+            mapInstance = L.map('map', {
+                center: [40.5, 66.5], // Center of Uzbekistan roughly
+                zoom: 6,
+                zoomControl: false,
+                attributionControl: false
+            });
+
+            L.control.zoom({ position: 'bottomright' }).addTo(mapInstance);
+
+            // Modern light basemap
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                maxZoom: 19
+            }).addTo(mapInstance);
+
+            CENTRES.forEach(c => {
+                const el = document.createElement('div');
+                el.className = 'map-marker';
+                el.innerHTML = `${Math.round(c.price / 1000)}k`;
+                el.onclick = () => selectCentre(c.id);
+
+                const icon = L.divIcon({
+                    html: el,
+                    className: '',
+                    iconSize: [50, 32],
+                    iconAnchor: [25, 32], // Anchor at bottom center
+                    popupAnchor: [0, -36] // Popup above marker
+                });
+
+                const marker = L.marker([c.lat, c.lng], { icon }).addTo(mapInstance);
+
+                const popupHtml = `
+                    <div class="font-['Satoshi'] w-[280px]">
+                        <div class="h-[140px] flex items-center justify-center text-6xl relative"
+                             style="background: ${c.bg}">
+                             <div class="absolute top-4 left-4">
+                                <span class="text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-lg ${getBadgeClass(c.type)}">${c.type}</span>
+                             </div>
+                             ${c.icon}
+                        </div>
+                        <div class="p-5 bg-white">
+                            <h3 class="font-black text-gray-900 text-lg mb-1 truncate">${c.name}</h3>
+                            <div class="flex items-center gap-1.5 text-sm mb-3">
+                                ${starsHtml(c.rating)} 
+                                <span class="font-black text-gray-900 text-xs">${c.rating}</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-xs text-gray-500 font-bold mb-4">
+                                <iconify-icon icon="ph:map-pin-fill" class="text-orange-500 text-sm"></iconify-icon>
+                                ${c.city}, ${c.district}
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Starting from</div>
+                                    <div class="text-lg font-black text-purple-600 leading-none mt-0.5">${Math.round(c.price/1000)}k <span class="text-[9px] text-gray-400">UZS</span></div>
+                                </div>
+                                <button class="bg-gray-900 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-purple-600 transition-colors" onclick="selectCentre(${c.id})">
+                                    Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                marker.bindPopup(popupHtml);
+                leafMarkers[c.id] = { marker, el };
+            });
+
+            // Fit bounds after a slight delay to ensure container is ready
+            setTimeout(() => {
+                mapInstance.invalidateSize();
+                const bounds = L.latLngBounds(CENTRES.map(c => [c.lat, c.lng]));
+                mapInstance.fitBounds(bounds, { padding: [50, 50] });
+            }, 200);
+        }
+
+        // Add missing keyframe animation dynamically
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fadeUp {
+                from { opacity: 0; transform: translateY(15px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEvents();
+            applyFilters();
+            initMap();
+        });
+    </script>
+</body>
+</html>

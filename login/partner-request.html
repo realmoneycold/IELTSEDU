@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Partner Application — IELTSPRACTICE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:      #1a365d;
+      --navy-mid:  #1e4278;
+      --navy-lt:   #2a4f7a;
+      --green:     #1C6758;
+      --gray-bg:   #f0f4f8;
+      --gray-bdr:  #d0dae6;
+      --text-main: #1a2b3c;
+      --text-soft: #5a7189;
+      --white:     #ffffff;
+      --gold:      #c49a22;
+      --gold-lt:   #e8b930;
+      --err:       #c0392b;
+      --radius:    14px;
+      --shadow:    0 8px 40px rgba(26,54,93,0.13);
+    }
+
+    html, body { font-family: 'DM Sans', sans-serif; background: var(--gray-bg); color: var(--text-main); }
+
+    .screen { display: flex; min-height: 100vh; }
+
+    /* ── Left panel — Navy for B2B authority ──────────── */
+    .left {
+      flex: 1 1 52%;
+      background: var(--navy);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 64px 72px;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Decorative geometry */
+    .left::before {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      border: 60px solid rgba(255,255,255,0.04);
+      top: -130px; right: -130px;
+    }
+    .left::after {
+      content: '';
+      position: absolute;
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      border: 35px solid rgba(196,154,34,0.14);
+      bottom: -60px; left: -40px;
+    }
+    /* Extra gold accent ring */
+    .left .deco-ring {
+      position: absolute;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      border: 2px solid rgba(196,154,34,0.2);
+      bottom: 140px; right: 60px;
+      z-index: 0;
+    }
+
+    .brand {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 52px; z-index: 1;
+    }
+    .brand-icon {
+      width: 44px; height: 44px;
+      background: var(--green);
+      border-radius: 10px;
+      display: grid; place-items: center;
+    }
+    .brand-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      color: var(--white);
+      letter-spacing: 0.02em;
+    }
+    .brand-name span { color: #6ee7b7; }
+
+    /* B2B badge */
+    .b2b-badge {
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(196,154,34,0.15);
+      border: 1px solid rgba(196,154,34,0.35);
+      color: var(--gold-lt);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+    .b2b-badge svg { width: 13px; height: 13px; }
+
+    .tagline { z-index: 1; max-width: 420px; }
+    .tagline h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.85rem, 2.9vw, 2.55rem);
+      line-height: 1.2;
+      color: var(--white);
+      margin-bottom: 16px;
+    }
+    .tagline h1 em { font-style: normal; color: var(--gold-lt); }
+    .tagline p {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.62);
+      line-height: 1.72;
+      font-weight: 300;
+      margin-bottom: 40px;
+    }
+
+    .features { display: flex; flex-direction: column; gap: 16px; z-index: 1; }
+    .feat-item { display: flex; align-items: flex-start; gap: 14px; }
+    .feat-check {
+      width: 28px; height: 28px; flex-shrink: 0; margin-top: 1px;
+      border-radius: 50%;
+      background: rgba(196,154,34,0.18);
+      border: 1px solid rgba(196,154,34,0.3);
+      display: grid; place-items: center;
+    }
+    .feat-check svg { width: 13px; height: 13px; }
+    .feat-body { display: flex; flex-direction: column; gap: 2px; }
+    .feat-label { font-size: 0.9rem; color: rgba(255,255,255,0.88); font-weight: 500; }
+    .feat-sub   { font-size: 0.78rem; color: rgba(255,255,255,0.44); font-weight: 300; }
+
+    /* Testimonial strip */
+    .testimonial {
+      z-index: 1;
+      margin-top: 44px;
+      padding: 18px 20px;
+      background: rgba(255,255,255,0.05);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 8px 8px 0;
+      max-width: 380px;
+    }
+    .testimonial p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.72);
+      line-height: 1.6;
+      font-style: italic;
+      margin-bottom: 10px;
+    }
+    .testimonial .author {
+      font-size: 0.78rem;
+      color: var(--gold-lt);
+      font-weight: 600;
+      font-style: normal;
+    }
+
+    /* ── Right panel ─────────────────────────────────── */
+    .right {
+      flex: 0 0 48%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 48px 36px;
+      background: var(--gray-bg);
+      overflow-y: auto;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 44px 44px;
+      width: 100%;
+      max-width: 448px;
+      border: 1px solid var(--gray-bdr);
+      animation: fadeUp 0.45s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    /* Success overlay — shown after submit */
+    .success-overlay {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 12px 0 8px;
+    }
+    .success-overlay.show { display: flex; }
+
+    .success-icon {
+      width: 72px; height: 72px;
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      border-radius: 50%;
+      display: grid; place-items: center;
+      margin-bottom: 24px;
+      animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    .success-icon svg { width: 34px; height: 34px; }
+
+    @keyframes popIn {
+      from { transform: scale(0); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+
+    .success-overlay h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.45rem;
+      color: var(--navy);
+      margin-bottom: 14px;
+      line-height: 1.3;
+    }
+    .success-overlay p {
+      font-size: 0.92rem;
+      color: var(--text-soft);
+      line-height: 1.7;
+      font-weight: 300;
+      margin-bottom: 28px;
+    }
+    .success-overlay .next-steps {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid var(--gray-bdr);
+      border-radius: 10px;
+      padding: 18px 20px;
+      text-align: left;
+    }
+    .success-overlay .next-steps h4 {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .next-step-item {
+      display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px;
+    }
+    .next-step-item:last-child { margin-bottom: 0; }
+    .step-num {
+      width: 22px; height: 22px; flex-shrink: 0;
+      background: var(--navy); color: var(--white);
+      border-radius: 50%; font-size: 0.7rem; font-weight: 700;
+      display: grid; place-items: center; margin-top: 1px;
+    }
+    .step-txt { font-size: 0.83rem; color: var(--text-soft); line-height: 1.5; }
+
+    /* Form section */
+    .form-section { display: block; }
+
+    .card-header { margin-bottom: 28px; }
+    .card-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.65rem;
+      color: var(--navy);
+      margin-bottom: 5px;
+    }
+    .card-header p { font-size: 0.88rem; color: var(--text-soft); font-weight: 300; }
+
+    /* Section dividers inside form */
+    .form-divider {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin: 8px 0 18px;
+      padding-bottom: 8px;
+      border-bottom: 1.5px solid var(--gray-bdr);
+    }
+
+    /* ── Floating Label Inputs ───────────────────────── */
+    .form-group { position: relative; margin-bottom: 18px; }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 18px 16px 6px;
+      border: 1.5px solid var(--gray-bdr);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.93rem;
+      color: var(--text-main);
+      background: #fafcff;
+      outline: none;
+      resize: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      appearance: none;
+    }
+    .form-group textarea { padding-top: 22px; min-height: 80px; }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3px rgba(26,54,93,0.08);
+      background: var(--white);
+    }
+    .form-group label {
+      position: absolute;
+      left: 16px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.9rem;
+      color: var(--text-soft);
+      pointer-events: none;
+      transition: all 0.18s ease;
+      background: transparent;
+    }
+    /* For textarea, label starts near top */
+    .form-group.textarea-group label { top: 20px; transform: none; }
+
+    .form-group input:focus + label,
+    .form-group input:not(:placeholder-shown) + label {
+      top: 10px; transform: none;
+      font-size: 0.72rem; color: var(--navy);
+      font-weight: 500; letter-spacing: 0.03em;
+    }
+    .form-group textarea:focus + label,
+    .form-group textarea:not(:placeholder-shown) + label {
+      top: 8px; transform: none;
+      font-size: 0.72rem; color: var(--navy);
+      font-weight: 500; letter-spacing: 0.03em;
+    }
+
+    /* Phone with flag prefix */
+    .phone-wrap { position: relative; }
+    .phone-prefix {
+      position: absolute;
+      left: 14px; top: 50%; transform: translateY(-50%);
+      font-size: 0.9rem; color: var(--text-soft);
+      pointer-events: none; z-index: 1;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .phone-wrap input { padding-left: 56px; }
+
+    /* Password toggle */
+    .input-wrap { position: relative; }
+    .toggle-pw {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; padding: 4px;
+      color: var(--text-soft); display: flex; align-items: center; transition: color 0.2s;
+    }
+    .toggle-pw:hover { color: var(--navy); }
+
+    /* Password strength */
+    .pw-strength { display: flex; gap: 4px; margin-top: 8px; height: 3px; }
+    .pw-bar { flex: 1; border-radius: 2px; background: var(--gray-bdr); transition: background 0.3s; }
+    .pw-bar.weak   { background: #e74c3c; }
+    .pw-bar.fair   { background: #f39c12; }
+    .pw-bar.strong { background: var(--green); }
+
+    /* ── File Upload ──────────────────────────────────── */
+    .file-upload-area {
+      border: 2px dashed var(--gray-bdr);
+      border-radius: 10px;
+      padding: 24px 20px;
+      text-align: center;
+      cursor: pointer;
+      background: #fafcff;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+      margin-bottom: 18px;
+    }
+    .file-upload-area:hover,
+    .file-upload-area.drag-over {
+      border-color: var(--navy);
+      background: #f0f5fb;
+    }
+    .file-upload-area input[type="file"] {
+      position: absolute; inset: 0;
+      opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+    .upload-icon {
+      width: 40px; height: 40px;
+      background: #eef2f8;
+      border-radius: 10px;
+      display: grid; place-items: center;
+      margin: 0 auto 12px;
+    }
+    .upload-icon svg { width: 20px; height: 20px; color: var(--navy); }
+    .upload-title { font-size: 0.88rem; font-weight: 600; color: var(--text-main); margin-bottom: 4px; }
+    .upload-sub   { font-size: 0.77rem; color: var(--text-soft); font-weight: 300; }
+    .upload-sub span { color: var(--navy); font-weight: 500; text-decoration: underline; }
+
+    /* File preview list */
+    .file-list { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+    .file-chip {
+      display: flex; align-items: center; gap: 8px;
+      background: #eef2f8; border-radius: 6px;
+      padding: 6px 10px; font-size: 0.78rem; color: var(--text-main);
+    }
+    .file-chip svg { width: 14px; height: 14px; color: var(--navy); flex-shrink: 0; }
+    .file-chip .fname { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .file-chip .fsize { color: var(--text-soft); flex-shrink: 0; }
+    .file-chip .rm-btn {
+      background: none; border: none; cursor: pointer;
+      color: var(--text-soft); padding: 0 2px; line-height: 1;
+      font-size: 1rem; transition: color 0.15s;
+    }
+    .file-chip .rm-btn:hover { color: var(--err); }
+
+    /* Validation */
+    .field-hint { font-size: 0.76rem; color: var(--err); margin-top: 4px; display: none; }
+    .field-hint.show { display: block; }
+
+    /* Terms */
+    .terms-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 20px; }
+    .terms-row input[type="checkbox"] { margin-top: 2px; accent-color: var(--navy); width: 16px; height: 16px; flex-shrink: 0; }
+    .terms-row label { font-size: 0.8rem; color: var(--text-soft); line-height: 1.5; }
+    .terms-row a { color: var(--navy); font-weight: 500; }
+
+    /* Submit button — navy for B2B authority */
+    .btn-primary {
+      width: 100%; padding: 15px;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-lt) 100%);
+      color: var(--white); border: none; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.97rem; font-weight: 600;
+      cursor: pointer; letter-spacing: 0.03em;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(26,54,93,0.28); margin-bottom: 0;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .btn-primary:hover { opacity: 0.92; transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+    /* Spinner */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.35);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    .spinner.show { display: block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Error banner */
+    .err-msg {
+      display: none; background: #fdf0ef; border: 1px solid #f5c6c2;
+      color: var(--err); border-radius: 8px; padding: 10px 14px;
+      font-size: 0.85rem; margin-bottom: 16px;
+    }
+    .err-msg.show { display: block; }
+
+    /* Footer */
+    .card-footer { text-align: center; margin-top: 20px; font-size: 0.83rem; color: var(--text-soft); }
+    .card-footer a { color: var(--navy); font-weight: 600; text-decoration: none; }
+    .card-footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 860px) {
+      .left { display: none; }
+      .right { flex: 1; padding: 28px 16px; }
+      .card { padding: 32px 24px; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="screen">
+
+  <!-- ── Left panel ── -->
+  <div class="left">
+    <div class="deco-ring"></div>
+
+    <div class="brand">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <span class="brand-name">IELTS<span>PRACTICE</span></span>
+    </div>
+
+    <div class="b2b-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Education Centre Partnership
+    </div>
+
+    <div class="tagline">
+      <h1>Partner with <em>IELTSPRACTICE</em></h1>
+      <p>Unlock powerful tools to manage your students, showcase your centre's results, and grow your reputation — all from one platform.</p>
+    </div>
+
+    <div class="features">
+      <div class="feat-item">
+        <div class="feat-check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#e8b930" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="feat-body">
+          <span class="feat-label">Manage student mock tests &amp; results</span>
+          <span class="feat-sub">Assign tests, track progress, export reports</span>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#e8b930" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="feat-body">
+          <span class="feat-label">Showcase your actual band score results</span>
+          <span class="feat-sub">Build credibility with verified outcome data</span>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#e8b930" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="feat-body">
+          <span class="feat-label">Increase your centre's visibility</span>
+          <span class="feat-sub">Listed in our verified partner directory</span>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#e8b930" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="feat-body">
+          <span class="feat-label">Dedicated centre dashboard &amp; analytics</span>
+          <span class="feat-sub">Full overview of enrolments &amp; performance</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <p>"Since joining as a partner, our student enrolments have grown significantly. The platform's analytics help us prove our results to prospective students."</p>
+      <span class="author">— Director, IELTS Academy</span>
+    </div>
+  </div>
+
+  <!-- ── Right panel ── -->
+  <div class="right">
+    <div class="card">
+
+      <!-- ── Success state (hidden until submit) ── -->
+      <div class="success-overlay" id="successOverlay">
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <h3>Application submitted for CEO approval.</h3>
+        <p>Our team will review your application and contact you for a <strong>face-to-face verification meeting</strong>. Please allow 2–3 business days for us to get in touch.</p>
+        <div class="next-steps">
+          <h4>What happens next</h4>
+          <div class="next-step-item">
+            <div class="step-num">1</div>
+            <div class="step-txt">We review your application &amp; verify your centre details</div>
+          </div>
+          <div class="next-step-item">
+            <div class="step-num">2</div>
+            <div class="step-txt">Our partnership team contacts you to schedule a meeting</div>
+          </div>
+          <div class="next-step-item">
+            <div class="step-num">3</div>
+            <div class="step-txt">Upon approval, your Centre Dashboard is activated</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Form state ── -->
+      <div class="form-section" id="formSection">
+
+        <div class="card-header">
+          <h2>Apply to become a Partner</h2>
+          <p>Tell us about your Education Centre — we'll be in touch</p>
+        </div>
+
+        <div class="err-msg" id="errMsg"></div>
+
+        <form id="partnerForm" novalidate>
+
+          <!-- Centre info -->
+          <div class="form-divider">Centre Information</div>
+
+          <div class="form-group">
+            <div class="input-wrap">
+              <input type="text" id="centreName" name="centreName" placeholder=" " autocomplete="organization" required />
+              <label for="centreName">Education Centre Name</label>
+            </div>
+            <div class="field-hint" id="centreNameHint">Please enter your centre's name.</div>
+          </div>
+
+          <div class="form-group">
+            <div class="input-wrap">
+              <input type="text" id="managerName" name="managerName" placeholder=" " autocomplete="name" required />
+              <label for="managerName">CEO / Manager Name</label>
+            </div>
+            <div class="field-hint" id="managerNameHint">Please enter the manager's name.</div>
+          </div>
+
+          <!-- Contact -->
+          <div class="form-divider">Contact Details</div>
+
+          <div class="form-group">
+            <div class="input-wrap">
+              <input type="email" id="email" name="email" placeholder=" " autocomplete="email" required />
+              <label for="email">Email Address</label>
+            </div>
+            <div class="field-hint" id="emailHint">Please enter a valid email address.</div>
+          </div>
+
+          <div class="form-group">
+            <div class="phone-wrap">
+              <span class="phone-prefix">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.06 1.25 2 2 0 012 .06h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.9v2.02z"/></svg>
+              </span>
+              <input type="tel" id="phone" name="phone" placeholder=" " autocomplete="tel" required />
+              <label for="phone" style="left:52px">Phone Number</label>
+            </div>
+            <div class="field-hint" id="phoneHint">Please enter a valid phone number.</div>
+          </div>
+
+          <div class="form-group textarea-group">
+            <textarea id="location" name="location" placeholder=" " rows="2" required></textarea>
+            <label for="location">Location / Address</label>
+            <div class="field-hint" id="locationHint">Please enter your centre's address.</div>
+          </div>
+
+          <!-- Photos -->
+          <div class="form-divider">Centre Photos &amp; Logo</div>
+
+          <div class="file-upload-area" id="uploadArea">
+            <input type="file" id="photos" name="photos" multiple accept="image/*" />
+            <div class="upload-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+            <div class="upload-title">Upload Centre Photos / Logo</div>
+            <div class="upload-sub">Drag &amp; drop or <span>browse files</span></div>
+            <div class="upload-sub" style="margin-top:4px">JPG, PNG, WEBP — up to 5 MB each</div>
+          </div>
+          <div class="file-list" id="fileList"></div>
+          <div class="field-hint" id="photosHint">Please upload at least one photo of your centre.</div>
+
+          <!-- Account -->
+          <div class="form-divider" style="margin-top:22px">Create Your Login</div>
+
+          <div class="form-group">
+            <div class="input-wrap">
+              <input type="password" id="password" name="password" placeholder=" " autocomplete="new-password" required />
+              <label for="password">Password</label>
+              <button type="button" class="toggle-pw" id="togglePw1" aria-label="Show password">
+                <svg id="eyeIcon1" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+            <div class="pw-strength">
+              <div class="pw-bar" id="b1"></div>
+              <div class="pw-bar" id="b2"></div>
+              <div class="pw-bar" id="b3"></div>
+              <div class="pw-bar" id="b4"></div>
+            </div>
+            <div class="field-hint" id="pwHint">Password must be at least 8 characters.</div>
+          </div>
+
+          <div class="form-group">
+            <div class="input-wrap">
+              <input type="password" id="confirmPw" name="confirmPw" placeholder=" " autocomplete="new-password" required />
+              <label for="confirmPw">Confirm Password</label>
+              <button type="button" class="toggle-pw" id="togglePw2" aria-label="Show confirm password">
+                <svg id="eyeIcon2" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+            <div class="field-hint" id="confirmHint">Passwords do not match.</div>
+          </div>
+
+          <div class="terms-row">
+            <input type="checkbox" id="terms" />
+            <label for="terms">I agree to the <a href="#">Partner Terms</a> and <a href="#">Privacy Policy</a></label>
+          </div>
+
+          <button type="submit" class="btn-primary" id="submitBtn">
+            <span id="btnText">Submit Partnership Request</span>
+            <div class="spinner" id="spinner"></div>
+          </button>
+
+        </form>
+
+      </div><!-- /form-section -->
+
+      <div class="card-footer">
+        Looking for a personal account? <a href="signup.html">Sign up here</a>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ── Password toggle ───────────────────────────────────
+  const eyeOpen   = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+  const eyeClosed = `<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`;
+
+  function makeToggle(btnId, inputId, iconId) {
+    document.getElementById(btnId).addEventListener('click', () => {
+      const input = document.getElementById(inputId);
+      const icon  = document.getElementById(iconId);
+      const show  = input.type === 'password';
+      input.type  = show ? 'text' : 'password';
+      icon.innerHTML = show ? eyeClosed : eyeOpen;
+    });
+  }
+  makeToggle('togglePw1', 'password',  'eyeIcon1');
+  makeToggle('togglePw2', 'confirmPw', 'eyeIcon2');
+
+  // ── Password strength ─────────────────────────────────
+  document.getElementById('password').addEventListener('input', function() {
+    const val  = this.value;
+    const bars = ['b1','b2','b3','b4'].map(id => document.getElementById(id));
+    bars.forEach(b => { b.className = 'pw-bar'; });
+    let score = 0;
+    if (val.length >= 8)           score++;
+    if (/[A-Z]/.test(val))         score++;
+    if (/[0-9]/.test(val))         score++;
+    if (/[^A-Za-z0-9]/.test(val))  score++;
+    const cls = score <= 1 ? 'weak' : score <= 2 ? 'fair' : 'strong';
+    for (let i = 0; i < score; i++) bars[i].classList.add(cls);
+  });
+
+  // ── File upload UI ────────────────────────────────────
+  const fileInput  = document.getElementById('photos');
+  const fileList   = document.getElementById('fileList');
+  const uploadArea = document.getElementById('uploadArea');
+  let selectedFiles = [];
+
+  function formatSize(bytes) {
+    return bytes < 1024 * 1024
+      ? (bytes / 1024).toFixed(0) + ' KB'
+      : (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  function renderFiles() {
+    fileList.innerHTML = '';
+    selectedFiles.forEach((file, i) => {
+      const chip = document.createElement('div');
+      chip.className = 'file-chip';
+      chip.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+        </svg>
+        <span class="fname">${file.name}</span>
+        <span class="fsize">${formatSize(file.size)}</span>
+        <button class="rm-btn" data-i="${i}" type="button" aria-label="Remove">×</button>
+      `;
+      fileList.appendChild(chip);
+    });
+    fileList.querySelectorAll('.rm-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        selectedFiles.splice(parseInt(btn.dataset.i), 1);
+        renderFiles();
+      });
+    });
+  }
+
+  fileInput.addEventListener('change', () => {
+    Array.from(fileInput.files).forEach(f => {
+      if (!selectedFiles.find(s => s.name === f.name && s.size === f.size)) {
+        selectedFiles.push(f);
+      }
+    });
+    renderFiles();
+  });
+
+  // Drag & drop
+  uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('drag-over'); });
+  uploadArea.addEventListener('dragleave', ()  => uploadArea.classList.remove('drag-over'));
+  uploadArea.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadArea.classList.remove('drag-over');
+    Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')).forEach(f => {
+      if (!selectedFiles.find(s => s.name === f.name && s.size === f.size)) selectedFiles.push(f);
+    });
+    renderFiles();
+  });
+
+  // ── Form submit ───────────────────────────────────────
+  document.getElementById('partnerForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const centreName  = document.getElementById('centreName').value.trim();
+    const managerName = document.getElementById('managerName').value.trim();
+    const email       = document.getElementById('email').value.trim();
+    const phone       = document.getElementById('phone').value.trim();
+    const location    = document.getElementById('location').value.trim();
+    const password    = document.getElementById('password').value;
+    const confirmPw   = document.getElementById('confirmPw').value;
+    const terms       = document.getElementById('terms').checked;
+    const errMsg      = document.getElementById('errMsg');
+
+    // Reset hints
+    const hints = ['centreNameHint','managerNameHint','emailHint','phoneHint','locationHint','pwHint','confirmHint','photosHint'];
+    hints.forEach(id => document.getElementById(id).classList.remove('show'));
+    errMsg.classList.remove('show');
+
+    let valid = true;
+    if (!centreName)                              { document.getElementById('centreNameHint').classList.add('show');  valid = false; }
+    if (!managerName)                             { document.getElementById('managerNameHint').classList.add('show'); valid = false; }
+    if (!email || !/\S+@\S+\.\S+/.test(email))   { document.getElementById('emailHint').classList.add('show');       valid = false; }
+    if (!phone || phone.length < 7)              { document.getElementById('phoneHint').classList.add('show');       valid = false; }
+    if (!location)                               { document.getElementById('locationHint').classList.add('show');    valid = false; }
+    // Photos optional per API spec
+    if (password.length < 8)                     { document.getElementById('pwHint').classList.add('show');          valid = false; }
+    if (password !== confirmPw)                  { document.getElementById('confirmHint').classList.add('show');     valid = false; }
+    if (!terms) {
+      errMsg.textContent = 'You must agree to the Partner Terms to continue.';
+      errMsg.classList.add('show'); valid = false;
+    }
+    if (!valid) return;
+
+    const btn     = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const spinner = document.getElementById('spinner');
+    btn.disabled = true;
+    btnText.textContent = 'Submitting…';
+    spinner.classList.add('show');
+
+    try {
+      const res = await fetch('/api/partners/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          centre_name: centreName,
+          ceo_name: managerName,
+          email,
+          phone,
+          location,
+          password,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        errMsg.textContent = data.message || 'Failed to submit partner request.';
+        errMsg.classList.add('show');
+        btn.disabled = false;
+        btnText.textContent = 'Submit Partnership Request';
+        spinner.classList.remove('show');
+        return;
+      }
+
+      document.getElementById('formSection').style.display   = 'none';
+      document.getElementById('successOverlay').classList.add('show');
+      document.querySelector('.card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) {
+      console.error(err);
+      errMsg.textContent = 'Network error. Please try again.';
+      errMsg.classList.add('show');
+    } finally {
+      spinner.classList.remove('show');
+      btn.disabled = false;
+      btnText.textContent = 'Submit Partnership Request';
+    }
+  });
+</script>
+</body>
+</html>

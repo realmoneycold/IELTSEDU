@@ -1,0 +1,16 @@
+#!/bin/bash
+# copy_to_server.sh — Copy modified files to the remote production server and restart PM2.
+# Run this from your local computer.
+
+SERVER_IP="178.105.159.199"
+SERVER_PATH="/root/IELTSPRACTICE-final"
+
+echo "🚀 Syncing modified files to server at ${SERVER_IP}..."
+
+# Sync files using rsync and the Hetzner key
+rsync -avz --exclude="node_modules" --exclude=".git" --exclude=".env" --exclude="copy_to_server.sh" --exclude="*tempmediaStorage*" -e "ssh -i ~/.ssh/id_hetzner" ./ root@${SERVER_IP}:${SERVER_PATH}/
+
+echo "🔄 Regenerating Prisma Client and restarting node server..."
+ssh -i ~/.ssh/id_hetzner root@${SERVER_IP} "cd ${SERVER_PATH} && npx prisma generate && (pm2 restart ecosystem.config.js || pm2 restart all)"
+
+echo "✅ Deploy complete! Check your website."

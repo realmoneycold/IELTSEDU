@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Portal Login | IELTS Practice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://api.fontshare.com/v2/css?f[]=clash-grotesk@700,600,400&f[]=satoshi@700,500,400&display=swap');
+
+        :root {
+            --lavender-main: #8B5CF6;
+            --brand-orange: #FF6B35;
+            --bg-soft: #F9F5FF;
+            --dark: #111827;
+        }
+
+        body {
+            font-family: 'Satoshi', sans-serif;
+            background-color: var(--bg-soft);
+            color: var(--dark);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, .font-heading {
+            font-family: 'Clash Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        /* ── Animations ── */
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        .float-animation-delayed {
+            animation: float 7s ease-in-out infinite 2s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .btn-bounce:hover:not(:disabled) {
+            transform: scale(1.03) translateY(-2px);
+            box-shadow: 0 15px 30px -5px rgba(255, 107, 53, 0.3);
+        }
+        .btn-bounce:active:not(:disabled) {
+            transform: scale(0.98) translateY(0);
+        }
+
+        .transition-playful {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .fade-up {
+            opacity: 0;
+            animation: fadeUpAnim 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        @keyframes fadeUpAnim {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+
+        /* ── Glassmorphism & Custom Elements ── */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            box-shadow: 
+                0 0 0 2px rgba(255,255,255,0.7) inset,
+                0 25px 50px -12px rgba(139, 92, 246, 0.15);
+        }
+
+        .input-field {
+            background: #F9F5FF;
+            border: 2px solid transparent;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: var(--lavender-main);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+            transform: translateY(-2px);
+        }
+        .input-field.error {
+            border-color: #EF4444;
+            background: #FEF2F2;
+        }
+        .input-field.error:focus {
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+        }
+
+        .custom-check {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px; height: 20px;
+            border: 2px solid #D1D5DB;
+            border-radius: 6px;
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .custom-check:checked {
+            background: var(--lavender-main);
+            border-color: var(--lavender-main);
+            transform: scale(1.05);
+        }
+        .custom-check:checked::after {
+            content: '';
+            position: absolute;
+            left: 6px; top: 2px;
+            width: 5px; height: 10px;
+            border: 2px solid #fff;
+            border-top: none;
+            border-left: none;
+            transform: rotate(45deg);
+        }
+
+        .purple-badge { background-color: #F5F1FF; color: #8B5CF6; }
+        .orange-text { color: var(--brand-orange); }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #F9F5FF; }
+        ::-webkit-scrollbar-thumb { background: #D4C5E2; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #8B5CF6; }
+
+        /* Shake animation for errors */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        .animate-shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+
+        /* SVG Classroom Overrides */
+        .svg-line { stroke: rgba(255,255,255,0.4); stroke-width: 2; fill: none; }
+        .svg-fill-light { fill: rgba(255,255,255,0.1); }
+        .svg-fill-accent { fill: rgba(255, 107, 53, 0.15); }
+        .svg-fill-dark { fill: rgba(139, 92, 246, 0.4); }
+    </style>
+</head>
+<body>
+    <!-- Main Wrapper - Framed layout to match rounded aesthetic -->
+    <div class="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 box-border">
+        
+        <div class="w-full max-w-[1500px] min-h-[85vh] bg-white rounded-[40px] lg:rounded-[64px] shadow-2xl shadow-purple-200/60 flex overflow-hidden border-4 border-white">
+            
+            <!-- ════════════════════════════════════
+                 LEFT PANEL — Value Prop / Branding
+            ════════════════════════════════════ -->
+            <div class="hidden lg:flex lg:w-[50%] xl:w-[55%] bg-[#8B5CF6] relative p-12 xl:p-16 flex-col justify-between overflow-hidden">
+                
+                <!-- Abstract Background Blobs -->
+                <div class="absolute top-[-15%] right-[-10%] w-[500px] h-[500px] bg-[#FF6B35] rounded-full mix-blend-overlay filter blur-[120px] opacity-40 float-animation"></div>
+                <div class="absolute bottom-[-10%] left-[-20%] w-[600px] h-[600px] bg-[#4C1D95] rounded-full mix-blend-multiply filter blur-[100px] opacity-50 float-animation-delayed"></div>
+                
+                <!-- Grid Pattern Overlay -->
+                <div class="absolute inset-0 opacity-[0.05]" style="background-image: radial-gradient(#fff 2px, transparent 2px); background-size: 40px 40px;"></div>
+
+                <!-- Content Layer -->
+                <div class="relative z-10 flex flex-col h-full">
+                    
+                    <!-- Logo -->
+                    <div class="fade-up">
+                        <a href="/" class="inline-flex items-center gap-3">
+                            <div class="text-2xl font-black flex items-center uppercase tracking-tighter">
+                                <span class="text-white border-r-2 border-[#FF6B35] pr-2 mr-2">IELTS</span>
+                                <span class="text-white/80 text-sm tracking-[0.2em] font-bold">PRACTICE</span>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Main Heading -->
+                    <div class="mt-16 xl:mt-20 fade-up delay-100">
+                        <div class="inline-block px-4 py-2 rounded-xl bg-white/10 text-white border border-white/20 text-xs font-black uppercase mb-6 backdrop-blur-sm">
+                            Educator Network
+                        </div>
+                        <h1 class="text-5xl xl:text-6xl font-black text-white leading-[1.1] mb-6">
+                            Shape the <br>
+                            <span class="text-[#FF6B35] relative">
+                                Next Generation
+                                <svg class="absolute w-full h-3 -bottom-1 left-0 text-[#FF6B35] opacity-50" viewBox="0 0 100 10" preserveAspectRatio="none">
+                                    <path d="M0,5 Q50,10 100,5" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round"/>
+                                </svg>
+                            </span><br>
+                            of IELTS Stars
+                        </h1>
+                        <p class="text-lg text-white/80 max-w-md font-medium leading-relaxed">
+                            Access your educator dashboard to grade submissions, track student progress, and deliver world-class preparation.
+                        </p>
+                    </div>
+
+                    <!-- Stylized Classroom SVG (Re-imagined for new aesthetic) -->
+                    <div class="flex-1 flex items-end justify-center relative mt-12 fade-up delay-200 opacity-60">
+                        <svg viewBox="0 0 800 400" class="w-full h-full max-h-[300px]" preserveAspectRatio="xMidYMax meet">
+                            <!-- Floor -->
+                            <rect x="0" y="360" width="800" height="40" fill="rgba(255,255,255,0.05)"/>
+                            
+                            <!-- Board -->
+                            <rect x="150" y="100" width="500" height="180" rx="16" class="svg-fill-light svg-line"/>
+                            <rect x="165" y="115" width="470" height="150" rx="8" fill="rgba(255,255,255,0.02)" class="svg-line"/>
+                            
+                            <!-- Board Content -->
+                            <line x1="200" y1="150" x2="450" y2="150" class="svg-line" stroke-dasharray="10 5"/>
+                            <line x1="200" y1="180" x2="380" y2="180" class="svg-line"/>
+                            <line x1="200" y1="210" x2="420" y2="210" class="svg-line"/>
+                            <!-- Chart on board -->
+                            <rect x="520" y="170" width="20" height="70" rx="4" class="svg-fill-accent"/>
+                            <rect x="550" y="150" width="20" height="90" rx="4" class="svg-fill-accent" opacity="0.6"/>
+                            <rect x="580" y="130" width="20" height="110" rx="4" class="svg-fill-accent" opacity="0.8"/>
+                            
+                            <!-- Teacher Desk -->
+                            <rect x="300" y="320" width="200" height="12" rx="6" class="svg-fill-light svg-line"/>
+                            <rect x="320" y="332" width="12" height="28" rx="4" class="svg-line"/>
+                            <rect x="468" y="332" width="12" height="28" rx="4" class="svg-line"/>
+                            
+                            <!-- Floating elements representing digital learning -->
+                            <circle cx="100" cy="150" r="20" class="svg-fill-accent float-animation"/>
+                            <rect x="80" y="220" width="40" height="30" rx="6" class="svg-fill-light svg-line float-animation-delayed"/>
+                            <polygon points="680,120 720,140 680,160" class="svg-line float-animation" fill="rgba(255,255,255,0.1)"/>
+                        </svg>
+                    </div>
+
+                    <!-- Trust Stats -->
+                    <div class="mt-8 pt-8 border-t border-white/20 grid grid-cols-3 gap-6 fade-up delay-300">
+                        <div>
+                            <div class="text-2xl font-black text-white">4,800+</div>
+                            <div class="text-sm text-white/70 font-bold mt-1">Active Teachers</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-black text-[#FF6B35]">94k+</div>
+                            <div class="text-sm text-white/70 font-bold mt-1">Students Taught</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-black text-yellow-300">7.4</div>
+                            <div class="text-sm text-white/70 font-bold mt-1">Avg Band Score</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ════════════════════════════════════
+                 RIGHT PANEL — Login Form
+            ════════════════════════════════════ -->
+            <div class="w-full lg:w-[50%] xl:w-[45%] bg-[#F9F5FF] relative flex flex-col items-center justify-center p-6 sm:p-10 lg:p-16 overflow-hidden">
+                
+                <!-- Right Side Background Accents (for glassmorphism context) -->
+                <div class="absolute top-[10%] left-[10%] w-64 h-64 bg-[#D8B4FE] rounded-full mix-blend-multiply filter blur-[80px] opacity-40"></div>
+                <div class="absolute bottom-[10%] right-[10%] w-72 h-72 bg-[#FDBA74] rounded-full mix-blend-multiply filter blur-[80px] opacity-30 float-animation"></div>
+
+                <!-- Mobile Logo (Hidden on Desktop) -->
+                <div class="lg:hidden flex items-center gap-3 mb-8 fade-up relative z-10">
+                    <div class="text-2xl font-black flex items-center uppercase tracking-tighter">
+                        <span class="text-[#111827] border-r-2 border-[#FF6B35] pr-2 mr-2">IELTS</span>
+                        <span class="text-[#111827]/60 text-sm tracking-[0.2em] font-bold">PRACTICE</span>
+                    </div>
+                </div>
+
+                <!-- Form Card -->
+                <div class="glass-card w-full max-w-[460px] rounded-[40px] p-8 sm:p-12 relative z-10 fade-up delay-100">
+                    
+                    <!-- Header -->
+                    <div class="mb-10 text-center">
+                        <div class="inline-flex items-center justify-center px-4 py-1.5 rounded-full purple-badge text-xs font-black uppercase mb-4">
+                            <iconify-icon icon="ph:chalkboard-teacher-bold" class="mr-1.5 text-lg"></iconify-icon>
+                            Teacher Portal
+                        </div>
+                        <h2 class="text-3xl font-black text-[#111827] mb-2">Welcome back</h2>
+                        <p class="text-gray-500 font-medium">Sign in to your educator account to continue.</p>
+                    </div>
+
+                    <!-- Alert Box (Hidden by default) -->
+                    <div id="errorAlert" class="hidden mb-8 bg-[#FEF2F2] border-2 border-[#FCA5A5] rounded-2xl p-4 flex items-start gap-3 transition-playful">
+                        <div class="text-[#EF4444] mt-0.5">
+                            <iconify-icon icon="ph:warning-circle-fill" class="text-2xl"></iconify-icon>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-[#B91C1C] font-black text-sm mb-1" id="errorTitle">Authentication Error</h4>
+                            <p class="text-[#7F1D1D] text-sm font-medium leading-tight" id="errorMessage">Invalid credentials provided.</p>
+                            <!-- Countdown for rate limit -->
+                            <div id="countdownWrap" class="hidden mt-3 inline-flex items-center gap-2 bg-[#FEE2E2] px-3 py-1.5 rounded-lg text-xs font-black text-[#991B1B]">
+                                <iconify-icon icon="ph:timer-bold" class="text-lg"></iconify-icon>
+                                Try again in <span id="countdownTimer">60</span>s
+                            </div>
+                        </div>
+                        <button onclick="dismissAlert()" class="text-[#FCA5A5] hover:text-[#EF4444] transition-colors">
+                            <iconify-icon icon="ph:x-bold" class="text-xl"></iconify-icon>
+                        </button>
+                    </div>
+
+                    <!-- Form -->
+                    <form id="loginForm" novalidate autocomplete="on">
+                        
+                        <!-- Email -->
+                        <div class="mb-6 fade-up delay-200">
+                            <label for="email" class="block text-[#111827] font-bold text-sm mb-2 ml-1">
+                                Email Address
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                                    <iconify-icon icon="ph:envelope-simple-bold" class="text-xl"></iconify-icon>
+                                </div>
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    name="email" 
+                                    autocomplete="email"
+                                    placeholder="teacher@school.com"
+                                    class="input-field w-full pl-12 pr-4 py-4 rounded-2xl font-medium text-[#111827] placeholder-gray-400"
+                                >
+                            </div>
+                            <p class="hidden text-[#EF4444] text-xs font-bold mt-2 ml-1 flex items-center gap-1" id="emailError">
+                                <iconify-icon icon="ph:warning-bold"></iconify-icon>
+                                <span id="emailErrorText">Please enter a valid email.</span>
+                            </p>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-6 fade-up delay-300">
+                            <div class="flex justify-between items-center mb-2 ml-1 pr-1">
+                                <label for="password" class="block text-[#111827] font-bold text-sm">
+                                    Password
+                                </label>
+                                <a href="/forgot-password" class="text-sm font-bold text-[#8B5CF6] hover:text-[#FF6B35] transition-colors">
+                                    Forgot password?
+                                </a>
+                            </div>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                                    <iconify-icon icon="ph:lock-key-bold" class="text-xl"></iconify-icon>
+                                </div>
+                                <input 
+                                    type="password" 
+                                    id="password" 
+                                    name="password" 
+                                    autocomplete="current-password"
+                                    placeholder="Enter your password"
+                                    class="input-field w-full pl-12 pr-12 py-4 rounded-2xl font-medium text-[#111827] placeholder-gray-400"
+                                >
+                                <button 
+                                    type="button" 
+                                    onclick="togglePassword()"
+                                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-[#8B5CF6] transition-colors"
+                                    aria-label="Toggle password visibility"
+                                >
+                                    <iconify-icon id="eyeIcon" icon="ph:eye-slash-bold" class="text-xl"></iconify-icon>
+                                </button>
+                            </div>
+                            <p class="hidden text-[#EF4444] text-xs font-bold mt-2 ml-1 flex items-center gap-1" id="passwordError">
+                                <iconify-icon icon="ph:warning-bold"></iconify-icon>
+                                Password is required.
+                            </p>
+                        </div>
+
+                        <!-- Remember Me -->
+                        <div class="mb-8 flex items-center gap-3 fade-up delay-400 ml-1">
+                            <input type="checkbox" id="rememberMe" class="custom-check shrink-0">
+                            <label for="rememberMe" class="text-sm font-medium text-gray-600 cursor-pointer select-none">
+                                Keep me signed in for 30 days
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="fade-up delay-500">
+                            <button 
+                                type="submit" 
+                                id="submitBtn"
+                                class="w-full bg-[#FF6B35] text-white rounded-[20px] py-4 font-black text-lg btn-bounce transition-playful flex items-center justify-center gap-2 shadow-xl shadow-orange-500/20"
+                            >
+                                <iconify-icon id="btnSpinner" icon="ph:spinner-gap-bold" class="text-2xl animate-spin hidden"></iconify-icon>
+                                <span id="btnText">Access Dashboard</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Footer Links -->
+                    <div class="mt-10 text-center fade-up delay-500">
+                        <div class="flex items-center justify-center gap-2 text-gray-400 font-bold text-xs uppercase tracking-wider mb-4">
+                            <iconify-icon icon="ph:shield-check-fill" class="text-lg text-[#10B981]"></iconify-icon>
+                            Secure 256-bit Encryption
+                        </div>
+                        <a href="/" class="text-sm font-bold text-gray-500 hover:text-[#8B5CF6] transition-colors inline-flex items-center gap-1 group">
+                            <iconify-icon icon="ph:arrow-left-bold" class="group-hover:-translate-x-1 transition-transform"></iconify-icon>
+                            Return to main website
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Mobile Footer -->
+                <p class="lg:hidden mt-8 text-xs font-bold text-gray-400 tracking-widest uppercase relative z-10 fade-up delay-500 text-center">
+                    © 2026 IELTSPRACTICE Educator
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         JAVASCRIPT LOGIC
+    ════════════════════════════════════ -->
+    <script>
+        'use strict';
+
+        // On load, restore remember me state
+        document.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('teacher_remember');
+            const emailSaved = localStorage.getItem('teacher_email');
+            if (saved === 'true') {
+                document.getElementById('rememberMe').checked = true;
+                if (emailSaved) document.getElementById('email').value = emailSaved;
+            }
+        });
+
+        // Toggle Password
+        function togglePassword() {
+            const input = document.getElementById('password');
+            const icon = document.getElementById('eyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.setAttribute('icon', 'ph:eye-bold');
+            } else {
+                input.type = 'password';
+                icon.setAttribute('icon', 'ph:eye-slash-bold');
+            }
+        }
+
+        // UI Alert Management
+        const alertBox = document.getElementById('errorAlert');
+        
+        function showAlert(title, message) {
+            document.getElementById('errorTitle').textContent = title;
+            document.getElementById('errorMessage').textContent = message;
+            alertBox.classList.remove('hidden');
+            // Trigger small bounce animation on show
+            alertBox.classList.remove('fade-up');
+            void alertBox.offsetWidth; // trigger reflow
+            alertBox.style.animation = 'fadeUpAnim 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+        }
+
+        function dismissAlert() {
+            alertBox.classList.add('hidden');
+            stopCountdown();
+        }
+
+        // Rate Limit Countdown
+        let countdownTimer = null;
+        function startCountdown(seconds) {
+            stopCountdown();
+            const wrap = document.getElementById('countdownWrap');
+            const timerSpan = document.getElementById('countdownTimer');
+            const btn = document.getElementById('submitBtn');
+            
+            wrap.classList.remove('hidden');
+            timerSpan.textContent = seconds;
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            countdownTimer = setInterval(() => {
+                seconds--;
+                timerSpan.textContent = seconds;
+                if (seconds <= 0) {
+                    stopCountdown();
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    dismissAlert();
+                }
+            }, 1000);
+        }
+
+        function stopCountdown() {
+            if (countdownTimer) clearInterval(countdownTimer);
+            const wrap = document.getElementById('countdownWrap');
+            if (wrap) wrap.classList.add('hidden');
+        }
+
+        // Validation Helpers
+        function validateEmail(email) {
+            return /^[\w.-]+@([\w-]+\.)+[\w-]{2,4}$/.test(email.trim());
+        }
+
+        function setFieldError(fieldId, errorId, isError, message = '') {
+            const field = document.getElementById(fieldId);
+            const error = document.getElementById(errorId);
+            if (isError) {
+                field.classList.add('error');
+                field.parentElement.classList.add('animate-shake');
+                setTimeout(() => field.parentElement.classList.remove('animate-shake'), 400);
+                error.classList.remove('hidden');
+                if (message) error.querySelector('span, textNode').textContent = message;
+            } else {
+                field.classList.remove('error');
+                error.classList.add('hidden');
+            }
+        }
+
+        // Live Validation
+        document.getElementById('email').addEventListener('input', function() {
+            if (this.classList.contains('error')) setFieldError('email', 'emailError', false);
+            dismissAlert();
+        });
+        document.getElementById('password').addEventListener('input', function() {
+            if (this.classList.contains('error')) setFieldError('password', 'passwordError', false);
+            dismissAlert();
+        });
+
+        // Form Submission
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('rememberMe').checked;
+            let hasError = false;
+
+            // Validate Email
+            if (!email) {
+                setFieldError('email', 'emailError', true, 'Email address is required.');
+                hasError = true;
+            } else if (!validateEmail(email)) {
+                setFieldError('email', 'emailError', true, 'Please enter a valid email address.');
+                hasError = true;
+            }
+
+            // Validate Password
+            if (!password) {
+                setFieldError('password', 'passwordError', true);
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            // Loading State
+            const btn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const btnSpinner = document.getElementById('btnSpinner');
+            
+            btn.disabled = true;
+            btnText.textContent = 'Authenticating...';
+            btnSpinner.classList.remove('hidden');
+
+            // Save Remember Me
+            if (remember) {
+                localStorage.setItem('teacher_remember', 'true');
+                localStorage.setItem('teacher_email', email);
+            } else {
+                localStorage.removeItem('teacher_remember');
+                localStorage.removeItem('teacher_email');
+            }
+
+            // Real API Call
+            try {
+                const response = await fetch('/api/auth/teacher/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    // Store auth data
+                    localStorage.setItem('teacher_jwt', result.data.token);
+                    localStorage.setItem('teacher_user', JSON.stringify(result.data.user));
+
+                    // Success State UI
+                    btn.classList.remove('bg-[#FF6B35]');
+                    btn.classList.add('bg-[#10B981]');
+                    btnText.textContent = 'Success! Redirecting...';
+                    btnSpinner.setAttribute('icon', 'ph:check-circle-bold');
+                    btnSpinner.classList.remove('animate-spin');
+
+                    setTimeout(() => {
+                        window.location.href = '/teacher/dashboard';
+                    }, 800);
+                } else {
+                    // Handle specific error codes
+                    if (result.code === 'RATE_LIMIT_EXCEEDED') {
+                        showAlert('Too Many Attempts', result.error || 'Please try again later.');
+                        if (result.retryAfter) startCountdown(result.retryAfter);
+                    } else {
+                        showAlert('Invalid Credentials', result.error || 'The email or password you entered is incorrect. Please try again.');
+                        setFieldError('email', 'emailError', true, ' ');
+                        setFieldError('password', 'passwordError', true);
+                        document.getElementById('password').value = '';
+                    }
+                    resetBtn();
+                }
+
+            } catch (err) {
+                showAlert('Connection Error', 'Unable to reach the server. Please check your internet connection.');
+                resetBtn();
+            }
+
+            function resetBtn() {
+                btn.disabled = false;
+                btnText.textContent = 'Access Dashboard';
+                btnSpinner.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+     tablename      
+--------------------
+ MockSession
+ MockResult
+ StudyGroup
+ GroupApplication
+ Inquiry
+ LoginLog
+ AiChatSession
+ PracticeTestResult
+ TestUnlock
+ ProgressSnapshot
+ PasswordResetToken
+ _prisma_migrations
+ PartnerRequest
+ VerificationCode
+ TypingResult
+ User
+ StrategicGoal
+ Notification
+ StudyStreak
+ WeeklyProgress
+ AdminTask
+ PracticeTest
+ Question
+ Report
+ Device
+ Lesson
+ Material
+ Follow
+ EducationCentre
+(29 rows)
+

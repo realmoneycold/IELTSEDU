@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Practice | Master Your Future</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://api.fontshare.com/v2/css?f[]=clash-grotesk@700,600,400&f[]=satoshi@700,500,400&display=swap');
+
+        :root {
+            --lavender-main: #8B5CF6;
+            --brand-orange: #FF6B35;
+            --bg-soft: #F9F5FF;
+            --dark: #111827;
+        }
+
+        body {
+            font-family: 'Satoshi', sans-serif;
+            background-color: var(--bg-soft);
+            color: var(--dark);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Clash Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .hero-illustration-bg {
+            background-image: radial-gradient(circle at center, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+        }
+
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .scroll-reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .transition-playful {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .card-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(139, 92, 246, 0.2);
+        }
+
+        .btn-bounce:hover {
+            transform: scale(1.05);
+        }
+
+        .orange-text {
+            color: var(--brand-orange);
+        }
+
+        .purple-badge { background-color: #F5F1FF; color: #8B5CF6; }
+        .orange-badge  { background-color: #FFF8F5; color: #FF6B35; }
+        .yellow-badge  { background-color: #FFFBEB; color: #D97706; }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F9F5FF;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D4C5E2;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8B5CF6;
+        }
+    </style>
+  <style>sd-component { display: block; }</style>
+  <script src="https://cdn.jsdelivr.net/npm/petite-vue@0.4.1/dist/petite-vue.iife.js" defer="" init=""></script>
+</head>
+<body>
+    <div class="min-h-screen relative">
+        <!-- Header (Persistent Navigation) -->
+        <!-- component: NavigationHeader (5600dfca-4b47-45ca-8a94-e5a9370f7684) -->
+<div v-scope="{ ...{'activeItem':'home','homeHref':'./index.html','coursesHref':'./courses.html','examHref':'./pages/exam-dates.html','centresHref':'./pages/education-centres.html','contactHref':'./contact.html','signupHref':'/signup.html','loginHref':'/login.html'}, $emit() {} }">
+<nav class="flex items-center justify-between px-8 md:px-16 py-8 bg-white">
+    <div class="flex items-center gap-12">
+        <div class="text-3xl font-black flex items-center uppercase tracking-tighter">
+            <span class="text-black border-r-4 border-[#FF6B35] pr-3 mr-3">IELTS</span>
+            <span class="text-black/60 text-lg tracking-[0.2em] font-bold">PRACTICE</span>
+        </div>
+        <div class="hidden lg:flex items-center gap-8 font-semibold text-gray-600">
+            <a :href="homeHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'home' }">Home</a>
+            <a :href="coursesHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'courses' }">Courses</a>
+            <a :href="examHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'exam' }">Exam &amp; Mock dates</a>
+            <a :href="centresHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'centres' }">Educational Centres</a>
+            <a :href="contactHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'contact' }">Contact</a>
+        </div>
+    </div>
+    <div class="flex items-center gap-6">
+        <a :href="signupHref" class="font-bold hover:text-[#FF6B35] transition-colors">Sign up</a>
+        <a :href="loginHref" class="bg-[#FF6B35] text-white px-8 py-3 rounded-2xl font-bold hover:bg-[#e85a2a] transition-all transform hover:scale-105">
+            Login
+        </a>
+    </div>
+</nav>
+</div>
+<!-- /component: NavigationHeader (5600dfca-4b47-45ca-8a94-e5a9370f7684) -->
+
+        <main>
+            <!-- 1. Hero Section -->
+            <section id="hero" class="px-6 md:px-16 pt-4 pb-12 lg:pt-6 lg:pb-20 overflow-hidden">
+                <div class="max-w-[1360px] mx-auto bg-white rounded-[48px] p-8 md:p-16 lg:p-20 shadow-2xl shadow-purple-100/50 relative">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start mb-20">
+                        <div class="z-10">
+                            <h1 class="text-6xl md:text-8xl font-black mb-6 leading-tight text-dark">
+                                Master the <span class="orange-text">IELTS</span>
+                            </h1>
+                            <p class="text-3xl md:text-4xl font-black mb-8 leading-tight">
+                                Achieve your <span class="orange-text">Dream Score</span> with IELTSPRACTICE
+                            </p>
+                            <p class="text-xl text-gray-500 mb-10 max-w-lg font-medium">
+                                Comprehensive platform designed for your success
+                            </p>
+                            <div class="flex flex-wrap items-center gap-8">
+                                <a id="hero-cta-main" href="/signup.html" class="bg-[#FF6B35] text-white px-10 py-5 rounded-2xl font-bold text-xl transition-playful btn-bounce shadow-xl shadow-orange-200">
+                                    Start Practicing Now
+                                </a>
+                                <a id="hero-secondary" href="courses.html" class="font-bold text-[#FF6B35] flex items-center gap-2 group text-xl">
+                                    Explore Courses <iconify-icon icon="ph:arrow-right-bold" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="relative w-full flex justify-center lg:justify-end">
+                            <div class="absolute -top-4 right-0 lg:-right-8 flex flex-col items-end z-20">
+                                <span class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">Certified teachers only</span>
+                                <div class="flex items-center">
+                                    <div class="flex -space-x-3">
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-12 h-12 rounded-full border-4 border-white bg-blue-100" alt="Teacher">
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka" class="w-12 h-12 rounded-full border-4 border-white bg-pink-100" alt="Teacher">
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Nala" class="w-12 h-12 rounded-full border-4 border-white bg-yellow-100" alt="Teacher">
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Jack" class="w-12 h-12 rounded-full border-4 border-white bg-purple-100" alt="Teacher">
+                                    </div>
+                                    <div class="w-12 h-12 rounded-full border-4 border-white bg-yellow-400 flex items-center justify-center text-[10px] font-black text-dark ml-2">135+</div>
+                                </div>
+                            </div>
+                            <img src="assets/skating-character.png" alt="Skating Character" class="w-full h-auto max-w-[650px] drop-shadow-2xl float-animation mt-20" style="object-fit: contain;">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="bg-white border-2 border-gray-100 p-8 rounded-[40px] transition-playful card-lift">
+                            <div class="inline-block px-4 py-2 rounded-xl bg-[#F5F1FF] text-[#8B5CF6] text-xs font-black uppercase mb-4">Education</div>
+                            <div class="text-gray-400 font-bold text-sm mb-1">subjects</div>
+                            <div class="text-5xl font-black">+40</div>
+                        </div>
+                        <div class="bg-[#8B5CF6] p-8 rounded-[40px] transition-playful card-lift">
+                            <div class="inline-block px-4 py-2 rounded-xl bg-[#FF6B35] text-white text-xs font-black uppercase mb-4">Online Courses</div>
+                            <div class="text-white/60 font-bold text-sm mb-1">active lessons</div>
+                            <div class="text-5xl font-black text-white">+120</div>
+                        </div>
+                        <div class="bg-yellow-400 p-8 rounded-[40px] transition-playful card-lift">
+                            <div class="inline-block px-4 py-2 rounded-xl bg-white text-dark text-xs font-black uppercase mb-4">
+                                <div class="flex items-center gap-1">
+                                    <iconify-icon icon="ph:star-fill" class="text-orange-500"></iconify-icon>
+                                    <span class="font-black">5.0</span>
+                                </div>
+                            </div>
+                            <div class="text-dark/60 font-bold text-sm mb-1">Success Rate</div>
+                            <div class="text-5xl font-black text-dark tracking-tighter">100%</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Our Services Section -->
+            <section id="services" class="px-6 md:px-16 py-20 lg:py-32">
+                <div class="max-w-[1360px] mx-auto">
+                    <div class="text-center mb-20 scroll-reveal">
+                        <h2 class="text-4xl md:text-6xl font-black mb-6">Find the right <br class="hidden md:block"> <span class="orange-text">practice</span> for you</h2>
+                        <p class="text-gray-500 text-lg max-w-2xl mx-auto font-medium">
+                            See your personalised recommendations based on your interests and goals
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                        <!-- Service Card 1 -->
+                        <div class="bg-white p-12 rounded-[48px] border-2 border-transparent hover:border-purple-100 transition-playful card-lift scroll-reveal" style="transition-delay: 0.1s">
+                            <div class="mb-10">
+                                <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&amp;fit=crop&amp;q=80&amp;w=600" alt="Students in an exam hall taking tests" class="w-full h-48 object-cover rounded-[32px] mx-auto">
+                            </div>
+                            <div class="inline-block px-4 py-1.5 rounded-full purple-badge text-xs font-black uppercase mb-6">Exam Prep</div>
+                            <h3 class="text-3xl font-black mb-4">Mock Exams</h3>
+                            <p class="text-gray-500 leading-relaxed font-medium mb-8">
+                                Realistic computer-delivered tests that mirror the real IELTS environment.
+                            </p>
+                            <a id="srv-mock" href="dashboard.html" class="text-purple-600 font-bold flex items-center gap-2 group">
+                                Learn more <iconify-icon icon="ph:arrow-right-bold" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
+                            </a>
+                        </div>
+
+                        <!-- Service Card 2 -->
+                        <div class="bg-white p-12 rounded-[48px] border-2 border-transparent hover:border-orange-100 transition-playful card-lift scroll-reveal" style="transition-delay: 0.2s">
+                            <div class="mb-10">
+                                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&amp;fit=crop&amp;q=80&amp;w=600" alt="Smart dashboard with data visualization analytics" class="w-full h-48 object-cover rounded-[32px] mx-auto">
+                            </div>
+                            <div class="inline-block px-4 py-1.5 rounded-full orange-badge text-xs font-black uppercase mb-6">Insights</div>
+                            <h3 class="text-3xl font-black mb-4">Smart Analytics</h3>
+                            <p class="text-gray-500 leading-relaxed font-medium mb-8">
+                                Deep dive into your performance with AI-powered feedback on every skill.
+                            </p>
+                            <a id="srv-analytics" href="dashboard.html" class="text-orange-600 font-bold flex items-center gap-2 group">
+                                Learn more <iconify-icon icon="ph:arrow-right-bold" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
+                            </a>
+                        </div>
+
+                        <!-- Service Card 3 -->
+                        <div class="bg-white p-12 rounded-[48px] border-2 border-transparent hover:border-yellow-100 transition-playful card-lift scroll-reveal" style="transition-delay: 0.3s">
+                            <div class="mb-10">
+                                <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&amp;fit=crop&amp;q=80&amp;w=600" alt="Person typing rapidly on a keyboard" class="w-full h-48 object-cover rounded-[32px] mx-auto">
+                            </div>
+                            <div class="inline-block px-4 py-1.5 rounded-full yellow-badge text-xs font-black uppercase mb-6">Skill Up</div>
+                            <h3 class="text-3xl font-black mb-4">Typing Dojo</h3>
+                            <p class="text-gray-500 leading-relaxed font-medium mb-8">
+                                Specialized training to master the computer-based test interface and speed.
+                            </p>
+                            <a id="srv-dojo" href="dashboard.html" class="text-yellow-600 font-bold flex items-center gap-2 group">
+                                Learn more <iconify-icon icon="ph:arrow-right-bold" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Empowering Students Section -->
+            <section id="empowering" class="px-6 md:px-16 py-20 lg:py-32 bg-white rounded-[64px] mx-6 my-12">
+                <div class="max-w-[1360px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+                    <div class="scroll-reveal">
+                        <h2 class="text-4xl md:text-6xl font-black mb-8 leading-tight">
+                            Empowering students <br> for a <span class="orange-text">global</span> future
+                        </h2>
+                        <p class="text-lg text-gray-600 mb-10 leading-relaxed font-medium">
+                            We believe that a test score shouldn't be the barrier between you and your dreams. Our platform is built by experts who've been in your shoes.
+                        </p>
+                        
+                        <div class="space-y-8 mb-12">
+                            <div class="flex items-center gap-5">
+                                <div class="w-12 h-12 rounded-2xl bg-orange-100 flex items-center justify-center text-orange-600 shrink-0">
+                                    <iconify-icon icon="ph:check-circle-bold" class="text-2xl"></iconify-icon>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-black">Expert Led Content</h4>
+                                    <p class="text-gray-400">Curated by ex-examiners and Band 9 holders.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-5">
+                                <div class="w-12 h-12 rounded-2xl bg-purple-100 flex items-center justify-center text-purple-600 shrink-0">
+                                    <iconify-icon icon="ph:heart-bold" class="text-2xl"></iconify-icon>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-black">Student Centric Design</h4>
+                                    <p class="text-gray-400">Friendly UI that makes studying feel like playing.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-5">
+                                <div class="w-12 h-12 rounded-2xl bg-yellow-100 flex items-center justify-center text-yellow-600 shrink-0">
+                                    <iconify-icon icon="ph:globe-hemisphere-west-bold" class="text-2xl"></iconify-icon>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-black">Global Partner Network</h4>
+                                    <p class="text-gray-400">Trusted by 500+ universities worldwide.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a id="btn-mission" href="about.html" class="inline-block bg-[#8B5CF6] text-white px-12 py-5 rounded-2xl font-bold text-lg btn-bounce transition-playful shadow-xl shadow-purple-200">
+                            Our Mission
+                        </a>
+                    </div>
+                    
+                    <div class="relative scroll-reveal" style="transition-delay: 0.2s">
+                        <div class="rounded-[48px] overflow-hidden rotate-2 hover:rotate-0 transition-transform duration-700 shadow-2xl">
+                            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&amp;fit=crop&amp;q=80&amp;w=1000" alt="Students Study" class="w-full aspect-square object-cover">
+                        </div>
+                        <!-- Floating Badge -->
+                        <div class="absolute -bottom-10 -right-10 bg-[#FF6B35] text-white p-8 rounded-[40px] shadow-2xl float-animation">
+                            <div class="text-5xl font-black">50+</div>
+                            <div class="text-xs font-bold uppercase tracking-widest opacity-80">Countries Active</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Success Stories / Testimonials -->
+            <section id="testimonials" class="px-6 md:px-16 py-20 lg:py-32 overflow-hidden">
+                <div class="max-w-[1360px] mx-auto">
+                    <div class="text-center mb-20 scroll-reveal">
+                        <h2 class="text-4xl md:text-6xl font-black mb-6">Voices of <span class="orange-text">Success</span></h2>
+                        <p class="text-gray-500 text-lg max-w-2xl mx-auto font-medium">Join 180k+ students who reached their target scores</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                        <!-- Testimonial 1 -->
+                        <div class="bg-white p-10 rounded-[48px] relative card-lift transition-playful scroll-reveal" style="transition-delay: 0.1s">
+                            <iconify-icon icon="ph:quotes-bold" class="absolute top-8 right-10 text-6xl text-purple-100"></iconify-icon>
+                            <div class="flex gap-1 text-yellow-400 mb-8">
+                                <iconify-icon icon="ph:star-fill"></iconify-icon>
+                                <iconify-icon icon="ph:star-fill"></iconify-icon>
+                                <iconify-icon icon="ph:star-fill"></iconify-icon>
+                                <iconify-icon icon="ph:star-fill"></iconify-icon>
+                                <iconify-icon icon="ph:star-fill"></iconify-icon>
+                            </div>
+                            <p class="text-xl font-bold mb-10 text-gray-700 leading-relaxed">
+                                "The mock exams were almost identical to the real test. Achieved a Band 8.5 on my first try!"
+                            </p>
+                            <div class="flex items-center gap-4">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah" class="w-14 h-14 rounded-full bg-purple-50 shadow-inner" alt="Student">
+                                <div>
+                                    <h5 class="font-black">Sarah Jenkins</h5>
+                                    <p class="text-xs font-bold text-gray-400">Postgraduate Student</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Testimonial 2 -->
+                        <div class="bg-white p-10 rounded-[48px] relative card-lift transition-playful scroll-reveal" style="transition-delay: 0.2s">
+                            <iconify-icon icon="ph:quotes-bold" class="absolute top-8 right-10 text-6xl text-orange-100"></iconify-icon>
+                            <div class="flex gap-1 text-yellow-400 mb-8">
+                                <iconify-icon icon="ph:star-fill"></iconify-icon>
+                                <iconify-icon icon="ph:star-fill"></iconify-icon>
+                                <iconify-icon icon="ph:star-fill"></iconify-icon>
+                                <iconify-icon icon="ph:star-fill"></iconify-icon>
+                                <iconify-icon icon="ph:star-fill"></iconify-icon>
+                            </div>
+                            <p class="text-xl font-bold mb-10 text-gray-700 leading-relaxed">
+                                "Smart analytics helped me realize my weaknesses. Correcting them bumped my score by 1 full point."
+                            </p>
+                            <div class="flex items-center gap-4">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Michael" class="w-14 h-14 rounded-full bg-orange-50 shadow-inner" alt="Student">
+                                <div>
+                                    <h5 class="font-black">Michael Wong</h5>
+                                    <p class="text-xs font-bold text-gray-400">Medical Professional</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Testimonial 3 -->
+                        <div class="bg-white p-10 rounded-[48px] relative card-lift transition-playful scroll-reveal" style="transition-delay: 0.3s">
+                            <iconify-icon icon="ph:quotes-bold" class="absolute top-8 right-10 text-6xl text-yellow-100"></iconify-icon>
+                            <div class="flex gap-1 text-yellow-400 mb-8">
+                                <iconify-icon icon="ph:star-fill"></iconify-icon>
+                                <iconify-icon icon="ph:star-fill"></iconify-icon>
+                                <iconify-icon icon="ph:star-fill"></iconify-icon>
+                                <iconify-icon icon="ph:star-fill"></iconify-icon>
+                                <iconify-icon icon="ph:star-fill"></iconify-icon>
+                            </div>
+                            <p class="text-xl font-bold mb-10 text-gray-700 leading-relaxed">
+                                "Typing Dojo is a game changer. My writing speed improved by 40%, leaving more time for revision."
+                            </p>
+                            <div class="flex items-center gap-4">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Elena" class="w-14 h-14 rounded-full bg-yellow-50 shadow-inner" alt="Student">
+                                <div>
+                                    <h5 class="font-black">Elena Petrov</h5>
+                                    <p class="text-xs font-bold text-gray-400">Immigration Applicant</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Academic Leaders -->
+            <section id="experts" class="px-6 md:px-16 py-20 lg:py-32 bg-[#F5F1FF] rounded-[64px] mx-6">
+                <div class="max-w-[1360px] mx-auto">
+                    <div class="text-center mb-20 scroll-reveal">
+                        <h2 class="text-4xl md:text-6xl font-black mb-6">Meet Our <span class="orange-text">Experts</span></h2>
+                        <p class="text-gray-500 text-lg max-w-2xl mx-auto font-medium">Learn from the world's most experienced instructors</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <!-- Leader 1 -->
+                        <div class="bg-white p-6 rounded-[40px] text-center card-lift transition-playful scroll-reveal">
+                            <div class="w-full aspect-square bg-purple-50 rounded-[32px] mb-6 overflow-hidden">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=James" class="w-full h-full object-cover" alt="Leader">
+                            </div>
+                            <h5 class="text-2xl font-black mb-1">Dr. James Wilson</h5>
+                            <p class="text-gray-400 font-bold mb-6 text-sm">Ex-Lead Examiner (15 yrs)</p>
+                            <div class="flex justify-center gap-3">
+                                <a href="#" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 transition-colors"><iconify-icon icon="ph:twitter-logo-bold"></iconify-icon></a>
+                            </div>
+                        </div>
+                        <!-- Leader 2 -->
+                        <div class="bg-white p-6 rounded-[40px] text-center card-lift transition-playful scroll-reveal" style="transition-delay: 0.1s">
+                            <div class="w-full aspect-square bg-orange-50 rounded-[32px] mb-6 overflow-hidden">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aisha" class="w-full h-full object-cover" alt="Leader">
+                            </div>
+                            <h5 class="text-2xl font-black mb-1">Aisha Khan</h5>
+                            <p class="text-gray-400 font-bold mb-6 text-sm">Senior Writing Coach</p>
+                            <div class="flex justify-center gap-3">
+                                <a href="#" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-orange-600 transition-colors"><iconify-icon icon="ph:instagram-logo-bold"></iconify-icon></a>
+                            </div>
+                        </div>
+                        <!-- Leader 3 -->
+                        <div class="bg-white p-6 rounded-[40px] text-center card-lift transition-playful scroll-reveal" style="transition-delay: 0.2s">
+                            <div class="w-full aspect-square bg-yellow-50 rounded-[32px] mb-6 overflow-hidden">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sterling" class="w-full h-full object-cover" alt="Leader">
+                            </div>
+                            <h5 class="text-2xl font-black mb-1">Robert Sterling</h5>
+                            <p class="text-gray-400 font-bold mb-6 text-sm">Speaking Specialist</p>
+                            <div class="flex justify-center gap-3">
+                                <a href="#" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-yellow-600 transition-colors"><iconify-icon icon="ph:youtube-logo-bold"></iconify-icon></a>
+                            </div>
+                        </div>
+                        <!-- Leader 4 -->
+                        <div class="bg-white p-6 rounded-[40px] text-center card-lift transition-playful scroll-reveal" style="transition-delay: 0.3s">
+                            <div class="w-full aspect-square bg-blue-50 rounded-[32px] mb-6 overflow-hidden">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Linh" class="w-full h-full object-cover" alt="Leader">
+                            </div>
+                            <h5 class="text-2xl font-black mb-1">Mei Ling</h5>
+                            <p class="text-gray-400 font-bold mb-6 text-sm">Band 9 Curriculum Lead</p>
+                            <div class="flex justify-center gap-3">
+                                <a href="#" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-blue-600 transition-colors"><iconify-icon icon="ph:envelope-bold"></iconify-icon></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. Blog Section -->
+            <section id="blog" class="px-6 md:px-16 py-20 lg:py-32">
+                <div class="max-w-[1360px] mx-auto">
+                    <div class="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8 scroll-reveal">
+                        <div class="max-w-2xl">
+                            <h2 class="text-4xl md:text-6xl font-black mb-6">Stay <span class="orange-text">Informed</span></h2>
+                            <p class="text-gray-500 text-lg font-medium">Expert tips and strategy guides to keep you ahead</p>
+                        </div>
+                        <a id="blog-view-all" href="#" class="bg-white border-2 border-purple-100 text-purple-600 px-8 py-4 rounded-2xl font-bold hover:bg-purple-50 transition-playful btn-bounce">
+                            View all insights
+                        </a>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                        <!-- Article 1 -->
+                        <article class="group cursor-pointer scroll-reveal">
+                            <div class="relative rounded-[40px] overflow-hidden mb-8 shadow-xl">
+                                <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&amp;fit=crop&amp;q=80&amp;w=600" class="w-full aspect-[4/3] object-cover group-hover:scale-110 transition-transform duration-700" alt="Writing skills and preparation">
+                                <div class="absolute top-6 left-6 px-4 py-1.5 rounded-full purple-badge text-xs font-black uppercase">Strategy</div>
+                            </div>
+                            <h4 class="text-2xl font-black mb-4 group-hover:text-purple-600 transition-colors">How to tackle Writing Task 2 like a Pro</h4>
+                            <p class="text-gray-500 font-medium mb-6 line-clamp-2">Master discursive essays and learn how to generate ideas quickly under pressure.</p>
+                            <a id="blog-1" href="#" class="font-black text-sm flex items-center gap-2 group-hover:translate-x-2 transition-transform">
+                                READ STORY <iconify-icon icon="ph:plus-circle-bold" class="text-lg text-orange-600"></iconify-icon>
+                            </a>
+                        </article>
+                        <!-- Article 2 -->
+                        <article class="group cursor-pointer scroll-reveal" style="transition-delay: 0.1s">
+                            <div class="relative rounded-[40px] overflow-hidden mb-8 shadow-xl">
+                                <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&amp;fit=crop&amp;q=80&amp;w=600" class="w-full aspect-[4/3] object-cover group-hover:scale-110 transition-transform duration-700" alt="Technology and online testing">
+                                <div class="absolute top-6 left-6 px-4 py-1.5 rounded-full orange-badge text-xs font-black uppercase">Tech</div>
+                            </div>
+                            <h4 class="text-2xl font-black mb-4 group-hover:text-purple-600 transition-colors">The transition to Computer IELTS</h4>
+                            <p class="text-gray-500 font-medium mb-6 line-clamp-2">What you need to know about the software, keyboard shortcuts and UI differences.</p>
+                            <a id="blog-2" href="#" class="font-black text-sm flex items-center gap-2 group-hover:translate-x-2 transition-transform">
+                                READ STORY <iconify-icon icon="ph:plus-circle-bold" class="text-lg text-orange-600"></iconify-icon>
+                            </a>
+                        </article>
+                        <!-- Article 3 -->
+                        <article class="group cursor-pointer scroll-reveal" style="transition-delay: 0.2s">
+                            <div class="relative rounded-[40px] overflow-hidden mb-8 shadow-xl">
+                                <img src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&amp;fit=crop&amp;q=80&amp;w=600" class="w-full aspect-[4/3] object-cover group-hover:scale-110 transition-transform duration-700" alt="Books and vocabulary building">
+                                <div class="absolute top-6 left-6 px-4 py-1.5 rounded-full yellow-badge text-xs font-black uppercase">Words</div>
+                            </div>
+                            <h4 class="text-2xl font-black mb-4 group-hover:text-purple-600 transition-colors">100 Synonyms for Band 9</h4>
+                            <p class="text-gray-500 font-medium mb-6 line-clamp-2">Stop using 'Good' and 'Bad'. Elevate your lexical resource with these native alternatives.</p>
+                            <a id="blog-3" href="#" class="font-black text-sm flex items-center gap-2 group-hover:translate-x-2 transition-transform">
+                                READ STORY <iconify-icon icon="ph:plus-circle-bold" class="text-lg text-orange-600"></iconify-icon>
+                            </a>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. Final CTA Section -->
+            <section id="cta" class="px-6 md:px-16 py-20 lg:py-32">
+                <div class="max-w-[1360px] mx-auto bg-gray-900 rounded-[64px] p-12 md:p-24 text-center relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-64 h-64 bg-purple-600/20 blur-[100px]"></div>
+                    <div class="absolute bottom-0 right-0 w-64 h-64 bg-orange-600/20 blur-[100px]"></div>
+                    
+                    <div class="relative z-10 max-w-4xl mx-auto">
+                        <h2 class="text-4xl md:text-7xl font-black text-white mb-8">
+                            Start your <br class="md:hidden"> <span class="orange-text">success story</span> now
+                        </h2>
+                        <p class="text-gray-400 text-xl font-medium mb-12 max-w-2xl mx-auto">
+                            Join 180,000+ students already mastering the IELTS. Get daily band-boosting tips in your inbox.
+                        </p>
+
+                        <form id="subscribe-form" class="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
+                            <input type="email" placeholder="Enter your email" required="" class="flex-1 bg-white/10 border border-white/20 rounded-2xl px-8 py-5 text-white placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-purple-500/20 transition-all">
+                            <button type="submit" class="bg-[#FF6B35] text-white px-10 py-5 rounded-2xl font-bold text-lg btn-bounce transition-playful shadow-xl shadow-orange-500/20 shrink-0">
+                                Subscribe Now
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 8. Footer -->
+        <footer class="px-6 md:px-16 py-24 bg-white border-t border-purple-50">
+            <div class="max-w-[1360px] mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 items-start">
+                    <div class="lg:col-span-5">
+                        <div class="text-3xl font-black flex items-center uppercase tracking-tighter mb-8">
+                            <span class="text-black border-r-4 border-[#FF6B35] pr-3 mr-3">IELTS</span>
+                            <span class="text-black/60 text-lg tracking-[0.2em] font-bold">PRACTICE</span>
+                        </div>
+                        <p class="text-gray-400 text-lg font-medium max-w-sm mb-10 leading-relaxed">
+                            Empowering students worldwide to achieve their dreams through innovative, technology-driven IELTS preparation tools.
+                        </p>
+                        <div class="flex gap-4">
+                            <a id="soc-1" href="https://t.me/ieltspractice_net" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:telegram-logo-bold"></iconify-icon></a>
+                            <a id="soc-2" href="https://x.com/ieltspracticeUz" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:twitter-logo-bold"></iconify-icon></a>
+                            <a id="soc-3" href="https://www.instagram.com/ieltspractice_net?igsh=MWR3OGw3ZmxjcjF1Ng%3D%3D&utm_source=qr" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:instagram-logo-bold"></iconify-icon></a>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-3 grid grid-cols-2 gap-10">
+                        <div>
+                            <h6 clas    s="font-black uppercase text-xs tracking-widest text-gray-400 mb-8">Quick Links</h6>
+                            <ul class="space-y-4 font-bold text-gray-700">
+                                <li><a id="foot-1" href="./index.html" class="hover:text-purple-600 transition-colors">Home</a></li>
+                                <li><a id="foot-2" href="courses.html" class="hover:text-purple-600 transition-colors">Courses</a></li>
+                                <li><a id="foot-3" href="./pages/education-centres.html" class="hover:text-purple-600 transition-colors">Centers</a></li>
+                                <li><a id="foot-4" href="dashboard.html" class="hover:text-purple-600 transition-colors">Mock Exams</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h6 class="font-black uppercase text-xs tracking-widest text-gray-400 mb-8">Support</h6>
+                            <ul class="space-y-4 font-bold text-gray-700">
+                                <li><a id="foot-5" href="#" class="hover:text-purple-600 transition-colors">Help Center</a></li>
+                                <li><a id="foot-6" href="#" class="hover:text-purple-600 transition-colors">FAQ</a></li>
+                                <li><a id="foot-7" href="#" class="hover:text-purple-600 transition-colors">Privacy</a></li>
+                                <li><a id="foot-8" href="#" class="hover:text-purple-600 transition-colors">Terms</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-4 bg-[#F5F1FF] p-8 rounded-[40px]">
+                        <h6 class="font-black uppercase text-xs tracking-widest text-purple-600 mb-6">Contact Us</h6>
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-purple-600 shadow-sm"><iconify-icon icon="ph:envelope-bold"></iconify-icon></div>
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 uppercase">Email</p>
+                                    <p class="font-black">hello@ieltspractice.com</p>
+                                </div>          
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-orange-600 shadow-sm"><iconify-icon icon="ph:phone-bold"></iconify-icon></div>
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 uppercase">Phone</p>
+                                    <p class="font-black">+1 (555) 888-9900</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-24 pt-10 border-t border-purple-50 flex flex-col md:flex-row justify-between items-center gap-6 text-xs font-black text-gray-400 tracking-widest">
+                    <div>© 2026 IELTSPRACTICE LEARNING PLATFORM</div>
+                    <div class="flex gap-8">
+                        <span style="color: #6B7280;">Created by <a href="https://xalimov-ahrorbek-portfolio.netlify.app/" target="_blank" style="color: #374151; text-decoration: underline; font-weight: 700; transition: color 0.3s;">Xalimov Ahrorbek</a></span>
+                        <a id="copy-1" href="#" class="hover:text-purple-600 transition-colors">PRIVACY POLICY</a>
+                        <a id="copy-2" href="#" class="hover:text-purple-600 transition-colors">TERMS OF SERVICE</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Intersection Observer for scroll reveal animations
+        const observerOptions = {
+            root: null,
+            threshold: 0.1,
+            rootMargin: '0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+
+        // Basic counter animation logic
+        const counters = document.querySelectorAll('.counter');
+        counters.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-target'));
+            let count = 0;
+            const increment = target / 50;
+            
+            const updateCount = () => {
+                if (count < target) {
+                    count += increment;
+                    counter.innerText = Math.ceil(count) + (target === 97 ? '%' : '+');
+                    setTimeout(updateCount, 40);
+                } else {
+                    counter.innerText = target + (target === 97 ? '%' : '+');
+                }
+            };
+
+            // Trigger counter when hero section is visible
+            const heroObserver = new IntersectionObserver((entries) => {
+                if(entries[0].isIntersecting) updateCount();
+            }, { threshold: 0.5 });
+            
+            heroObserver.observe(document.getElementById('hero'));
+        });
+    </script>
+</body></html>

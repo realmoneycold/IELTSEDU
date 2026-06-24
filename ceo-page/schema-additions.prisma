@@ -1,0 +1,175 @@
+// ═══════════════════════════════════════════════════════════════
+// prisma/schema.prisma — IELTSPRACTICE Management Suite
+// Add these models to your existing schema.prisma file
+// ═══════════════════════════════════════════════════════════════
+
+// ── Existing enums (extend as needed) ────────────────────────
+enum AdminRole {
+  GRADER
+  SUPPORT
+  CONTENT
+  ANALYST
+  MANAGER
+}
+
+enum TaskLabel {
+  CUSTOMER_SERVICE
+  TECHNICAL_ANALYSIS
+  CONTENT_MANAGEMENT
+  OPERATIONS
+}
+
+enum TaskPriority {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum DeviceType {
+  DESKTOP
+  LAPTOP
+  MOBILE
+  TABLET
+}
+
+// ─────────────────────────────────────────────────────────────
+// MODEL: Admin
+// Represents a staff member account managed by the CEO
+// ─────────────────────────────────────────────────────────────
+model Admin {
+  id          Int          @id @default(autoincrement())
+  name        String
+  email       String       @unique
+  phone       String?
+  passwordHash String      // bcrypt hash — never store plaintext
+  role        AdminRole    @default(GRADER)
+  isActive    Boolean      @default(true)
+  lastSeenAt  DateTime?
+
+  devices     Device[]
+  tasks       AdminTask[]
+
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────
+// MODEL: Device
+// Tracks every browser/device session for an Admin or the CEO
+// ─────────────────────────────────────────────────────────────
+model Device {
+  id           Int          @id @default(autoincrement())
+
+  // Linked to an admin (nullable if this is the CEO's device)
+  adminId      Int?
+  admin        Admin?       @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  // Or linked to the CEO account (if you have a CEO/User model)
+  // ceoId     Int?
+  // ceo       Ceo?         @relation(fields: [ceoId], references: [id])
+
+  deviceType   DeviceType   @default(DESKTOP)
+  deviceName   String       // e.g. "MacBook Pro 16""
+  browser      String       // e.g. "Chrome 122"
+  os           String?      // e.g. "Ubuntu 22.04"
+
+  ipAddress    String?
+  location     String?      // e.g. "Tashkent, UZ"  (from IP geo-lookup)
+  latitude     Float?
+  longitude    Float?
+
+  userAgent    String?      @db.Text
+  isActive     Boolean      @default(true)   // currently logged-in session
+  lastActiveAt DateTime     @default(now())
+
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([adminId])
+  @@index([isActive])
+}
+
+// ─────────────────────────────────────────────────────────────
+// MODEL: AdminTask
+// A task assigned by the CEO to a specific Admin
+// ─────────────────────────────────────────────────────────────
+model AdminTask {
+  id          Int           @id @default(autoincrement())
+
+  adminId     Int
+  admin       Admin         @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  title       String
+  notes       String?       @db.Text
+  label       TaskLabel     @default(CUSTOMER_SERVICE)
+  priority    TaskPriority  @default(MEDIUM)
+  isDone      Boolean       @default(false)
+  doneAt      DateTime?
+
+  // Date this task was assigned (for "today's tasks" queries)
+  assignedDate DateTime     @default(now()) @db.Date
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([adminId])
+  @@index([assignedDate])
+  @@index([isDone])
+}
+
+// ─────────────────────────────────────────────────────────────
+// MODEL: EducationalCentre
+// Partner education centres that refer students
+// ─────────────────────────────────────────────────────────────
+model EducationalCentre {
+  id              Int       @id @default(autoincrement())
+  name            String
+  city            String
+  district        String?
+  address         String?
+  contactEmail    String?
+  contactPhone    String?
+  websiteUrl      String?
+
+  // Performance metrics (can be computed or manually updated)
+  totalStudents   Int       @default(0)
+  activeStudents  Int       @default(0)
+  rating          Float?    @default(0.0)  // 0.0–5.0
+
+  isActive        Boolean   @default(true)
+
+  // Students registered via this centre (if you track referral source)
+  // students     User[]    @relation("CentreReferral")
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([city])
+  @@index([isActive])
+}
+
+// ─────────────────────────────────────────────────────────────
+// MODEL: StrategicGoal  (Kanban cards)
+// ─────────────────────────────────────────────────────────────
+model StrategicGoal {
+  id          Int      @id @default(autoincrement())
+  title       String
+  priority    TaskPriority @default(MEDIUM)
+  column      String   @default("TODO")   // TODO | IN_PROGRESS | DONE
+  dueDate     DateTime?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────
+// MODEL: Notification
+// System-wide alerts shown in the bell dropdown
+// ─────────────────────────────────────────────────────────────
+model Notification {
+  id        Int      @id @default(autoincrement())
+  icon      String   @default("🔔")
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

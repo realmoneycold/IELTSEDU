@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Progress - IELTS Practice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://api.fontshare.com/v2/css?f[]=clash-grotesk@700,600,400&f[]=satoshi@700,500,400&display=swap');
+
+        :root {
+            --lavender-main: #8B5CF6;
+            --brand-orange: #FF6B35;
+            --bg-soft: #F9F5FF;
+            --dark: #111827;
+        }
+
+        body {
+            font-family: 'Satoshi', sans-serif;
+            background-color: var(--bg-soft);
+            color: var(--dark);
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Clash Grotesk', sans-serif;
+        }
+
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring__circle {
+            transition: stroke-dashoffset 1s ease-in-out;
+        }
+
+        .skill-bar {
+            transition: width 1s ease-in-out;
+        }
+
+        .locked-test {
+            opacity: 0.6;
+            pointer-events: none;
+            filter: grayscale(100%);
+        }
+
+        .unlock-animation {
+            animation: unlock-pulse 0.6s ease-out;
+        }
+
+        @keyframes unlock-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .trend-up {
+            color: #10B981;
+        }
+
+        .trend-down {
+            color: #EF4444;
+        }
+
+        .ai-insight-card {
+            background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+        }
+
+        .category-card {
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.15);
+        }
+
+        .level-node {
+            transition: all 0.3s ease;
+        }
+
+        .level-node:hover {
+            transform: scale(1.1);
+        }
+
+        .level-node.locked {
+            cursor: not-allowed;
+        }
+
+        .level-node.completed {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        }
+
+        .level-node.current {
+            animation: current-pulse 2s infinite;
+        }
+
+        @keyframes current-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.4); }
+            50% { box-shadow: 0 0 0 15px rgba(255, 107, 53, 0); }
+        }
+
+        .streak-fire {
+            animation: fire-flicker 0.5s infinite alternate;
+        }
+
+        @keyframes fire-flicker {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="flex items-center justify-between px-6 md:px-16 py-6 bg-white shadow-sm sticky top-0 z-50">
+        <div class="flex items-center gap-4">
+            <a href="/index.html" class="flex items-center gap-3">
+                <img src="/assets/skating-character.png" alt="IELTS Practice" style="height:40px;width:auto;">
+                <span class="text-2xl font-black text-dark">IELTS<span class="text-[#FF6B35]">PRACTICE</span></span>
+            </a>
+        </div>
+        <div class="flex items-center gap-6">
+            <a href="/dashboard.html" class="font-semibold text-gray-600 hover:text-[#FF6B35]">Dashboard</a>
+            <a href="/courses.html" class="font-semibold text-gray-600 hover:text-[#FF6B35]">Courses</a>
+            <a href="/pages/exam-dates.html" class="font-semibold text-gray-600 hover:text-[#FF6B35]">Exam Dates</a>
+            <button id="logoutBtn" class="font-semibold text-gray-600 hover:text-[#FF6B35]">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="px-6 md:px-16 py-8 max-w-[1400px] mx-auto">
+        <!-- Header Section -->
+        <div class="mb-8">
+            <h1 class="text-4xl md:text-5xl font-black mb-2">Your Progress Journey</h1>
+            <p class="text-gray-500 text-lg">Track your improvement, unlock levels, and see AI-powered insights</p>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="text-center py-20">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF6B35]"></div>
+            <p class="mt-4 text-gray-500">Loading your progress...</p>
+        </div>
+
+        <!-- Dashboard Content (hidden until loaded) -->
+        <div id="dashboardContent" class="hidden space-y-8">
+
+            <!-- Top Stats Row -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Overall Band Score -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg category-card">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-sm font-bold text-gray-400 uppercase">Estimated Band</span>
+                        <iconify-icon icon="ph:trophy" class="text-2xl text-[#FF6B35]"></iconify-icon>
+                    </div>
+                    <div class="flex items-end gap-2">
+                        <span id="overallBand" class="text-5xl font-black text-dark">-</span>
+                        <span id="bandTarget" class="text-sm font-bold text-gray-400 mb-2">/ 8.0</span>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex justify-between text-xs font-bold text-gray-500 mb-1">
+                            <span>Progress to target</span>
+                            <span id="bandProgressPercent">0%</span>
+                        </div>
+                        <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                            <div id="bandProgressBar" class="h-full bg-gradient-to-r from-[#FF6B35] to-[#F59E0B] rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tests Completed -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg category-card">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-sm font-bold text-gray-400 uppercase">Tests Done</span>
+                        <iconify-icon icon="ph:check-circle" class="text-2xl text-[#10B981]"></iconify-icon>
+                    </div>
+                    <div class="flex items-end gap-2">
+                        <span id="testsCompleted" class="text-5xl font-black text-dark">0</span>
+                        <span class="text-sm font-bold text-gray-400 mb-2">total</span>
+                    </div>
+                    <div class="mt-4 flex items-center gap-2">
+                        <iconify-icon icon="ph:trend-up" class="text-lg trend-up"></iconify-icon>
+                        <span id="testsThisWeek" class="text-sm font-bold text-gray-600">0 this week</span>
+                    </div>
+                </div>
+
+                <!-- Study Streak -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg category-card">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-sm font-bold text-gray-400 uppercase">Study Streak</span>
+                        <iconify-icon id="streakIcon" icon="ph:fire" class="text-2xl streak-fire text-[#EF4444]"></iconify-icon>
+                    </div>
+                    <div class="flex items-end gap-2">
+                        <span id="currentStreak" class="text-5xl font-black text-dark">0</span>
+                        <span class="text-sm font-bold text-gray-400 mb-2">days</span>
+                    </div>
+                    <div class="mt-4">
+                        <span id="bestStreak" class="text-xs font-bold text-gray-500">Best: <span class="text-[#FF6B35]">0</span> days</span>
+                    </div>
+                </div>
+
+                <!-- Average Score -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg category-card">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-sm font-bold text-gray-400 uppercase">Avg Score</span>
+                        <iconify-icon icon="ph:chart-bar" class="text-2xl text-[#8B5CF6]"></iconify-icon>
+                    </div>
+                    <div class="flex items-end gap-2">
+                        <span id="avgScore" class="text-5xl font-black text-dark">0%</span>
+                    </div>
+                    <div class="mt-4 flex items-center gap-2">
+                        <span id="scoreTrend" class="text-sm font-bold"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Analysis Card -->
+            <div class="ai-insight-card rounded-3xl p-8 text-white shadow-xl">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-4">
+                            <iconify-icon icon="ph:sparkle" class="text-3xl text-yellow-300"></iconify-icon>
+                            <h2 class="text-2xl font-black">AI Progress Analysis</h2>
+                        </div>
+                        <p id="aiConclusion" class="text-lg text-white/90 mb-4">Loading AI insights...</p>
+                        <div class="flex flex-wrap gap-4">
+                            <div class="bg-white/10 backdrop-blur rounded-xl px-4 py-3">
+                                <div class="text-xs font-bold text-white/60 uppercase mb-1">Status</div>
+                                <div id="progressStatus" class="font-bold">Analyzing...</div>
+                            </div>
+                            <div class="bg-white/10 backdrop-blur rounded-xl px-4 py-3">
+                                <div class="text-xs font-bold text-white/60 uppercase mb-1">Recommendation</div>
+                                <div id="aiRecommendation" class="font-bold">-</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hidden md:block">
+                        <iconify-icon icon="ph:robot" class="text-8xl text-white/20"></iconify-icon>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category Breakdown -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Listening -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg category-card">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                <iconify-icon icon="ph:headphones" class="text-xl text-blue-600"></iconify-icon>
+                            </div>
+                            <h3 class="text-xl font-bold">Listening</h3>
+                        </div>
+                        <span id="listeningScore" class="text-2xl font-black text-blue-600">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-100 rounded-full overflow-hidden mb-4">
+                        <div id="listeningBar" class="h-full bg-blue-500 rounded-full skill-bar" style="width: 0%"></div>
+                    </div>
+                    <div class="flex gap-2 flex-wrap" id="listeningBadges"></div>
+                </div>
+
+                <!-- Reading -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg category-card">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                                <iconify-icon icon="ph:book-open" class="text-xl text-green-600"></iconify-icon>
+                            </div>
+                            <h3 class="text-xl font-bold">Reading</h3>
+                        </div>
+                        <span id="readingScore" class="text-2xl font-black text-green-600">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-100 rounded-full overflow-hidden mb-4">
+                        <div id="readingBar" class="h-full bg-green-500 rounded-full skill-bar" style="width: 0%"></div>
+                    </div>
+                    <div class="flex gap-2 flex-wrap" id="readingBadges"></div>
+                </div>
+
+                <!-- Writing -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg category-card">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+                                <iconify-icon icon="ph:pen-nib" class="text-xl text-purple-600"></iconify-icon>
+                            </div>
+                            <h3 class="text-xl font-bold">Writing</h3>
+                        </div>
+                        <span id="writingScore" class="text-2xl font-black text-purple-600">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-100 rounded-full overflow-hidden mb-4">
+                        <div id="writingBar" class="h-full bg-purple-500 rounded-full skill-bar" style="width: 0%"></div>
+                    </div>
+                    <div class="flex gap-2 flex-wrap" id="writingBadges"></div>
+                </div>
+
+                <!-- Speaking -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg category-card">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
+                                <iconify-icon icon="ph:microphone" class="text-xl text-orange-600"></iconify-icon>
+                            </div>
+                            <h3 class="text-xl font-bold">Speaking</h3>
+                        </div>
+                        <span id="speakingScore" class="text-2xl font-black text-orange-600">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-100 rounded-full overflow-hidden mb-4">
+                        <div id="speakingBar" class="h-full bg-orange-500 rounded-full skill-bar" style="width: 0%"></div>
+                    </div>
+                    <div class="flex gap-2 flex-wrap" id="speakingBadges"></div>
+                </div>
+            </div>
+
+            <!-- Level Progression Map -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg">
+                <h2 class="text-2xl font-black mb-6 flex items-center gap-3">
+                    <iconify-icon icon="ph:map-trifold" class="text-3xl text-[#8B5CF6]"></iconify-icon>
+                    Your Learning Path
+                </h2>
+
+                <!-- Category Tabs -->
+                <div class="flex gap-2 mb-6 overflow-x-auto">
+                    <button class="category-tab px-6 py-3 rounded-xl font-bold bg-[#FF6B35] text-white" data-category="Listening">Listening</button>
+                    <button class="category-tab px-6 py-3 rounded-xl font-bold bg-gray-100 text-gray-600 hover:bg-gray-200" data-category="Reading">Reading</button>
+                    <button class="category-tab px-6 py-3 rounded-xl font-bold bg-gray-100 text-gray-600 hover:bg-gray-200" data-category="Writing">Writing</button>
+                    <button class="category-tab px-6 py-3 rounded-xl font-bold bg-gray-100 text-gray-600 hover:bg-gray-200" data-category="Speaking">Speaking</button>
+                </div>
+
+                <!-- Level Nodes -->
+                <div id="levelMap" class="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-10 gap-4">
+                    <!-- Dynamically generated -->
+                </div>
+
+                <div class="mt-6 flex items-center gap-6 text-sm">
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-4 rounded-full bg-gradient-to-r from-[#10B981] to-[#059669]"></div>
+                        <span class="font-bold text-gray-600">Completed</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-4 rounded-full bg-gradient-to-r from-[#FF6B35] to-[#F59E0B] current"></div>
+                        <span class="font-bold text-gray-600">Current</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-4 rounded-full bg-gray-200"></div>
+                        <span class="font-bold text-gray-600">Locked</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Results Table -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg">
+                <h2 class="text-2xl font-black mb-6 flex items-center gap-3">
+                    <iconify-icon icon="ph:list-checks" class="text-3xl text-[#8B5CF6]"></iconify-icon>
+                    Recent Test Results
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-gray-100">
+                                <th class="text-left py-4 px-4 font-bold text-gray-400 text-sm uppercase">Test</th>
+                                <th class="text-left py-4 px-4 font-bold text-gray-400 text-sm uppercase">Category</th>
+                                <th class="text-left py-4 px-4 font-bold text-gray-400 text-sm uppercase">Score</th>
+                                <th class="text-left py-4 px-4 font-bold text-gray-400 text-sm uppercase">Band</th>
+                                <th class="text-left py-4 px-4 font-bold text-gray-400 text-sm uppercase">Date</th>
+                                <th class="text-left py-4 px-4 font-bold text-gray-400 text-sm uppercase">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentResultsBody">
+                            <!-- Dynamically generated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Auth check and token management
+        function getToken() {
+            return localStorage.getItem('token');
+        }
+
+        function isLoggedIn() {
+            return !!getToken();
+        }
+
+        // API helper
+        async function apiCall(endpoint, options = {}) {
+            const token = getToken();
+            const headers = {
+                'Content-Type': 'application/json',
+                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+            };
+
+            const response = await fetch(`/api/student${endpoint}`, {
+                ...options,
+                headers
+            });
+
+            if (response.status === 401) {
+                localStorage.removeItem('token');
+                window.location.href = '/login.html';
+                return null;
+            }
+
+            return response.json();
+        }
+
+        // Calculate band score from percentage
+        function percentageToBand(score) {
+            if (score >= 95) return 9.0;
+            if (score >= 90) return 8.5;
+            if (score >= 85) return 8.0;
+            if (score >= 75) return 7.5;
+            if (score >= 65) return 7.0;
+            if (score >= 55) return 6.5;
+            if (score >= 45) return 6.0;
+            if (score >= 35) return 5.5;
+            return 5.0;
+        }
+
+        // Format category name
+        function formatCategory(cat) {
+            return cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase();
+        }
+
+        // Generate level nodes
+        function generateLevelNodes(category, unlocks) {
+            const container = document.getElementById('levelMap');
+            container.innerHTML = '';
+
+            const categoryUnlocks = unlocks.find(u => u.category === category);
+            const maxUnlocked = categoryUnlocks ? categoryUnlocks.maxUnlockedSet : 1;
+
+            for (let i = 1; i <= 10; i++) {
+                const node = document.createElement('div');
+                node.className = 'level-node w-14 h-14 rounded-full flex items-center justify-center font-black text-white shadow-lg';
+
+                if (i < maxUnlocked) {
+                    node.classList.add('completed');
+                    node.innerHTML = `<iconify-icon icon="ph:check" class="text-xl"></iconify-icon>`;
+                } else if (i === maxUnlocked) {
+                    node.classList.add('current');
+                    node.style.background = 'linear-gradient(135deg, #FF6B35 0%, #F59E0B 100%)';
+                    node.textContent = i;
+                } else {
+                    node.classList.add('locked');
+                    node.style.background = '#E5E7EB';
+                    node.style.color = '#9CA3AF';
+                    node.innerHTML = `<iconify-icon icon="ph:lock" class="text-xl"></iconify-icon>`;
+                }
+
+                node.title = `Set ${i} - ${i <= maxUnlocked ? (i < maxUnlocked ? 'Completed' : 'Available') : 'Locked'}`;
+                node.onclick = () => {
+                    if (i <= maxUnlocked) {
+                        window.location.href = `/Tests/practice/${category}/Full/All-parts-Set${i}.html`;
+                    }
+                };
+
+                container.appendChild(node);
+            }
+        }
+
+        // Load dashboard data
+        async function loadDashboard() {
+            if (!isLoggedIn()) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            try {
+                // Fetch all data in parallel
+                const [resultsRes, unlocksRes, snapshotRes, aiAnalysisRes] = await Promise.all([
+                    apiCall('/test-results'),
+                    apiCall('/test-unlocks'),
+                    apiCall('/progress-snapshot'),
+                    apiCall('/progress/ai-analysis')
+                ]);
+
+                const results = resultsRes?.data?.results || [];
+                const unlocks = unlocksRes?.data || [];
+                const snapshot = snapshotRes?.data;
+                const aiAnalysis = aiAnalysisRes?.data;
+
+                // Update stats
+                document.getElementById('testsCompleted').textContent = results.filter(r => r.isCompleted).length;
+
+                const avgScore = results.length > 0
+                    ? results.reduce((sum, r) => sum + r.score, 0) / results.length
+                    : 0;
+                document.getElementById('avgScore').textContent = `${avgScore.toFixed(0)}%`;
+
+                const band = snapshot?.estimatedBand || percentageToBand(avgScore);
+                document.getElementById('overallBand').textContent = band.toFixed(1);
+                document.getElementById('bandProgressPercent').textContent = `${(band / 8 * 100).toFixed(0)}%`;
+                document.getElementById('bandProgressBar').style.width = `${(band / 8 * 100)}%`;
+
+                // Streak
+                document.getElementById('currentStreak').textContent = snapshot?.currentStreak || 0;
+                document.getElementById('bestStreak').innerHTML = `Best: <span class="text-[#FF6B35]">${snapshot?.bestStreak || 0}</span> days`;
+
+                // Category scores
+                const categories = ['Listening', 'Reading', 'Writing', 'Speaking'];
+                categories.forEach(cat => {
+                    const catResults = results.filter(r => r.testCategory === cat && r.isCompleted);
+                    const catAvg = catResults.length > 0
+                        ? catResults.reduce((sum, r) => sum + r.score, 0) / catResults.length
+                        : 0;
+
+                    document.getElementById(`${cat.toLowerCase()}Score`).textContent = `${catAvg.toFixed(0)}%`;
+                    document.getElementById(`${cat.toLowerCase()}Bar`).style.width = `${catAvg}%`;
+                });
+
+                // AI Analysis
+                if (aiAnalysis) {
+                    document.getElementById('aiConclusion').textContent = aiAnalysis.aiConclusion || 'Keep practicing to see your progress trends.';
+                    document.getElementById('aiRecommendation').textContent = aiAnalysis.recommendation || '-';
+                    document.getElementById('progressStatus').textContent = aiAnalysis.isMakingProgress ? 'Making Progress' : 'Needs Attention';
+                    document.getElementById('progressStatus').className = aiAnalysis.isMakingProgress
+                        ? 'font-bold text-green-300'
+                        : 'font-bold text-yellow-300';
+                }
+
+                // Level map
+                generateLevelNodes('Listening', unlocks);
+
+                // Recent results
+                const tbody = document.getElementById('recentResultsBody');
+                tbody.innerHTML = '';
+                results.slice(0, 10).forEach(result => {
+                    const row = document.createElement('tr');
+                    row.className = 'border-b border-gray-50 hover:bg-gray-50';
+                    row.innerHTML = `
+                        <td class="py-4 px-4 font-semibold text-dark">${result.testIdentifier}</td>
+                        <td class="py-4 px-4"><span class="px-3 py-1 rounded-full text-xs font-bold bg-${getCategoryColor(result.testCategory)}-100 text-${getCategoryColor(result.testCategory)}-600">${result.testCategory}</span></td>
+                        <td class="py-4 px-4 font-bold text-${result.score >= 70 ? 'green' : 'red'}-600">${result.score.toFixed(0)}%</td>
+                        <td class="py-4 px-4 font-bold">${percentageToBand(result.score).toFixed(1)}</td>
+                        <td class="py-4 px-4 text-gray-500">${new Date(result.completedAt || result.createdAt).toLocaleDateString()}</td>
+                        <td class="py-4 px-4">${result.isCompleted ? '<span class="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-600">Completed</span>' : '<span class="px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-600">In Progress</span>'}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                // Show content
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('dashboardContent').classList.remove('hidden');
+
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                document.getElementById('loadingState').innerHTML = `
+                    <iconify-icon icon="ph:warning" class="text-4xl text-red-500"></iconify-icon>
+                    <p class="mt-4 text-gray-500">Failed to load progress. Please try again.</p>
+                    <button onclick="location.reload()" class="mt-4 px-6 py-2 bg-[#FF6B35] text-white rounded-xl font-bold">Retry</button>
+                `;
+            }
+        }
+
+        function getCategoryColor(cat) {
+            const colors = {
+                'Listening': 'blue',
+                'Reading': 'green',
+                'Writing': 'purple',
+                'Speaking': 'orange'
+            };
+            return colors[cat] || 'gray';
+        }
+
+        // Tab switching
+        document.querySelectorAll('.category-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.category-tab').forEach(t => {
+                    t.classList.remove('bg-[#FF6B35]', 'text-white');
+                    t.classList.add('bg-gray-100', 'text-gray-600');
+                });
+                tab.classList.remove('bg-gray-100', 'text-gray-600');
+                tab.classList.add('bg-[#FF6B35]', 'text-white');
+
+                const category = tab.dataset.category;
+                apiCall('/test-unlocks?category=' + category).then(res => {
+                    generateLevelNodes(category, res?.data || []);
+                });
+            });
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            window.location.href = '/login.html';
+        });
+
+        // Initialize
+        loadDashboard();
+    </script>
+</body>
+</html>

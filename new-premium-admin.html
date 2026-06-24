@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal | IELTS Practice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://api.fontshare.com/v2/css?f[]=clash-grotesk@700,600,400,900&f[]=satoshi@700,500,400,900&display=swap');
+
+        :root {
+            --lavender-main: #8B5CF6;
+            --brand-orange: #FF6B35;
+            --bg-soft: #F9F5FF;
+            --dark: #111827;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        .font-clash {
+            font-family: 'Clash Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        .font-satoshi {
+            font-family: 'Satoshi', sans-serif;
+        }
+
+        .transition-playful {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .card-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(139, 92, 246, 0.25);
+        }
+
+        .btn-bounce:hover {
+            transform: scale(1.05);
+        }
+
+        .purple-badge { background-color: #F5F1FF; color: #8B5CF6; }
+        .orange-badge  { background-color: #FFF8F5; color: #FF6B35; }
+        .yellow-badge  { background-color: #FFFBEB; color: #D97706; }
+        .blue-badge    { background-color: #EFF6FF; color: #3B82F6; }
+        .pink-badge    { background-color: #FDF2F8; color: #EC4899; }
+        .gray-badge    { background-color: #F3F4F6; color: #4B5563; }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #D4C5E2;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8B5CF6;
+        }
+
+        @keyframes pageFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-enter {
+            animation: pageFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+    </style>
+</head>
+
+<body id="app" v-cloak class="bg-[#F9F5FF] font-satoshi text-[#111827]">
+    <!-- Auth Loading Overlay -->
+    <div id="authOverlay" class="fixed inset-0 z-[100] bg-[#F9F5FF] flex flex-col items-center justify-center gap-6">
+        <div class="relative w-20 h-20">
+            <div class="absolute inset-0 border-4 border-purple-100 rounded-full"></div>
+            <div class="absolute inset-0 border-4 border-[#FF6B35] rounded-full border-t-transparent animate-spin"></div>
+        </div>
+        <p class="font-clash text-2xl font-bold tracking-wide text-gray-800 animate-pulse">Verifying Access...</p>
+    </div>
+
+    <div class="flex h-screen overflow-hidden">
+
+        <!-- Sidebar (Persistent) -->
+        <aside
+            class="w-[280px] bg-white border-r border-purple-50 flex flex-col flex-shrink-0 z-30 shadow-[4px_0_24px_rgba(139,92,246,0.03)]">
+            <!-- Logo -->
+            <div class="h-[88px] flex items-center px-8 border-b border-purple-50 shrink-0">
+                <div class="text-2xl font-black flex items-center uppercase tracking-tighter font-clash">
+                    <span class="text-black border-r-4 border-[#FF6B35] pr-2 mr-2">IELTS</span>
+                    <span class="text-black/60 text-sm tracking-[0.2em] font-bold">ADMIN</span>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex-1 overflow-y-auto py-6 px-5 space-y-1.5">
+                <div class="px-3 text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-4 mt-2">Overview
+                </div>
+
+                <a href="#dashboard" @click.prevent="setPage('dashboard')"
+                    :class="[currentPage === 'dashboard' ? 'bg-[#F5F1FF] text-[#8B5CF6]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900', 'flex items-center gap-3 px-4 py-3.5 rounded-[20px] font-bold transition-playful group']">
+                    <iconify-icon icon="ph:squares-four-bold" class="text-[22px] transition-colors"
+                        :class="[currentPage === 'dashboard' ? 'text-[#8B5CF6]' : 'group-hover:text-[#FF6B35]']"></iconify-icon>
+                    Dashboard
+                </a>
+
+                <div class="px-3 text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-4 mt-8">Work Queue
+                </div>
+
+                <a href="#grading" @click.prevent="setPage('grading')"
+                    :class="[currentPage === 'grading' ? 'bg-[#FFF8F5] text-[#FF6B35]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900', 'flex items-center justify-between px-4 py-3.5 rounded-[20px] font-bold transition-playful group']">
+                    <div class="flex items-center gap-3">
+                        <iconify-icon icon="ph:check-square-offset-bold" class="text-[22px] transition-colors"
+                            :class="[currentPage === 'grading' ? 'text-[#FF6B35]' : 'group-hover:text-[#FF6B35]']"></iconify-icon>
+                        Mock Grading
+                    </div>
+                    <span
+                        class="bg-[#FFF8F5] text-[#FF6B35] text-[10px] px-2 py-0.5 rounded-lg font-black shadow-sm">{{stats.pending}}</span>
+                </a>
+
+                <a href="#tasks" @click.prevent="setPage('tasks')"
+                    :class="[currentPage === 'tasks' ? 'bg-[#F5F1FF] text-[#8B5CF6]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900', 'flex items-center gap-3 px-4 py-3.5 rounded-[20px] font-bold transition-playful group']">
+                    <iconify-icon icon="ph:list-checks-bold" class="text-[22px] transition-colors"
+                        :class="[currentPage === 'tasks' ? 'text-[#8B5CF6]' : 'group-hover:text-[#8B5CF6]']"></iconify-icon>
+                    Task List
+                </a>
+
+                <a href="#users" @click.prevent="setPage('users')"
+                    :class="[currentPage === 'users' ? 'bg-[#F5F1FF] text-[#8B5CF6]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900', 'flex items-center gap-3 px-4 py-3.5 rounded-[20px] font-bold transition-playful group']">
+                    <iconify-icon icon="ph:users-three-bold" class="text-[22px] transition-colors"
+                        :class="[currentPage === 'users' ? 'text-[#8B5CF6]' : 'group-hover:text-[#8B5CF6]']"></iconify-icon>
+                    User Management
+                </a>
+
+                <a href="#practice" @click.prevent="setPage('practice')"
+                    :class="[currentPage === 'practice' ? 'bg-[#FFF8F5] text-[#FF6B35]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900', 'flex items-center gap-3 px-4 py-3.5 rounded-[20px] font-bold transition-playful group']">
+                    <iconify-icon icon="ph:plus-circle-bold" class="text-[22px] transition-colors"
+                        :class="[currentPage === 'practice' ? 'text-[#FF6B35]' : 'group-hover:text-[#FF6B35]']"></iconify-icon>
+                    Add Practice
+                </a>
+
+                <div class="px-3 text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-4 mt-8">Support
+                </div>
+
+                <a href="#system" @click.prevent="setPage('system')"
+                    :class="[currentPage === 'system' ? 'bg-[#F5F1FF] text-[#8B5CF6]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900', 'flex items-center gap-3 px-4 py-3.5 rounded-[20px] font-bold transition-playful group']">
+                    <iconify-icon icon="ph:hard-drives-bold" class="text-[22px] transition-colors"
+                        :class="[currentPage === 'system' ? 'text-[#8B5CF6]' : 'group-hover:text-[#8B5CF6]']"></iconify-icon>
+                    System & Support
+                </a>
+            </nav>
+
+            <!-- User Profile Footer -->
+            <div class="p-5 border-t border-purple-50 shrink-0 bg-white space-y-2">
+                <button @click="isProfileModalOpen = true"
+                    class="w-full flex items-center gap-3 p-3 rounded-[24px] hover:bg-[#F9F5FF] border-2 border-transparent hover:border-purple-100 transition-playful group text-left">
+                    <div
+                        class="w-11 h-11 rounded-xl bg-gradient-to-br from-[#8B5CF6] to-[#7c4dff] text-white flex items-center justify-center font-black text-lg shadow-lg shadow-purple-200 group-hover:scale-105 transition-transform overflow-hidden">
+                        <img v-if="profile.avatar" :src="profile.avatar" class="w-full h-full object-cover">
+                        <span v-else>{{profile.initials}}</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-black text-sm text-gray-900 truncate">{{profile.firstName}}
+                            {{profile.lastName}}</div>
+                        <div class="text-[11px] text-gray-400 font-bold tracking-wide uppercase mt-0.5 truncate">All
+                            permissions</div>
+                    </div>
+                    <iconify-icon icon="ph:caret-up-bold"
+                        class="text-gray-400 group-hover:text-[#8B5CF6]"></iconify-icon>
+                </button>
+                <button @click="logout"
+                    class="w-full flex items-center gap-3 p-3 rounded-[24px] hover:bg-red-50 border-2 border-transparent hover:border-red-100 transition-playful group text-left text-gray-500 hover:text-red-600">
+                    <iconify-icon icon="ph:sign-out-bold" class="text-xl"></iconify-icon>
+                    <span class="font-black text-sm">Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col h-screen overflow-hidden relative">
+
+            <!-- Topbar -->
+            <header
+                class="h-[88px] bg-white/80 backdrop-blur-xl border-b border-purple-50 flex items-center justify-between px-8 lg:px-12 z-20 shrink-0 sticky top-0">
+                <div>
+                    <h1 class="text-2xl lg:text-3xl font-black font-clash tracking-tight text-gray-900 capitalize">
+                        {{currentPage === 'dashboard' ? 'Admin' : currentPage.replace('-', ' ')}} <span
+                            class="text-[#8B5CF6]">{{currentPage === 'dashboard' ? 'Operations' : ''}}</span>
+                    </h1>
+                    <p class="text-sm text-gray-500 font-bold mt-0.5">
+                        {{ currentPage === 'dashboard' ? 'Overview of today\'s platform activity' : 'Manage ' +
+                        currentPage + ' details' }}
+                    </p>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <!-- Global Search -->
+                    <div class="hidden md:flex relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <iconify-icon icon="ph:magnifying-glass-bold"
+                                class="text-gray-400 group-focus-within:text-[#8B5CF6] transition-colors text-lg"></iconify-icon>
+                        </div>
+                        <input type="text"
+                            class="bg-gray-50 border-2 border-transparent focus:border-purple-100 focus:bg-white text-sm font-bold rounded-2xl pl-11 pr-4 py-3 w-64 focus:outline-none transition-all placeholder-gray-400 text-gray-800"
+                            placeholder="Search students, tests...">
+                    </div>
+
+                    <div class="w-px h-8 bg-gray-200 mx-2 hidden md:block"></div>
+
+                    <!-- Notifications -->
+                    <button
+                        class="w-12 h-12 rounded-2xl border-2 border-gray-100 bg-white flex items-center justify-center text-gray-500 hover:border-purple-200 hover:text-[#8B5CF6] hover:bg-[#F5F1FF] transition-playful relative group">
+                        <iconify-icon icon="ph:bell-bold"
+                            class="text-[22px] group-hover:scale-110 transition-transform"></iconify-icon>
+                        <span
+                            class="absolute top-2 right-2 w-3 h-3 bg-[#FF6B35] rounded-full border-2 border-white shadow-sm"></span>
+                    </button>
+
+                    <!-- Quick Add Action -->
+                    <button @click="setPage('practice')"
+                        class="bg-[#111827] text-white w-12 h-12 rounded-2xl flex items-center justify-center hover:bg-[#8B5CF6] transition-playful shadow-lg hover:shadow-purple-200 btn-bounce">
+                        <iconify-icon icon="ph:plus-bold" class="text-xl"></iconify-icon>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Scrollable Pages Content -->
+            <main class="flex-1 overflow-y-auto p-6 lg:p-10 relative">
+                <!-- Decorative Background Element -->
+                <div
+                    class="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-b from-[#8B5CF6]/5 to-transparent rounded-full blur-[100px] pointer-events-none z-0 -translate-y-1/2 translate-x-1/4">
+                </div>
+
+                <div class="max-w-[1440px] mx-auto relative z-10">
+
+                    <!-- ================================================== -->
+                    <!-- 1. DASHBOARD PAGE -->
+                    <!-- ================================================== -->
+                    <div v-show="currentPage === 'dashboard'" class="space-y-10 page-enter">
+                        <!-- Stats Grid -->
+                        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div
+                                class="bg-white rounded-[32px] p-7 shadow-[0_8px_30px_rgba(139,92,246,0.06)] border-2 border-transparent hover:border-orange-100 transition-playful card-lift relative overflow-hidden group">
+                                <div class="absolute top-0 left-0 w-full h-1.5 bg-[#FF6B35]"></div>
+                                <div class="flex items-start justify-between mb-4">
+                                    <div
+                                        class="w-14 h-14 rounded-[20px] bg-[#FFF8F5] text-[#FF6B35] flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-500 shadow-inner">
+                                        <iconify-icon icon="ph:pencil-simple-bold"></iconify-icon>
+                                    </div>
+                                </div>
+                                <div class="text-5xl font-black font-clash text-gray-900 tracking-tight mb-1">
+                                    {{stats.pending}}</div>
+                                <div class="text-sm font-bold text-gray-400 uppercase tracking-wide">Pending Submissions
+                                </div>
+                                <div
+                                    class="mt-4 flex items-center gap-1.5 text-xs font-black text-[#FF6B35] bg-[#FFF8F5] inline-flex px-3 py-1 rounded-lg">
+                                    <iconify-icon icon="ph:trend-up-bold"></iconify-icon> Needs grading today
+                                </div>
+                            </div>
+
+                            <div
+                                class="bg-white rounded-[32px] p-7 shadow-[0_8px_30px_rgba(139,92,246,0.06)] border-2 border-transparent hover:border-purple-100 transition-playful card-lift relative overflow-hidden group">
+                                <div class="absolute top-0 left-0 w-full h-1.5 bg-[#8B5CF6]"></div>
+                                <div class="flex items-start justify-between mb-4">
+                                    <div
+                                        class="w-14 h-14 rounded-[20px] bg-[#F5F1FF] text-[#8B5CF6] flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-500 shadow-inner">
+                                        <iconify-icon icon="ph:users-three-bold"></iconify-icon>
+                                    </div>
+                                </div>
+                                <div class="text-5xl font-black font-clash text-gray-900 tracking-tight mb-1">
+                                    {{stats.users >= 1000 ? (stats.users/1000).toFixed(1) + 'k' : stats.users}}</div>
+                                <div class="text-sm font-bold text-gray-400 uppercase tracking-wide">Total Students
+                                </div>
+                                <div
+                                    class="mt-4 flex items-center gap-1.5 text-xs font-black text-[#8B5CF6] bg-[#F5F1FF] inline-flex px-3 py-1 rounded-lg">
+                                    <iconify-icon icon="ph:trend-up-bold"></iconify-icon> +{{stats.recentSignups}} this week
+                                </div>
+                            </div>
+
+                            <div
+                                class="bg-white rounded-[32px] p-7 shadow-[0_8px_30px_rgba(139,92,246,0.06)] border-2 border-transparent hover:border-pink-100 transition-playful card-lift relative overflow-hidden group">
+                                <div class="absolute top-0 left-0 w-full h-1.5 bg-[#EC4899]"></div>
+                                <div class="flex items-start justify-between mb-4">
+                                    <div
+                                        class="w-14 h-14 rounded-[20px] bg-[#FDF2F8] text-[#EC4899] flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-500 shadow-inner">
+                                        <iconify-icon icon="ph:headset-bold"></iconify-icon>
+                                    </div>
+                                </div>
+                                <div class="text-5xl font-black font-clash text-gray-900 tracking-tight mb-1">
+                                    {{stats.tickets}}</div>
+                                <div class="text-sm font-bold text-gray-400 uppercase tracking-wide">Open Tickets</div>
+                                <div
+                                    class="mt-4 flex items-center gap-1.5 text-xs font-black text-[#EC4899] bg-[#FDF2F8] inline-flex px-3 py-1 rounded-lg">
+                                    <iconify-icon icon="ph:warning-circle-bold"></iconify-icon> Action required
+                                </div>
+                            </div>
+
+                            <div
+                                class="bg-white rounded-[32px] p-7 shadow-[0_8px_30px_rgba(139,92,246,0.06)] border-2 border-transparent hover:border-yellow-100 transition-playful card-lift relative overflow-hidden group">
+                                <div class="absolute top-0 left-0 w-full h-1.5 bg-[#D97706]"></div>
+                                <div class="flex items-start justify-between mb-4">
+                                    <div
+                                        class="w-14 h-14 rounded-[20px] bg-[#FFFBEB] text-[#D97706] flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-500 shadow-inner">
+                                        <iconify-icon icon="ph:flag-bold"></iconify-icon>
+                                    </div>
+                                </div>
+                                <div class="text-5xl font-black font-clash text-gray-900 tracking-tight mb-1">
+                                    {{stats.reports}}</div>
+                                <div class="text-sm font-bold text-gray-400 uppercase tracking-wide">System Reports
+                                </div>
+                                <div
+                                    class="mt-4 flex items-center gap-1.5 text-xs font-black text-[#D97706] bg-[#FFFBEB] inline-flex px-3 py-1 rounded-lg">
+                                    <iconify-icon icon="ph:clock-clockwise-bold"></iconify-icon> Pending review
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                            <div class="xl:col-span-2 space-y-8">
+                                <div
+                                    class="bg-white rounded-[48px] shadow-[0_12px_40px_rgba(139,92,246,0.08)] border border-purple-50/50 p-8 lg:p-10 flex flex-col h-full">
+                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+                                        <div>
+                                            <h2
+                                                class="text-3xl font-black font-clash text-gray-900 tracking-tight mb-1">
+                                                Grading Queue</h2>
+                                            <p class="text-gray-500 font-bold text-sm">Recent submissions waiting for
+                                                examiner review</p>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <span
+                                                class="orange-badge px-4 py-2 rounded-xl font-black uppercase text-xs tracking-wider shadow-sm">{{stats.pending}}
+                                                Pending</span>
+                                            <button @click="setPage('grading')"
+                                                class="bg-white border-2 border-purple-100 text-[#8B5CF6] px-5 py-2.5 rounded-xl font-black hover:bg-[#F5F1FF] hover:border-purple-200 transition-playful text-sm btn-bounce">
+                                                View All
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="overflow-x-auto flex-1">
+                                        <table class="w-full text-left border-collapse min-w-[700px]">
+                                            <thead>
+                                                <tr class="border-b-2 border-gray-100">
+                                                    <th
+                                                        class="pb-5 text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] px-4 whitespace-nowrap">
+                                                        Student</th>
+                                                    <th
+                                                        class="pb-5 text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] px-4 whitespace-nowrap">
+                                                        Test Type</th>
+                                                    <th
+                                                        class="pb-5 text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] px-4 whitespace-nowrap hidden sm:table-cell">
+                                                        Submission</th>
+                                                    <th
+                                                        class="pb-5 text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] px-4 whitespace-nowrap">
+                                                        Status</th>
+                                                    <th
+                                                        class="pb-5 text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] px-4 whitespace-nowrap text-right">
+                                                        Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="text-sm">
+                                                <tr v-for="student in gradingQueue.slice(0,3)" :key="student.id"
+                                                    :class="[student.status === 'Graded' ? 'opacity-60 hover:opacity-100' : '']"
+                                                    class="border-b border-gray-50 hover:bg-[#F9F5FF]/50 transition-colors group">
+                                                    <td class="py-5 px-4">
+                                                        <div class="flex items-center gap-4">
+                                                            <div :class="student.color"
+                                                                class="w-12 h-12 rounded-2xl bg-gradient-to-br text-white flex items-center justify-center font-black text-lg shadow-md shrink-0">
+                                                                {{student.initial}}</div>
+                                                            <div>
+                                                                <div class="font-black text-gray-900 text-base">
+                                                                    {{student.name}}</div>
+                                                                <div class="text-xs text-gray-500 font-bold mt-0.5">
+                                                                    {{student.plan}}</div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="py-5 px-4">
+                                                        <span :class="student.typeClass"
+                                                            class="px-3 py-1.5 rounded-lg font-bold text-xs whitespace-nowrap">{{student.type}}</span>
+                                                    </td>
+                                                    <td class="py-5 px-4 hidden sm:table-cell">
+                                                        <div class="font-bold text-gray-700 truncate max-w-[150px]">
+                                                            {{student.title}}</div>
+                                                        <div class="text-xs text-gray-400 font-bold mt-0.5">
+                                                            {{student.time}}</div>
+                                                    </td>
+                                                    <td class="py-5 px-4">
+                                                        <span v-if="student.status === 'Pending'"
+                                                            class="orange-badge px-3 py-1.5 rounded-lg font-bold text-xs flex items-center w-max gap-1.5">
+                                                            <span class="w-1.5 h-1.5 rounded-full bg-[#FF6B35]"></span>
+                                                            Pending
+                                                        </span>
+                                                        <span v-else
+                                                            class="bg-[#ECFDF5] text-[#10B981] px-3 py-1.5 rounded-lg font-bold text-xs flex items-center w-max gap-1.5">
+                                                            <iconify-icon icon="ph:check-circle-bold"></iconify-icon>
+                                                            Graded
+                                                        </span>
+                                                    </td>
+                                                    <td class="py-5 px-4 text-right">
+                                                        <button v-if="student.status === 'Pending'"
+                                                            @click="openGrading(student)"
+                                                            class="bg-[#8B5CF6] text-white px-6 py-2.5 rounded-xl font-black text-sm hover:bg-[#7c4dff] btn-bounce transition-playful shadow-lg shadow-purple-200 whitespace-nowrap">
+                                                            Grade
+                                                        </button>
+                                                        <button v-else
+                                                            class="bg-white border-2 border-gray-200 text-gray-600 px-6 py-2.5 rounded-xl font-black text-sm hover:border-gray-300 hover:bg-gray-50 transition-playful whitespace-nowrap">
+                                                            View
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-8 flex flex-col">
+                                <div
+                                    class="bg-[#111827] rounded-[48px] p-8 lg:p-10 text-white shadow-2xl shadow-gray-900/50 relative overflow-hidden shrink-0">
+                                    <div
+                                        class="absolute top-0 right-0 w-48 h-48 bg-[#8B5CF6]/30 rounded-full blur-[60px] transform translate-x-1/3 -translate-y-1/4">
+                                    </div>
+                                    <div
+                                        class="absolute bottom-0 left-0 w-40 h-40 bg-[#FF6B35]/20 rounded-full blur-[50px] transform -translate-x-1/4 translate-y-1/4">
+                                    </div>
+
+                                    <div class="relative z-10">
+                                        <h3 class="text-2xl font-black font-clash tracking-tight mb-2">Daily Target</h3>
+                                        <p class="text-gray-400 font-bold text-sm mb-8">Your progress for today's tasks
+                                        </p>
+
+                                        <div class="flex items-center gap-6 mb-8">
+                                            <div class="relative w-[100px] h-[100px] shrink-0">
+                                                <svg class="w-full h-full transform -rotate-90 drop-shadow-[0_0_15px_rgba(139,92,246,0.3)]"
+                                                    viewBox="0 0 100 100">
+                                                    <circle cx="50" cy="50" r="40" stroke="rgba(255,255,255,0.05)"
+                                                        stroke-width="14" fill="none" />
+                                                    <circle cx="50" cy="50" r="40" stroke="url(#grad1)"
+                                                        stroke-width="14" fill="none" stroke-linecap="round"
+                                                        class="transition-all duration-500 ease-out"
+                                                        :stroke-dasharray="251.2"
+                                                        :stroke-dashoffset="taskProgressStroke" />
+                                                    <defs>
+                                                        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                            <stop offset="0%" stop-color="#8B5CF6" />
+                                                            <stop offset="100%" stop-color="#FF6B35" />
+                                                        </linearGradient>
+                                                    </defs>
+                                                </svg>
+                                                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                                    <span
+                                                        class="text-3xl font-black font-clash leading-none tracking-tighter">{{taskProgress}}<span
+                                                            class="text-lg text-gray-400">%</span></span>
+                                                </div>
+                                            </div>
+                                            <div class="flex-1">
+                                                <div class="text-xl font-black mb-1.5 text-white">{{taskProgress === 100
+                                                    ? 'All done! 🎉' : 'Great pace! 🚀'}}</div>
+                                                <div class="text-sm text-gray-400 font-bold">
+                                                    <span class="text-white">{{tasks.filter(t => t.done).length}}</span>
+                                                    of {{tasks.length}} tasks completed
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button @click="setPage('tasks')"
+                                            class="w-full bg-gradient-to-r from-[#8B5CF6] to-[#7c4dff] text-white font-black py-4 rounded-2xl btn-bounce transition-playful shadow-[0_8px_20px_rgba(139,92,246,0.3)] text-sm tracking-wide">
+                                            Open Task List
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="bg-white rounded-[48px] shadow-[0_12px_40px_rgba(139,92,246,0.08)] border border-purple-50/50 p-8 lg:p-10 flex-1 flex flex-col">
+                                    <div class="flex items-center justify-between mb-8">
+                                        <h2 class="text-2xl font-black font-clash text-gray-900 tracking-tight">System
+                                            Reports</h2>
+                                        <button
+                                            class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-500 hover:bg-[#F5F1FF] hover:text-[#8B5CF6] transition-playful">
+                                            <iconify-icon icon="ph:dots-three-bold" class="text-xl"></iconify-icon>
+                                        </button>
+                                    </div>
+
+                                    <div class="space-y-3">
+                                        <div v-for="report in reports" :key="report.id"
+                                            class="flex gap-4 items-start p-4 rounded-[24px] hover:bg-[#F5F1FF] border-2 border-transparent hover:border-purple-100 transition-playful group cursor-pointer">
+                                            <div :class="report.level === 'High' ? 'bg-[#FDF2F8] text-[#EC4899]' : 'bg-[#FFFBEB] text-[#D97706]'"
+                                                class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5">
+                                                <iconify-icon :icon="report.icon" class="text-lg"></iconify-icon>
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-center gap-2 mb-1">
+                                                    <span
+                                                        class="text-xs font-black text-gray-800 uppercase tracking-widest">{{report.id}}</span>
+                                                    <span
+                                                        :class="report.level === 'High' ? 'bg-[#EC4899] text-white' : 'bg-[#FFFBEB] text-[#D97706]'"
+                                                        class="text-[10px] font-black uppercase px-2 py-0.5 rounded-md shadow-sm tracking-widest">{{report.level}}</span>
+                                                </div>
+                                                <div
+                                                    class="text-sm font-black text-gray-900 group-hover:text-[#8B5CF6] transition-colors truncate">
+                                                    {{report.text}}</div>
+                                                <div class="text-xs text-gray-500 mt-1.5 font-bold">{{report.details}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- ================================================== -->
+                    <!-- 2. MOCK GRADING PAGE -->
+                    <!-- ================================================== -->
+                    <div v-show="currentPage === 'grading'" class="space-y-8 page-enter">
+                        <div
+                            class="bg-white rounded-[48px] shadow-[0_12px_40px_rgba(139,92,246,0.08)] border border-purple-50/50 p-8 lg:p-10 flex flex-col h-full min-h-[600px]">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+                                <div>
+                                    <h2 class="text-3xl font-black font-clash text-gray-900 tracking-tight mb-1">All
+                                        Submissions</h2>
+                                    <p class="text-gray-500 font-bold text-sm">Review and score student practice tests
+                                    </p>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span
+                                        class="orange-badge px-4 py-2 rounded-xl font-black uppercase text-xs tracking-wider shadow-sm">{{stats.pending}}
+                                        Pending</span>
+                                </div>
+                            </div>
+
+                            <div class="overflow-x-auto flex-1">
+                                <table class="w-full text-left border-collapse min-w-[800px]">
+                                    <thead>
+                                        <tr class="border-b-2 border-gray-100">
+                                            <th
+                                                class="pb-5 text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] px-4 whitespace-nowrap">
+                                                Student</th>
+                                            <th
+                                                class="pb-5 text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] px-4 whitespace-nowrap">
+                                                Test Type</th>
+                                            <th
+                                                class="pb-5 text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] px-4 whitespace-nowrap">
+                                                Title & Time</th>
+                                            <th
+                                                class="pb-5 text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] px-4 whitespace-nowrap">
+                                                Status</th>
+                                            <th
+                                                class="pb-5 text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] px-4 whitespace-nowrap text-right">
+                                                Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-sm">
+                                        <tr v-for="student in gradingQueue" :key="student.id"
+                                            :class="[student.status === 'Graded' ? 'opacity-60 hover:opacity-100' : '']"
+                                            class="border-b border-gray-50 hover:bg-[#F9F5FF]/50 transition-colors group">
+                                            <td class="py-5 px-4">
+                                                <div class="flex items-center gap-4">
+                                                    <div :class="student.color"
+                                                        class="w-12 h-12 rounded-2xl bg-gradient-to-br text-white flex items-center justify-center font-black text-lg shadow-md shrink-0">
+                                                        {{student.initial}}</div>
+                                                    <div>
+                                                        <div class="font-black text-gray-900 text-base">{{student.name}}
+                                                        </div>
+                                                        <div class="text-xs text-gray-500 font-bold mt-0.5">
+                                                            {{student.plan}}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="py-5 px-4">
+                                                <span :class="student.typeClass"
+                                                    class="px-3 py-1.5 rounded-lg font-bold text-xs whitespace-nowrap">{{student.type}}</span>
+                                            </td>
+                                            <td class="py-5 px-4">
+                                                <div class="font-bold text-gray-700 truncate max-w-[200px]">
+                                                    {{student.title}}</div>
+                                                <div class="text-xs text-gray-400 font-bold mt-0.5">{{student.time}}
+                                                </div>
+                                            </td>
+                                            <td class="py-5 px-4">
+                                                <span v-if="student.status === 'Pending'"
+                                                    class="orange-badge px-3 py-1.5 rounded-lg font-bold text-xs flex items-center w-max gap-1.5">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-[#FF6B35]"></span> Pending
+                                                </span>
+                                                <span v-else
+                                                    class="bg-[#ECFDF5] text-[#10B981] px-3 py-1.5 rounded-lg font-bold text-xs flex items-center w-max gap-1.5">
+                                                    <iconify-icon icon="ph:check-circle-bold"></iconify-icon> Graded
+                                                </span>
+                                            </td>
+                                            <td class="py-5 px-4 text-right">
+                                                <button v-if="student.status === 'Pending'"
+                                                    @click="openGrading(student)"
+                                                    class="bg-[#8B5CF6] text-white px-6 py-2.5 rounded-xl font-black text-sm hover:bg-[#7c4dff] btn-bounce transition-playful shadow-lg shadow-purple-200 whitespace-nowrap">
+                                                    Grade
+                                                </button>
+                                                <button v-else
+                                                    class="bg-white border-2 border-gray-200 text-gray-600 px-6 py-2.5 rounded-xl font-black text-sm hover:border-gray-300 hover:bg-gray-50 transition-playful whitespace-nowrap">
+                                                    View
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ================================================== -->
+                    <!-- 3. TASKS PAGE -->
+                    <!-- ================================================== -->
+                    <div v-show="currentPage === 'tasks'" class="space-y-8 page-enter">
+                        <div class="flex flex-col lg:flex-row gap-8">
+                            <div
+                                class="bg-gradient-to-br from-[#111827] to-[#1f2937] rounded-[40px] p-10 text-white shadow-2xl shadow-gray-900/30 flex flex-col sm:flex-row lg:flex-col xl:flex-row items-center justify-center gap-8 shrink-0 lg:w-[400px]">
+                                <div class="relative w-[120px] h-[120px] shrink-0">
+                                    <svg class="w-full h-full transform -rotate-90 drop-shadow-[0_0_15px_rgba(139,92,246,0.3)]"
+                                        viewBox="0 0 100 100">
+                                        <circle cx="50" cy="50" r="40" stroke="rgba(255,255,255,0.05)" stroke-width="14"
+                                            fill="none" />
+                                        <circle cx="50" cy="50" r="40" stroke="url(#grad2)" stroke-width="14"
+                                            fill="none" stroke-linecap="round"
+                                            class="transition-all duration-700 ease-out" :stroke-dasharray="251.2"
+                                            :stroke-dashoffset="taskProgressStroke" />
+                                        <defs>
+                                            <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <stop offset="0%" stop-color="#8B5CF6" />
+                                                <stop offset="100%" stop-color="#FF6B35" />
+                                            </linearGradient>
+                                        </defs>
+                                    </svg>
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                        <span
+                                            class="text-3xl font-black font-clash leading-none tracking-tighter">{{taskProgress}}<span
+                                                class="text-lg text-gray-400">%</span></span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-black font-clash mb-1">Completion</h3>
+                                    <p class="text-gray-400 font-bold text-sm">{{tasks.filter(t => t.done).length}} of
+                                        {{tasks.length}} tasks done</p>
+                                </div>
+                            </div>
+
+                            <div
+                                class="bg-white rounded-[40px] p-8 lg:p-10 shadow-[0_12px_40px_rgba(139,92,246,0.08)] border border-purple-50/50 flex-1">
+                                <div class="flex items-center justify-between mb-8">
+                                    <h2 class="text-2xl font-black font-clash text-gray-900 tracking-tight">Your Tasks
+                                    </h2>
+                                    <button @click="addTaskPrompt"
+                                        class="w-10 h-10 bg-[#F5F1FF] text-[#8B5CF6] hover:bg-[#8B5CF6] hover:text-white rounded-xl flex items-center justify-center font-black transition-colors">
+                                        <iconify-icon icon="ph:plus-bold"></iconify-icon>
+                                    </button>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <div v-for="task in tasks" :key="task.id"
+                                        class="flex items-center gap-5 p-5 rounded-[24px] border-2 transition-all cursor-pointer group"
+                                        :class="[task.done ? 'bg-gray-50 border-transparent opacity-60' : 'bg-white border-gray-100 hover:border-purple-200']"
+                                        @click="toggleTask(task)">
+                                        <div :class="[task.done ? 'bg-[#10B981] border-[#10B981] text-white' : 'border-gray-300 text-transparent group-hover:border-[#8B5CF6]']"
+                                            class="w-7 h-7 rounded-xl border-2 flex items-center justify-center transition-colors shrink-0">
+                                            <iconify-icon icon="ph:check-bold" class="text-sm"></iconify-icon>
+                                        </div>
+
+                                        <div class="flex-1 min-w-0">
+                                            <div class="font-black text-base text-gray-900 truncate transition-all"
+                                                :class="{'line-through': task.done}">{{task.title}}</div>
+                                            <div class="flex items-center gap-3 mt-1.5">
+                                                <span
+                                                    class="text-[10px] font-black uppercase tracking-widest text-gray-500">{{task.type}}</span>
+                                                <span class="w-1 h-1 rounded-full bg-gray-300"></span>
+                                                <span
+                                                    class="text-[10px] font-black uppercase tracking-widest text-gray-400">Due
+                                                    {{task.due}}</span>
+                                            </div>
+                                        </div>
+
+                                        <span v-if="!task.done"
+                                            :class="{'bg-[#FDF2F8] text-[#EC4899]': task.priority === 'High', 'bg-[#FFFBEB] text-[#D97706]': task.priority === 'Med'}"
+                                            class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest shadow-sm shrink-0">
+                                            {{task.priority}}
+                                        </span>
+                                        <button @click.stop="deleteTask(task)"
+                                            class="text-gray-300 hover:text-red-500 transition-colors shrink-0 ml-1 opacity-0 group-hover:opacity-100"
+                                            title="Delete task">
+                                            <iconify-icon icon="ph:trash-bold" class="text-lg"></iconify-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ================================================== -->
+                    <!-- 4. USERS PAGE -->
+                    <!-- ================================================== -->
+                    <div v-show="currentPage === 'users'" class="space-y-8 page-enter">
+                        <div
+                            class="bg-white rounded-[40px] p-8 lg:p-10 shadow-[0_12px_40px_rgba(139,92,246,0.08)] border border-purple-50/50">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                                <div class="flex items-center gap-4">
+                                    <h2 class="text-3xl font-black font-clash text-gray-900 tracking-tight">User Management</h2>
+                                    <div class="flex items-center gap-2 bg-[#F5F1FF] text-[#8B5CF6] px-4 py-2 rounded-2xl">
+                                        <iconify-icon icon="ph:users-bold" class="text-lg"></iconify-icon>
+                                        <span class="font-black text-sm">{{ stats.users || users.length }} Total Users</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div class="relative">
+                                        <div
+                                            class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <iconify-icon icon="ph:magnifying-glass-bold"
+                                                class="text-gray-400"></iconify-icon>
+                                        </div>
+                                        <input type="text" v-model="userSearch"
+                                            class="bg-gray-50 border-2 border-transparent focus:border-purple-200 rounded-xl pl-11 pr-4 py-2.5 font-bold text-sm outline-none transition-colors w-64"
+                                            placeholder="Search users...">
+                                    </div>
+                                    <button @click="loadUsers"
+                                        class="bg-gray-100 text-gray-700 px-5 py-2.5 rounded-xl font-black hover:bg-gray-200 transition-playful flex items-center gap-2">
+                                        <iconify-icon icon="ph:arrows-clockwise-bold"></iconify-icon> Refresh
+                                    </button>
+                                    <button @click="addUserPrompt"
+                                        class="bg-[#111827] text-white px-5 py-2.5 rounded-xl font-black hover:bg-[#8B5CF6] transition-playful shadow-lg flex items-center gap-2">
+                                        <iconify-icon icon="ph:user-plus-bold"></iconify-icon> Add User
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse min-w-[800px]">
+                                    <thead>
+                                        <tr class="border-b-2 border-gray-100">
+                                            <th
+                                                class="pb-5 text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] px-4">
+                                                User</th>
+                                            <th
+                                                class="pb-5 text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] px-4">
+                                                Email</th>
+                                            <th
+                                                class="pb-5 text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] px-4">
+                                                Plan</th>
+                                            <th
+                                                class="pb-5 text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] px-4">
+                                                Joined</th>
+                                            <th
+                                                class="pb-5 text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] px-4">
+                                                Status</th>
+                                            <th
+                                                class="pb-5 text-[11px] font-black text-gray-400 uppercase tracking-[0.15em] px-4 text-right">
+                                                Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-sm">
+                                        <tr v-for="u in filteredUsers" :key="u.id"
+                                            class="border-b border-gray-50 hover:bg-[#F9F5FF]/50 transition-colors">
+                                            <td class="py-5 px-4">
+                                                <div class="flex items-center gap-4">
+                                                    <div :class="u.color"
+                                                        class="w-10 h-10 rounded-[14px] bg-gradient-to-br text-white flex items-center justify-center font-black shadow-md shrink-0">
+                                                        {{u.initial}}
+                                                    </div>
+                                                    <div class="font-black text-gray-900">{{u.name}}</div>
+                                                </div>
+                                            </td>
+                                            <td class="py-5 px-4 font-bold text-gray-500">{{u.email}}</td>
+                                            <td class="py-5 px-4">
+                                                <span
+                                                    :class="u.plan === 'Premium' ? 'bg-[#F5F1FF] text-[#8B5CF6]' : 'bg-gray-100 text-gray-600'"
+                                                    class="px-3 py-1.5 rounded-lg font-black text-[10px] uppercase tracking-widest whitespace-nowrap">
+                                                    {{u.plan}}
+                                                </span>
+                                            </td>
+                                            <td class="py-5 px-4 font-bold text-gray-400 text-xs">{{u.joined}}</td>
+                                            <td class="py-5 px-4">
+                                                <span
+                                                    :class="u.status === 'Active' ? 'text-[#10B981]' : 'text-[#EC4899]'"
+                                                    class="font-black text-xs flex items-center gap-1.5">
+                                                    <span
+                                                        :class="u.status === 'Active' ? 'bg-[#10B981]' : 'bg-[#EC4899]'"
+                                                        class="w-1.5 h-1.5 rounded-full"></span> {{u.status}}
+                                                </span>
+                                            </td>
+                                            <td class="py-5 px-4 text-right">
+                                                <div class="flex items-center justify-end gap-2">
+                                                    <button
+                                                        class="w-8 h-8 rounded-lg bg-gray-50 text-gray-500 hover:bg-[#F5F1FF] hover:text-[#8B5CF6] flex items-center justify-center transition-colors">
+                                                        <iconify-icon icon="ph:pencil-simple-bold"></iconify-icon>
+                                                    </button>
+                                                    <button
+                                                        class="w-8 h-8 rounded-lg bg-gray-50 text-gray-500 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition-colors">
+                                                        <iconify-icon icon="ph:ban-bold"></iconify-icon>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr v-if="filteredUsers.length === 0">
+                                            <td colspan="6" class="text-center py-10 text-gray-500 font-bold">No users
+                                                found matching "{{userSearch}}".</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ================================================== -->
+                    <!-- 5. ADD PRACTICE PAGE -->
+                    <!-- ================================================== -->
+                    <div id="page-practice" v-show="currentPage === 'practice'" class="space-y-8 page-enter">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h2 class="text-3xl font-black font-clash text-gray-900 tracking-tight">Create Practice
+                                    Test</h2>
+                                <p class="text-gray-500 font-bold text-sm">Build new tests manually or extract with AI
+                                </p>
+                            </div>
+                            <button @click="isAiModalOpen = true"
+                                class="bg-gradient-to-r from-[#8B5CF6] to-[#7c4dff] text-white px-6 py-3 rounded-2xl font-black shadow-lg shadow-purple-200 btn-bounce flex items-center gap-2">
+                                ✨ AI Magic Paste
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div
+                                class="bg-white rounded-[32px] p-8 shadow-[0_12px_40px_rgba(139,92,246,0.08)] border border-purple-50/50">
+                                <h3 class="text-xl font-black font-clash mb-6">Test Details</h3>
+                                <div class="space-y-5">
+                                    <div>
+                                        <label
+                                            class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Test
+                                            Title</label>
+                                        <input id="ptTitle" type="text"
+                                            class="w-full bg-gray-50 border-2 border-transparent focus:border-purple-200 rounded-xl px-4 py-3 font-bold text-sm outline-none transition-colors"
+                                            placeholder="e.g. IELTS Academic Reading Test 7">
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label
+                                                class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Skill</label>
+                                            <select id="ptSkill"
+                                                class="w-full bg-gray-50 border-2 border-transparent focus:border-purple-200 rounded-xl px-4 py-3 font-bold text-sm outline-none transition-colors">
+                                                <option>Reading</option>
+                                                <option>Listening</option>
+                                                <option>Writing</option>
+                                                <option>Speaking</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Duration
+                                                (min)</label>
+                                            <input id="ptDuration" type="number"
+                                                class="w-full bg-gray-50 border-2 border-transparent focus:border-purple-200 rounded-xl px-4 py-3 font-bold text-sm outline-none transition-colors"
+                                                placeholder="60">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                class="bg-white rounded-[32px] p-8 shadow-[0_12px_40px_rgba(139,92,246,0.08)] border border-purple-50/50">
+                                <h3 class="text-xl font-black font-clash mb-6">Instructions & Passage</h3>
+                                <div class="space-y-5">
+                                    <div>
+                                        <label
+                                            class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Student
+                                            Instructions</label>
+                                        <textarea id="ptInstructions"
+                                            class="w-full bg-gray-50 border-2 border-transparent focus:border-purple-200 rounded-xl px-4 py-3 font-bold text-sm outline-none transition-colors h-24 resize-none"
+                                            placeholder="Read the passage carefully..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-white rounded-[32px] p-8 shadow-[0_12px_40px_rgba(139,92,246,0.08)] border border-purple-50/50">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                                <h3 class="text-xl font-black font-clash">Questions ({{questions.length}})</h3>
+                                <div class="flex flex-wrap gap-3">
+                                    <button @click="addQuestion('Multiple Choice')"
+                                        class="bg-[#F5F1FF] text-[#8B5CF6] hover:bg-[#8B5CF6] hover:text-white px-4 py-2 rounded-xl font-black text-xs transition-colors flex items-center gap-1.5">
+                                        <iconify-icon icon="ph:list-dashes-bold"></iconify-icon> Multiple Choice
+                                    </button>
+                                    <button @click="addQuestion('True/False')"
+                                        class="bg-[#FFF8F5] text-[#FF6B35] hover:bg-[#FF6B35] hover:text-white px-4 py-2 rounded-xl font-black text-xs transition-colors flex items-center gap-1.5">
+                                        <iconify-icon icon="ph:check-square-offset-bold"></iconify-icon> True/False
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div v-if="questions.length === 0"
+                                class="text-center py-12 border-2 border-dashed border-gray-200 rounded-[24px]">
+                                <div
+                                    class="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-300 text-3xl mx-auto mb-4">
+                                    <iconify-icon icon="ph:question-bold"></iconify-icon>
+                                </div>
+                                <div class="text-lg font-black text-gray-800">No questions added</div>
+                                <p class="text-gray-500 font-bold text-sm mt-1">Add questions manually or use AI to
+                                    extract from text.</p>
+                            </div>
+
+                            <div class="space-y-6">
+                                <div v-for="(q, index) in questions" :key="q.id"
+                                    class="bg-gray-50 rounded-[24px] p-6 border-2 border-transparent focus-within:border-purple-200 transition-colors">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <span
+                                            class="text-sm font-black text-[#8B5CF6] tracking-widest uppercase">Q{{index
+                                            + 1}} — {{q.type}}</span>
+                                        <button @click="removeQuestion(index)"
+                                            class="text-gray-400 hover:text-red-500 transition-colors">
+                                            <iconify-icon icon="ph:trash-bold" class="text-xl"></iconify-icon>
+                                        </button>
+                                    </div>
+                                    <input type="text" v-model="q.text"
+                                        class="w-full bg-white border border-gray-200 focus:border-purple-300 rounded-xl px-4 py-3 font-bold text-sm outline-none transition-colors mb-4"
+                                        placeholder="Enter question text...">
+
+                                    <div v-if="q.type === 'Multiple Choice'"
+                                        class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        <div v-for="(opt, i) in q.options" :key="i" class="flex items-center gap-3">
+                                            <div
+                                                class="w-8 h-8 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-xs font-black text-gray-500 shrink-0">
+                                                {{String.fromCharCode(65 + i)}}</div>
+                                            <input type="text" v-model="q.options[i]"
+                                                class="flex-1 bg-white border border-gray-200 focus:border-purple-300 rounded-xl px-3 py-2 font-bold text-sm outline-none transition-colors"
+                                                :placeholder="'Option ' + String.fromCharCode(65 + i)">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-8 pt-8 border-t border-gray-100 flex justify-end">
+                                <button @click="savePracticeTest"
+                                    class="bg-[#111827] text-white px-8 py-3 rounded-2xl font-black hover:bg-[#8B5CF6] transition-playful btn-bounce shadow-lg">
+                                    Save Practice Test
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ================================================== -->
+                    <!-- 6. SYSTEM & SUPPORT PAGE -->
+                    <!-- ================================================== -->
+                    <div v-show="currentPage === 'system'" class="space-y-8 page-enter">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div
+                                class="bg-white rounded-[40px] p-8 lg:p-10 shadow-[0_12px_40px_rgba(139,92,246,0.08)] border border-purple-50/50">
+                                <h2 class="text-2xl font-black font-clash text-gray-900 tracking-tight mb-8">System
+                                    Health</h2>
+                                <div class="space-y-6">
+                                    <div v-for="(check, i) in healthChecks" :key="i"
+                                        class="flex items-center justify-between p-4 rounded-[24px] bg-gray-50 border-2 border-transparent hover:border-purple-100 transition-colors">
+                                        <div class="flex items-center gap-4">
+                                            <div :class="check.color"
+                                                class="w-3 h-3 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.2)] shadow-current shrink-0">
+                                            </div>
+                                            <div>
+                                                <div class="font-black text-gray-900 text-sm">{{check.name}}</div>
+                                                <div class="text-xs text-gray-500 font-bold mt-0.5">{{check.sub}}</div>
+                                            </div>
+                                        </div>
+                                        <span
+                                            :class="check.status === 'Online' || check.status === 'Healthy' ? 'bg-[#ECFDF5] text-[#10B981]' : 'bg-[#FFFBEB] text-[#D97706]'"
+                                            class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest shrink-0 ml-2">
+                                            {{check.status}}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                class="bg-white rounded-[40px] p-8 lg:p-10 shadow-[0_12px_40px_rgba(139,92,246,0.08)] border border-purple-50/50">
+                                <div class="flex items-center justify-between mb-8">
+                                    <h2 class="text-2xl font-black font-clash text-gray-900 tracking-tight">Support
+                                        Tickets</h2>
+                                    <span
+                                        class="bg-[#FDF2F8] text-[#EC4899] px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest">{{tickets.length}}
+                                        Open</span>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <div v-for="ticket in tickets" :key="ticket.id"
+                                        class="p-5 rounded-[24px] border-2 border-gray-100 hover:border-purple-200 transition-colors cursor-pointer group">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <div class="flex items-center gap-2">
+                                                <span
+                                                    class="text-xs font-black text-[#8B5CF6] uppercase tracking-widest">{{ticket.id}}</span>
+                                                <span class="text-xs font-bold text-gray-400">•</span>
+                                                <span class="text-xs font-black text-gray-600">{{ticket.user}}</span>
+                                            </div>
+                                            <span
+                                                class="text-[10px] font-black text-gray-400 tracking-widest uppercase">{{ticket.time}}</span>
+                                        </div>
+                                        <div class="font-black text-gray-900 text-sm mb-3">{{ticket.issue}}</div>
+                                        <div class="flex items-center justify-between">
+                                            <span
+                                                :class="ticket.priority === 'High' ? 'text-[#EC4899]' : 'text-[#D97706]'"
+                                                class="text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5">
+                                                <span
+                                                    :class="ticket.priority === 'High' ? 'bg-[#EC4899]' : 'bg-[#D97706]'"
+                                                    class="w-1.5 h-1.5 rounded-full"></span> {{ticket.priority}}
+                                                Priority
+                                            </span>
+                                            <button
+                                                class="text-xs font-black text-[#8B5CF6] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                                                Reply <iconify-icon icon="ph:arrow-right-bold"></iconify-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- ================================================== -->
+    <!-- MODALS -->
+    <!-- ================================================== -->
+
+    <!-- Grading Modal -->
+    <div v-show="isGradingModalOpen" style="display: none;"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-[#111827]/40 backdrop-blur-sm transition-opacity"
+            @click="isGradingModalOpen = false"></div>
+        <div
+            class="bg-white rounded-[40px] shadow-2xl w-full max-w-lg relative z-10 p-8 transform transition-all page-enter">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-black font-clash">Grade Submission</h3>
+                <button @click="isGradingModalOpen = false"
+                    class="w-10 h-10 bg-gray-50 text-gray-500 hover:bg-red-50 hover:text-red-500 rounded-xl flex items-center justify-center transition-colors">
+                    <iconify-icon icon="ph:x-bold" class="text-lg"></iconify-icon>
+                </button>
+            </div>
+
+            <div class="bg-gray-50 p-4 rounded-2xl mb-6">
+                <div class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Student</div>
+                <div class="font-black text-gray-900 text-lg">{{activeGrading?.name}}</div>
+                <div class="text-sm font-bold text-[#8B5CF6] mt-1">{{activeGrading?.title}}</div>
+            </div>
+
+            <div class="space-y-4 mb-8">
+                <div class="flex items-center gap-4">
+                    <label class="w-32 text-xs font-black text-gray-500 uppercase tracking-widest">Task Achiev.</label>
+                    <input type="range" v-model="scores.ta" min="0" max="9" step="0.5" class="flex-1 accent-[#8B5CF6]">
+                    <span class="w-8 text-right font-black text-[#8B5CF6]">{{scores.ta}}</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <label class="w-32 text-xs font-black text-gray-500 uppercase tracking-widest">Coherence</label>
+                    <input type="range" v-model="scores.cc" min="0" max="9" step="0.5" class="flex-1 accent-[#8B5CF6]">
+                    <span class="w-8 text-right font-black text-[#8B5CF6]">{{scores.cc}}</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <label class="w-32 text-xs font-black text-gray-500 uppercase tracking-widest">Lexical Res.</label>
+                    <input type="range" v-model="scores.lr" min="0" max="9" step="0.5" class="flex-1 accent-[#8B5CF6]">
+                    <span class="w-8 text-right font-black text-[#8B5CF6]">{{scores.lr}}</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <label class="w-32 text-xs font-black text-gray-500 uppercase tracking-widest">Grammar</label>
+                    <input type="range" v-model="scores.gra" min="0" max="9" step="0.5" class="flex-1 accent-[#8B5CF6]">
+                    <span class="w-8 text-right font-black text-[#8B5CF6]">{{scores.gra}}</span>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Examiner
+                    Feedback</label>
+                <textarea
+                    class="w-full bg-gray-50 border-2 border-transparent focus:border-purple-200 rounded-xl px-4 py-3 font-bold text-sm outline-none transition-colors h-24 resize-none"
+                    placeholder="Provide constructive feedback..."></textarea>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-gray-100 flex justify-end gap-3">
+                <button @click="isGradingModalOpen = false"
+                    class="px-6 py-3 font-black text-gray-500 hover:bg-gray-50 rounded-2xl transition-colors">Cancel</button>
+                <button @click="submitGrade"
+                    class="bg-[#8B5CF6] text-white px-8 py-3 rounded-2xl font-black hover:bg-[#7c4dff] btn-bounce transition-playful shadow-lg shadow-purple-200">Submit
+                    Grade</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div v-show="isProfileModalOpen" style="display: none;"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-[#111827]/40 backdrop-blur-sm transition-opacity"
+            @click="isProfileModalOpen = false"></div>
+        <div
+            class="bg-white rounded-[40px] shadow-2xl w-full max-w-sm relative z-10 p-8 transform transition-all page-enter">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-black font-clash">My Profile</h3>
+                <button @click="isProfileModalOpen = false"
+                    class="w-10 h-10 bg-gray-50 text-gray-500 hover:bg-red-50 hover:text-red-500 rounded-xl flex items-center justify-center transition-colors">
+                    <iconify-icon icon="ph:x-bold" class="text-lg"></iconify-icon>
+                </button>
+            </div>
+
+            <div class="flex items-center gap-5 mb-8 pb-8 border-b border-gray-100">
+                <label
+                    class="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-[#8B5CF6] to-[#7c4dff] text-white flex items-center justify-center font-black text-2xl shadow-lg cursor-pointer overflow-hidden group shrink-0">
+                    <img v-if="profile.avatar" :src="profile.avatar" class="w-full h-full object-cover">
+                    <span v-else>{{profile.initials}}</span>
+                    <div
+                        class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <iconify-icon icon="ph:camera-plus-bold" class="text-xl"></iconify-icon>
+                    </div>
+                    <input type="file" class="hidden" accept="image/*" @change="handleAvatarUpload">
+                </label>
+                <div class="flex-1 min-w-0">
+                    <div class="font-black text-lg text-gray-900 truncate">{{profile.firstName}} {{profile.lastName}}
+                    </div>
+                    <div class="text-xs text-gray-400 font-bold mt-0.5">Click avatar to change</div>
+                </div>
+            </div>
+
+            <div class="space-y-4 mb-8">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">First
+                            Name</label>
+                        <input type="text" v-model="profile.firstName"
+                            class="w-full bg-gray-50 border-2 border-transparent focus:border-purple-200 rounded-xl px-4 py-2.5 font-bold text-sm outline-none transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Last
+                            Name</label>
+                        <input type="text" v-model="profile.lastName"
+                            class="w-full bg-gray-50 border-2 border-transparent focus:border-purple-200 rounded-xl px-4 py-2.5 font-bold text-sm outline-none transition-colors">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">New
+                        Password</label>
+                    <input type="password" placeholder="Leave blank to keep current"
+                        class="w-full bg-gray-50 border-2 border-transparent focus:border-purple-200 rounded-xl px-4 py-2.5 font-bold text-sm outline-none transition-colors">
+                </div>
+            </div>
+
+            <button @click="isProfileModalOpen = false"
+                class="w-full bg-[#111827] text-white py-3.5 rounded-2xl font-black hover:bg-[#8B5CF6] transition-playful btn-bounce shadow-lg">Save
+                Changes</button>
+        </div>
+    </div>
+
+    <!-- AI Magic Paste Modal -->
+    <div v-show="isAiModalOpen" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-[#111827]/40 backdrop-blur-sm transition-opacity"
+            @click="isAiModalOpen = false"></div>
+        <div
+            class="bg-white rounded-[40px] shadow-2xl w-full max-w-xl relative z-10 p-8 transform transition-all page-enter">
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="text-2xl font-black font-clash flex items-center gap-2">
+                    ✨ AI Magic Paste
+                </h3>
+                <button @click="isAiModalOpen = false"
+                    class="w-10 h-10 bg-gray-50 text-gray-500 hover:bg-red-50 hover:text-red-500 rounded-xl flex items-center justify-center transition-colors">
+                    <iconify-icon icon="ph:x-bold" class="text-lg"></iconify-icon>
+                </button>
+            </div>
+
+            <p class="text-gray-500 font-bold text-sm mb-6">Paste your raw IELTS test text below. The AI will extract
+                all questions, options, and correct answers automatically.</p>
+
+            <textarea id="aiParseText"
+                class="w-full bg-gray-50 border-2 border-transparent focus:border-purple-200 rounded-[24px] p-5 font-bold text-sm outline-none transition-colors h-64 resize-none mb-6"
+                placeholder="Example:
+1. The graph shows that renewable energy...
+A) increased steadily
+B) decreased sharply
+Answer: A"></textarea>
+
+            <div class="flex justify-end gap-3">
+                <button @click="isAiModalOpen = false"
+                    class="px-6 py-3 font-black text-gray-500 hover:bg-gray-50 rounded-2xl transition-colors">Cancel</button>
+                <button @click="aiParseQuestions"
+                    class="bg-gradient-to-r from-[#8B5CF6] to-[#7c4dff] text-white px-8 py-3 rounded-2xl font-black hover:shadow-lg hover:shadow-purple-200 btn-bounce transition-playful flex items-center gap-2">
+                    <iconify-icon icon="ph:magic-wand-bold"></iconify-icon> Extract with AI
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Fallback (runs independently so overlay never gets stuck) -->
+    <script>
+        (function() {
+            const overlay = document.getElementById('authOverlay');
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/staff-portal-x72.html';
+                return;
+            }
+            // Try verifying token; if it fails, redirect
+            fetch('/api/auth/admin/verify', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+            .then(r => {
+                if (!r.ok) throw new Error('Unauthorized');
+                if (overlay) overlay.style.display = 'none';
+            })
+            .catch(() => {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('role');
+                window.location.href = '/staff-portal-x72.html';
+            });
+            // Hard safety: hide overlay after 6 seconds no matter what
+            setTimeout(() => { if (overlay) overlay.style.display = 'none'; }, 6000);
+        })();
+    </script>
+
+    <!-- Petite-Vue App Logic -->
+    <script type="module" src="/admin-app.js?v=3"></script>
+</body>
+
+</html>

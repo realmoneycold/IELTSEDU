@@ -1,0 +1,213 @@
+--- DOJO HISTORY FIX FOR dashboard.html ---
+
+This patch fixes the Dojo History display to show actual typing results instead of static placeholders.
+
+================================================================================
+STEP 1: ADD DATA PROPERTIES (around line 129)
+================================================================================
+
+After:
+    isLoadingTypingLeaderboard: false,
+
+Add:
+    // Dojo History (User's personal typing sessions)
+    dojoHistory: JSON.parse(localStorage.getItem('dojo_history') || '[]'),
+    isLoadingDojoHistory: false,
+    dojoStats: { totalSessions: 0, bestWpm: 0, averageWpm: 0, averageAccuracy: 0 },
+
+
+================================================================================
+STEP 2: UPDATE completeDojo() METHOD (around line 2705)
+================================================================================
+
+Replace the entire completeDojo() method with:
+
+                    async completeDojo() {
+                        if(this.dojoCompleted) return;
+                        this.dojoCompleted = true;
+                        this.dojoEndTime = Date.now();
+                        if(this.dojoTimerInterval) {
+                            clearInterval(this.dojoTimerInterval);
+                            this.dojoTimerInterval = null;
+                        }
+                        this.calculateDojoStats();
+                        console.log('🎯 Typing Dojo completed!', { wpm: this.dojoWpm, accuracy: this.dojoAcc, errors: this.dojoErrors });
+
+                        // Save to localStorage for immediate display in Dojo History
+                        const durationSeconds = Math.floor((this.dojoEndTime - this.dojoStartTime) / 1000);
+                        const newEntry = {
+                            date: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                            duration: durationSeconds + 's',
+                            level: this.dojoDifficulty.charAt(0).toUpperCase() + this.dojoDifficulty.slice(1),
+                            wpm: this.dojoWpm,
+                            accuracy: Math.round(this.dojoAcc) + '%',
+                            result: this.dojoHistory.length === 0 || this.dojoWpm > Math.max(...this.dojoHistory.map(h => h.wpm || 0)) ? 'Personal Best' : 'Completed'
+                        };
+                        this.dojoHistory.unshift(newEntry);
+                        if (this.dojoHistory.length > 10) this.dojoHistory.pop();
+                        localStorage.setItem('dojo_history', JSON.stringify(this.dojoHistory));
+
+                        // Save results to database
+                        try {
+                            const token = localStorage.getItem('token') || localStorage.getItem('ielts_token');
+                            if (!token) {
+                                console.warn('No auth token found, cannot save typing result');
+                                return;
+                            }
+
+                            const durationMinutes = Math.ceil((this.dojoEndTime - this.dojoStartTime) / 60000) || 1;
+
+                            const response = await fetch('/api/typing/submit', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${token}`
+                                },
+                                body: JSON.stringify({
+                                    wpm: this.dojoWpm,
+                                    accuracy: this.dojoAcc,
+                                    durationMinutes: durationMinutes,
+                                    difficulty: this.dojoDifficulty
+                                })
+                            });
+
+                            const data = await response.json();
+                            if (data.success) {
+                                console.log('✅ Typing result saved to database!', data.data);
+                                this.showNotification && this.showNotification(`Typing completed! ${this.dojoWpm} WPM saved to leaderboard!`);
+                            } else {
+                                console.error('❌ Failed to save typing result:', data.message);
+                            }
+                        } catch (err) {
+                            console.error('❌ Error saving typing result:', err);
+                        }
+                    },
+
+
+================================================================================
+STEP 3: REPLACE DOJO HISTORY TABLE HTML (around line 5467)
+================================================================================
+
+Replace the entire <tbody> section (from <tbody class="text-sm font-bold"> to </tbody>)
+
+OLD CODE:
+---------
+                                <tbody class="text-sm font-bold">
+                                    <tr class="border-b border-purple-50 hover:bg-purple-50/30 transition-colors">
+                                        <td class="px-10 py-6">Mar 24, 10:45 AM</td>
+                                        <td class="px-10 py-6 text-gray-400">5 mins</td>
+                                        <td class="px-10 py-6"><span
+                                                class="px-3 py-1 bg-purple-100 text-[#8B5CF6] rounded-full text-[10px] font-black uppercase">Intermediate</span>
+                                        </td>
+                                        <td class="px-10 py-6 text-center text-lg">68</td>
+                                        <td class="px-10 py-6 text-center text-lg">88%</td>
+                                        <td class="px-10 py-6">
+                                            <div class="flex items-center gap-2 text-emerald-600">
+                                                <iconify-icon icon="ph:check-circle-fill"></iconify-icon>
+                                                Personal Best
+                                            </div>
+                                        </td>
+                                        <td class="px-10 py-6 text-right">
+                                            <button class="text-[#8B5CF6] hover:underline">Analyze</button>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b border-purple-50 hover:bg-purple-50/30 transition-colors">
+                                        <td class="px-10 py-6">Mar 22, 02:12 PM</td>
+                                        <td class="px-10 py-6 text-gray-400">1 min</td>
+                                        <td class="px-10 py-6"><span
+                                                class="px-3 py-1 bg-red-100 text-red-600 rounded-full text-[10px] font-black uppercase">Advanced</span>
+                                        </td>
+                                        <td class="px-10 py-6 text-center text-lg">52</td>
+                                        <td class="px-10 py-6 text-center text-lg">85%</td>
+                                        <td class="px-10 py-6">
+                                            <div class="flex items-center gap-2 text-gray-400">
+                                                <iconify-icon icon="ph:flag-fill"></iconify-icon>
+                                                Completed
+                                            </div>
+                                        </td>
+                                        <td class="px-10 py-6 text-right">
+                                            <button class="text-[#8B5CF6] hover:underline">Analyze</button>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-purple-50/30 transition-colors">
+                                        <td class="px-10 py-6">Mar 21, 09:30 AM</td>
+                                        <td class="px-10 py-6 text-gray-400">3 mins</td>
+                                        <td class="px-10 py-6"><span
+                                                class="px-3 py-1 bg-emerald-100 text-emerald-600 rounded-full text-[10px] font-black uppercase">Beginner</span>
+                                        </td>
+                                        <td class="px-10 py-6 text-center text-lg">45</td>
+                                        <td class="px-10 py-6 text-center text-lg">92%</td>
+                                        <td class="px-10 py-6">
+                                            <div class="flex items-center gap-2 text-emerald-600">
+                                                <iconify-icon icon="ph:check-circle-fill"></iconify-icon>
+                                                Target Met
+                                            </div>
+                                        </td>
+                                        <td class="px-10 py-6 text-right">
+                                            <button class="text-[#8B5CF6] hover:underline">Analyze</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+
+NEW CODE:
+---------
+                                <tbody class="text-sm font-bold">
+                                    <tr v-if="isLoadingDojoHistory">
+                                        <td colspan="7" class="px-10 py-12 text-center text-gray-400">
+                                            <iconify-icon icon="ph:spinner" class="animate-spin text-2xl mb-2"></iconify-icon>
+                                            <p>Loading your typing history...</p>
+                                        </td>
+                                    </tr>
+                                    <tr v-else-if="dojoHistory.length === 0">
+                                        <td colspan="7" class="px-10 py-12 text-center text-gray-400">
+                                            <iconify-icon icon="ph:keyboard" class="text-4xl mb-2 opacity-50"></iconify-icon>
+                                            <p>No typing sessions yet. Start typing to see your history!</p>
+                                        </td>
+                                    </tr>
+                                    <tr v-for="(entry, index) in dojoHistory" :key="entry.date || index"
+                                        :class="index < dojoHistory.length - 1 ? 'border-b border-purple-50' : ''"
+                                        class="hover:bg-purple-50/30 transition-colors">
+                                        <td class="px-10 py-6">{{ entry.date }}</td>
+                                        <td class="px-10 py-6 text-gray-400">{{ entry.duration }}</td>
+                                        <td class="px-10 py-6">
+                                            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase"
+                                                :class="{
+                                                    'bg-emerald-100 text-emerald-600': entry.level === 'Beginner',
+                                                    'bg-purple-100 text-[#8B5CF6]': entry.level === 'Intermediate',
+                                                    'bg-red-100 text-red-600': entry.level === 'Advanced'
+                                                }">
+                                                {{ entry.level }}
+                                            </span>
+                                        </td>
+                                        <td class="px-10 py-6 text-center text-lg font-black">{{ entry.wpm }}</td>
+                                        <td class="px-10 py-6 text-center text-lg">{{ entry.accuracy }}</td>
+                                        <td class="px-10 py-6">
+                                            <div class="flex items-center gap-2" :class="entry.result === 'Personal Best' ? 'text-emerald-600' : (entry.result === 'Above Average' ? 'text-blue-600' : 'text-gray-400')">
+                                                <iconify-icon :icon="entry.result === 'Personal Best' ? 'ph:check-circle-fill' : (entry.result === 'Above Average' ? 'ph:trend-up-fill' : 'ph:flag-fill')"></iconify-icon>
+                                                {{ entry.result }}
+                                            </div>
+                                        </td>
+                                        <td class="px-10 py-6 text-right">
+                                            <button class="text-[#8B5CF6] hover:underline">Analyze</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+
+================================================================================
+HOW TO APPLY:
+================================================================================
+
+1. Open dashboard.html in your code editor
+2. Make the 3 changes above
+3. Save the file
+4. Clear browser localStorage to test fresh (optional):
+   - Open DevTools (F12)
+   - Go to Application > Local Storage
+   - Delete the 'dojo_history' key
+5. Refresh the page
+6. Complete a typing test
+7. Your score should now appear in the Dojo History table!
+
+================================================================================

@@ -1,0 +1,124 @@
+// ═══════════════════════════════════════════════════════════
+//  IELTSPRACTICE — Prisma Schema Additions
+//  Teacher Dashboard v1 — Materials Library + Followers
+// ═══════════════════════════════════════════════════════════
+//  Add these models/relations to your existing schema.prisma
+//  Then run: npx prisma migrate dev --name teacher_dashboard_v1
+// ═══════════════════════════════════════════════════════════
+
+// ───────────────────────────────────────────────
+//  TEACHER MODEL (add to or extend existing User)
+// ───────────────────────────────────────────────
+// If your app uses a single User table with roles,
+// you can add a TeacherProfile as a 1-to-1 extension:
+
+model TeacherProfile {
+  id             String    @id @default(cuid())
+  userId         String    @unique
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  specialisation String?
+  bio            String?
+  avatarUrl      String?
+
+  // Relations
+  materials      Material[]
+  lessons        Lesson[]
+  followers      TeacherFollower[]
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@map("teacher_profiles")
+}
+
+// ───────────────────────────────────────────────
+//  MATERIAL MODEL
+// ───────────────────────────────────────────────
+model Material {
+  id        String          @id @default(cuid())
+  name      String
+  fileUrl   String          // e.g. /uploads/wt2-template.pdf  or  https://…
+  fileType  MaterialFileType
+  fileSize  Int?            // bytes; null for links
+  mimeType  String?         // e.g. application/pdf
+
+  teacherId String
+  teacher   TeacherProfile  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+
+  lessonId  String?
+  lesson    Lesson?         @relation(fields: [lessonId], references: [id], onDelete: SetNull)
+
+  downloadCount Int         @default(0)
+
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@index([teacherId])
+  @@index([lessonId])
+  @@map("materials")
+}
+
+enum MaterialFileType {
+  PDF
+  DOC
+  LINK
+}
+
+// ───────────────────────────────────────────────
+//  LESSON MODEL (lightweight — extend as needed)
+// ───────────────────────────────────────────────
+model Lesson {
+  id          String         @id @default(cuid())
+  title       String
+  description String?
+  scheduledAt DateTime
+  durationMin Int            @default(60)
+  room        String?        // "Online" | "Room A" | …
+
+  teacherId   String
+  teacher     TeacherProfile @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+
+  materials   Material[]
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([teacherId])
+  @@index([scheduledAt])
+  @@map("lessons")
+}
+
+// ───────────────────────────────────────────────
+//  TEACHER FOLLOWER (many-to-many join table)
+//  A student (User) can follow many teachers (TeacherProfile)
+//  A teacher can have many follower students
+// ───────────────────────────────────────────────
+model TeacherFollower {
+  id        String         @id @default(cuid())
+
+  studentId String
+  student   User           @relation("StudentFollows", fields: [studentId], references: [id], onDelete: Cascade)
+
+  teacherId String
+  teacher   TeacherProfile @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+
+  followedAt DateTime      @default(now())
+
+  @@unique([studentId, teacherId])   // one follow per student-teacher pair
+  @@index([teacherId])
+  @@index([studentId])
+  @@map("teacher_followers")
+}
+
+// ───────────────────────────────────────────────
+//  ADD THESE RELATIONS TO YOUR EXISTING User MODEL:
+// ───────────────────────────────────────────────
+//
+//  model User {
+//    // … existing fields …
+//    teacherProfile TeacherProfile?
+//    following      TeacherFollower[] @relation("StudentFollows")
+//  }
+//
+// ───────────────────────────────────────────────

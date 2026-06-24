@@ -1,0 +1,159 @@
+# 🚀 QUICK REFERENCE CARD
+
+## **IMMEDIATE LOGIN & TEST URLS**
+
+### ✅ WORKING TEST ACCOUNTS (Use These!)
+
+**STUDENT #1** - Ready to test
+```
+URL:      http://localhost:4000/login.html
+Email:    student@example.com
+Password: StudentPass123!
+Role:     STUDENT
+Dashboard: http://localhost:4000/dashboard.html
+```
+
+**STUDENT #2** - Already completed onboarding (no modal)
+```
+Email:    futureenter53@gmail.com
+Password: StudentPass123!
+Dashboard: http://localhost:4000/dashboard.html
+```
+
+**STUDENT #3**
+```
+Email:    teststudent99@example.com
+Password: StudentPass123!
+Dashboard: http://localhost:4000/dashboard.html
+```
+
+---
+
+## **ALL PAGE URLS (Ready to Connect)**
+
+### PUBLIC
+- 🏠 Home: `localhost:4000/index.html`
+- 🔐 Login: `localhost:4000/login.html`
+- 📝 Contact: `localhost:4000/contact.html`
+- ⚖️ Terms: `localhost:4000/termsconditions.html`
+- 🔒 Privacy: `localhost:4000/privacypolicy.html`
+
+### STUDENT PAGES
+- 📊 Dashboard: `localhost:4000/dashboard.html`
+- 🏛️ Centres: `localhost:4000/education-centre.html`
+- ⌨️ Typing Dojo: `localhost:4000/dashboard.html#dojo`
+- 👥 Leaderboard: `localhost:4000/dashboard.html#leaderboard`
+
+### ADMIN PAGES
+- 👨‍💼 Admin Dashboard: `localhost:4000/admin.html`
+- 🔧 Settings: `localhost:4000/admin/admin.html`
+
+### TEACHER PAGES
+- 👨‍🏫 Teacher Dashboard: `localhost:4000/teacher-dashboard/teacher-dashboard.html`
+
+### CENTRE PAGES
+- 🏫 Centre Dashboard: `localhost:4000/education-centre.html`
+
+### CEO PAGES
+- 👔 CEO Portal: `localhost:4000/portalceo.html`
+
+---
+
+## **QUICK TEST FLOW**
+
+```
+1. Go to: http://localhost:4000/login.html
+2. Login: student@example.com / StudentPass123!
+3. You SHOULD see:
+   ✓ Dashboard page loads
+   ✓ Onboarding modal (3 questions)
+   ✓ Skills, Stats, Leaderboard sections
+   ✓ Typing Dojo interface
+4. Fill onboarding → click "Complete Setup"
+5. Page refreshes → modal won't appear again
+```
+
+---
+
+## **API TEST EXAMPLES**
+
+### Signup New User
+```bash
+curl -X POST http://localhost:4000/api/auth/signup \
+  -H "Content-Type: application/json" \
+  -d '{
+    "full_name":"Test","email":"test'$(date +%s)'@test.com",
+    "password":"TestPass123!","username":"testuser"
+  }'
+```
+
+### Login
+```bash
+curl -X POST http://localhost:4000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"student@example.com","password":"StudentPass123!"}'
+```
+
+### Get Profile (copy TOKEN from login response)
+```bash
+curl http://localhost:4000/api/user/profile \
+  -H "Authorization: Bearer TOKEN_HERE"
+```
+
+---
+
+## **WHAT TO CHECK ON EACH PAGE**
+
+### ✅ Dashboard `/dashboard.html`
+- [ ] Loads without 404 error
+- [ ] Onboarding modal appears (if not completed)
+- [ ] Skills section shows (Listening, Reading, Writing, Speaking)
+- [ ] Stats display
+- [ ] Typing Dojo interface visible
+- [ ] Leaderboard loads
+
+### ✅ Education Centre `/education-centre.html`
+- [ ] Page loads
+- [ ] List of centres displays
+- [ ] Map shows location
+- [ ] Search/filter works
+- [ ] Centre details show on click
+- [ ] Can scroll without errors
+
+### ✅ Admin `/admin.html`
+- [ ] Admin panel loads (if logged in as admin)
+- [ ] User management visible
+- [ ] Reports section available
+- [ ] All admin features functional
+
+### ✅ Teacher `/teacher-dashboard/teacher-dashboard.html`
+- [ ] Dashboard loads
+- [ ] Student list visible
+- [ ] Lesson creation works
+- [ ] Materials management available
+
+---
+
+## **NEXT: CONNECTING PAGES TOGETHER** 🔗
+
+After you verify each page works:
+
+1. **Navigation Links** - Add menu/buttons that go from page to page
+2. **Data Persistence** - Ensure user data shows on all pages
+3. **Cross-Page Navigation** - Test: Dashboard → Centre → Back to Dashboard
+4. **Role-Based Routing** - Only show admin pages if user is ADMIN role
+5. **Consistency** - Same header/footer/styling across page transitions
+
+---
+
+## **NEEDED FOR NEXT PHASE**
+
+- [ ] Create additional ADMIN/TEACHER/CENTRE/CEO test accounts (update database role)
+- [ ] Add navigation menus to pages
+- [ ] Connect "Sign Out" button across all pages
+- [ ] Test switching between different user roles
+
+---
+
+**BOOKMARK THIS FILE:** Save for quick reference! 📌
+

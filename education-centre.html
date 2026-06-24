@@ -1,0 +1,2543 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>IELTSPRACTICE — Partner Portal</title>
+    <script>
+      (function() {
+        if (navigator.serviceWorker) {
+          navigator.serviceWorker.getRegistrations().then(function(regs) {
+            regs.forEach(function(r) { r.unregister(); });
+          });
+        }
+        if (window.caches) {
+          caches.keys().then(function(names) {
+            names.forEach(function(n) { caches.delete(n); });
+          });
+        }
+      })();
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://api.fontshare.com/v2/css?f[]=clash-grotesk@700,600,400&f[]=satoshi@700,500,400&display=swap');
+
+        :root {
+            --lavender-main: #8B5CF6;
+            --brand-orange: #FF6B35;
+            --bg-soft: #F9F5FF;
+            --dark: #111827;
+            --sidebar-w: 280px;
+        }
+
+        body {
+            font-family: 'Satoshi', sans-serif;
+            background-color: var(--bg-soft);
+            color: var(--dark);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        .font-clash {
+            font-family: 'Clash Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #D4C5E2;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--lavender-main);
+        }
+
+        /* Animations */
+        .transition-playful {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .card-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(139, 92, 246, 0.15);
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+
+        .btn-bounce:hover {
+            transform: scale(1.05);
+        }
+
+        .page-content {
+            display: none;
+            animation: fadeUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Sidebar */
+        #sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-w);
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            overflow-y: auto;
+            border-right: 2px solid rgba(139, 92, 246, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 700;
+            color: #6B7280;
+            border-radius: 20px;
+            transition: all 0.2s;
+            text-decoration: none;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 4px;
+        }
+
+        .nav-item:hover {
+            color: var(--lavender-main);
+            background: #F5F1FF;
+        }
+
+        .nav-item.active {
+            color: #fff;
+            background: var(--brand-orange);
+            box-shadow: 0 10px 25px -5px rgba(255, 107, 53, 0.3);
+        }
+
+        .nav-item iconify-icon {
+            font-size: 20px;
+            transition: transform 0.2s;
+        }
+
+        .nav-item:hover iconify-icon {
+            transform: scale(1.1);
+        }
+
+        .nav-section-label {
+            padding: 24px 20px 8px;
+            font-size: 11px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #9CA3AF;
+            font-weight: 800;
+            font-family: 'Clash Grotesk', sans-serif;
+        }
+
+        /* Main */
+        #main {
+            margin-left: var(--sidebar-w);
+            min-height: 100vh;
+            transition: margin-left 0.3s ease;
+        }
+
+        .topbar {
+            background: rgba(249, 245, 255, 0.8);
+            backdrop-filter: blur(12px);
+            padding: 0 40px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        /* Panels / Cards */
+        .panel {
+            background: #fff;
+            border-radius: 40px;
+            padding: 32px;
+            border: 2px solid transparent;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.03);
+        }
+
+        .panel-title {
+            font-family: 'Clash Grotesk', sans-serif;
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--dark);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            color: #4B5563;
+            margin-bottom: 8px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #F3F4F6;
+            border-radius: 20px;
+            font-size: 15px;
+            font-family: 'Satoshi', sans-serif;
+            color: var(--dark);
+            background: #F9FAFB;
+            transition: all 0.2s;
+            outline: none;
+            font-weight: 500;
+        }
+
+        .input-field:focus {
+            background: #fff;
+            border-color: var(--lavender-main);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 1rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+
+        /* Toggles */
+        .toggle-group {
+            display: flex;
+            background: #F3F4F6;
+            border-radius: 20px;
+            padding: 4px;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 700;
+            background: transparent;
+            color: #6B7280;
+            border: none;
+            border-radius: 16px;
+            transition: all 0.2s;
+            cursor: pointer;
+            font-family: 'Satoshi', sans-serif;
+        }
+
+        .toggle-btn.active {
+            background: #fff;
+            color: var(--lavender-main);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 28px;
+            background: var(--brand-orange);
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Satoshi', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #e85a2a;
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(255, 107, 53, 0.2);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 28px;
+            background: #fff;
+            color: var(--lavender-main);
+            border: 2px solid #E5E7EB;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--lavender-main);
+            background: #F5F1FF;
+            transform: scale(1.05);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            background: #F5F1FF;
+            color: var(--lavender-main);
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-sm:hover {
+            background: #EEDEFF;
+        }
+
+        .btn-danger {
+            padding: 8px 16px;
+            background: #FEF2F2;
+            color: #DC2626;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background: #FEE2E2;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-purple {
+            background: #F5F1FF;
+            color: #8B5CF6;
+        }
+
+        .badge-orange {
+            background: #FFF8F5;
+            color: #FF6B35;
+        }
+
+        .badge-yellow {
+            background: #FFFBEB;
+            color: #D97706;
+        }
+
+        .badge-green {
+            background: #ECFDF5;
+            color: #059669;
+        }
+
+        .badge-red {
+            background: #FEF2F2;
+            color: #DC2626;
+        }
+
+        .badge-gray {
+            background: #F3F4F6;
+            color: #4B5563;
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .data-table th {
+            padding: 16px 20px;
+            background: #F9FAFB;
+            font-size: 12px;
+            font-weight: 800;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            text-align: left;
+            border-bottom: 2px solid #F3F4F6;
+        }
+
+        .data-table th:first-child {
+            border-top-left-radius: 24px;
+            border-bottom-left-radius: 24px;
+        }
+
+        .data-table th:last-child {
+            border-top-right-radius: 24px;
+            border-bottom-right-radius: 24px;
+        }
+
+        .data-table td {
+            padding: 16px 20px;
+            font-size: 15px;
+            color: var(--dark);
+            font-weight: 500;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        .data-table tr:hover td {
+            background: #F9FAFB;
+        }
+
+        /* Custom UI Elements */
+        .upload-zone {
+            border: 2px dashed #D1D5DB;
+            border-radius: 24px;
+            padding: 40px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #F9FAFB;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--lavender-main);
+            background: #F5F1FF;
+        }
+
+        .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .bar-label {
+            font-size: 14px;
+            font-weight: 800;
+            color: #4B5563;
+            width: 40px;
+            text-align: right;
+        }
+
+        .bar-track {
+            flex: 1;
+            height: 12px;
+            background: #F3F4F6;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 12px;
+            transition: width 0.5s;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            :root {
+                --sidebar-w: 0px;
+            }
+
+            #sidebar {
+                transform: translateX(-100%);
+            }
+
+            #sidebar.open {
+                transform: translateX(0);
+                width: 280px;
+            }
+
+            .topbar {
+                padding: 0 24px;
+            }
+
+            .panel {
+                padding: 24px;
+                rounded: 32px;
+            }
+        }
+    </style>
+    <script src="assets/education-auth-guard.js" defer></script>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar">
+        <div class="p-8 flex flex-col gap-2">
+            <div class="text-2xl font-black flex items-center uppercase tracking-tighter font-clash">
+                <span class="text-black border-r-4 border-[#FF6B35] pr-2 mr-2">IELTS</span>
+                <span class="text-black/60 text-sm tracking-[0.2em] font-bold">PRACTICE</span>
+            </div>
+            <div class="inline-block px-3 py-1 rounded-xl badge-purple text-[10px] w-max">
+                Partner Portal
+            </div>
+        </div>
+
+        <div class="flex-1 px-4 overflow-y-auto pb-8">
+            <div class="nav-section-label">Overview</div>
+            <button class="nav-item active" onclick="navTo('dashboard')">
+                <iconify-icon icon="ph:squares-four-fill"></iconify-icon> Dashboard
+            </button>
+            <button class="nav-item" onclick="navTo('mock-dates')">
+                <iconify-icon icon="ph:calendar-plus-fill"></iconify-icon> Mock Dates
+            </button>
+            <button class="nav-item" onclick="navTo('mock-results')">
+                <iconify-icon icon="ph:chart-line-up-fill"></iconify-icon> Mock Results
+            </button>
+            <button class="nav-item" onclick="navTo('actual-results')">
+                <iconify-icon icon="ph:certificate-fill"></iconify-icon> Performance Portfolio
+            </button>
+
+            <div class="nav-section-label">Content & Growth</div>
+            <button class="nav-item" onclick="navTo('podcasts')">
+                <iconify-icon icon="ph:microphone-stage-fill"></iconify-icon> Podcast Studio
+            </button>
+            <button class="nav-item" onclick="navTo('marketing')">
+                <iconify-icon icon="ph:megaphone-fill"></iconify-icon> Marketing Centre
+            </button>
+
+            <div class="nav-section-label">Students</div>
+            <button class="nav-item" onclick="navTo('groups')">
+                <iconify-icon icon="ph:users-three-fill"></iconify-icon> Groups & Teachers
+                <span id="sidebarGroupsBadge"
+                    class="ml-auto bg-yellow-400 text-yellow-900 text-[10px] font-black px-2 py-0.5 rounded-full">—</span>
+            </button>
+            <button class="nav-item" onclick="navTo('inquiries')">
+                <iconify-icon icon="ph:chat-teardrop-text-fill"></iconify-icon> Inquiries
+                <span id="sidebarInquiriesBadge"
+                    class="ml-auto bg-[#FF6B35] text-white text-[10px] font-black px-2 py-0.5 rounded-full">—</span>
+            </button>
+
+            <div class="nav-section-label">Settings</div>
+            <button class="nav-item" onclick="navTo('profile')">
+                <iconify-icon icon="ph:buildings-fill"></iconify-icon> Centre Profile
+            </button>
+        </div>
+
+        <div class="p-6 border-t border-gray-100">
+            <div class="flex items-center gap-3">
+                <div id="sidebarAvatar"
+                    class="w-10 h-10 rounded-2xl bg-purple-100 flex items-center justify-center text-purple-600 font-clash font-bold text-lg">
+                    B
+                </div>
+                <div>
+                    <div id="sidebarCentreName" class="font-bold text-sm text-gray-900 leading-tight">British IELTS</div>
+                    <div class="text-xs text-gray-500 font-medium">Verified Partner</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div id="main">
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="flex items-center gap-4">
+                <button class="lg:hidden text-2xl text-gray-600"
+                    onclick="document.getElementById('sidebar').classList.toggle('open')">
+                    <iconify-icon icon="ph:list-bold"></iconify-icon>
+                </button>
+                <h1 class="text-2xl lg:text-3xl font-black font-clash" id="page-heading">Dashboard</h1>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button
+                    class="w-12 h-12 rounded-2xl bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:text-purple-600 hover:border-purple-200 transition-all relative">
+                    <iconify-icon icon="ph:bell-bold" class="text-xl"></iconify-icon>
+                    <span
+                        class="absolute top-3 right-3 w-2.5 h-2.5 bg-[#FF6B35] border-2 border-white rounded-full"></span>
+                </button>
+                <button
+                    class="hidden sm:flex w-12 h-12 rounded-2xl bg-white border border-gray-200 items-center justify-center text-gray-600 hover:text-purple-600 hover:border-purple-200 transition-all">
+                    <iconify-icon icon="ph:question-bold" class="text-xl"></iconify-icon>
+                </button>
+                <div id="topbarAvatar"
+                    class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-clash font-bold text-lg cursor-pointer shadow-lg shadow-purple-200"
+                    title="User Profile">
+                    B
+                </div>
+            </div>
+        </div>
+
+        <div class="p-6 lg:p-10 max-w-[1600px] mx-auto">
+
+            <!-- ===================== DASHBOARD ===================== -->
+            <div id="page-dashboard" class="page-content active">
+                <div class="mb-10">
+                    <h2 class="text-4xl md:text-5xl font-black mb-2" id="welcomeMessage">Welcome back, <span
+                            class="text-[#FF6B35]">Admin</span>!</h2>
+                    <p class="text-gray-500 text-lg font-medium" id="centreInfo">Here's what's happening at your centre
+                        today.</p>
+                </div>
+
+                <!-- Stat Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                    <div class="bg-white rounded-[32px] p-6 border border-gray-100 card-lift transition-playful">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-purple-50 flex items-center justify-center text-purple-600 mb-4">
+                            <iconify-icon icon="ph:users-three-fill" class="text-2xl"></iconify-icon>
+                        </div>
+                        <div class="text-4xl font-black font-clash mb-1 text-[#FF6B35]" id="statTotalUsers">—</div>
+                        <div class="text-gray-500 font-bold text-sm uppercase tracking-wider mb-3">Total Users</div>
+                        <div
+                            class="text-green-500 text-sm font-bold flex items-center gap-1 bg-green-50 w-max px-2 py-1 rounded-lg">
+                            <iconify-icon icon="ph:trend-up-bold"></iconify-icon> Students
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-[32px] p-6 border border-gray-100 card-lift transition-playful">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-500 mb-4">
+                            <iconify-icon icon="ph:student-fill" class="text-2xl"></iconify-icon>
+                        </div>
+                        <div class="text-4xl font-black font-clash mb-1 text-green-500" id="statActiveUsers">—</div>
+                        <div class="text-gray-500 font-bold text-sm uppercase tracking-wider mb-3">Active Students</div>
+                        <div
+                            class="text-green-500 text-sm font-bold flex items-center gap-1 bg-green-50 w-max px-2 py-1 rounded-lg">
+                            <iconify-icon icon="ph:trend-up-bold"></iconify-icon> Now
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-[32px] p-6 border border-gray-100 card-lift transition-playful">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-yellow-50 flex items-center justify-center text-yellow-600 mb-4">
+                            <iconify-icon icon="ph:user-minus-fill" class="text-2xl"></iconify-icon>
+                        </div>
+                        <div class="text-4xl font-black font-clash mb-1 text-orange-500" id="statInactiveUsers">—</div>
+                        <div class="text-gray-500 font-bold text-sm uppercase tracking-wider mb-3">Inactive Users</div>
+                        <div
+                            class="text-gray-400 text-sm font-bold flex items-center gap-1 bg-gray-50 w-max px-2 py-1 rounded-lg">
+                            <iconify-icon icon="ph:minus-bold"></iconify-icon> Offline
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-[32px] p-6 border border-gray-100 card-lift transition-playful">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 mb-4">
+                            <iconify-icon icon="ph:wallet-fill" class="text-2xl"></iconify-icon>
+                        </div>
+                        <div class="text-4xl font-black font-clash mb-1 text-purple-500" id="statRevenue">—</div>
+                        <div class="text-gray-500 font-bold text-sm uppercase tracking-wider mb-3">Total Sessions</div>
+                        <div
+                            class="text-green-500 text-sm font-bold flex items-center gap-1 bg-green-50 w-max px-2 py-1 rounded-lg">
+                            <iconify-icon icon="ph:trend-up-bold"></iconify-icon> All time
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <!-- Quick Actions -->
+                    <div class="panel">
+                        <div class="panel-title text-purple-600">
+                            <iconify-icon icon="ph:lightning-fill"></iconify-icon> Quick Actions
+                        </div>
+                        <div class="flex flex-col gap-4">
+                            <a href="javascript:navTo('mock-dates')"
+                                class="group flex items-center gap-4 p-4 rounded-3xl border-2 border-transparent hover:border-purple-100 hover:bg-purple-50 transition-playful">
+                                <div
+                                    class="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-purple-600 group-hover:scale-110 transition-transform">
+                                    <iconify-icon icon="ph:calendar-plus-bold" class="text-xl"></iconify-icon>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-bold text-lg text-gray-900">Create New Mock Date</div>
+                                    <div class="text-sm text-gray-500">Schedule an upcoming test session</div>
+                                </div>
+                                <iconify-icon icon="ph:caret-right-bold"
+                                    class="text-gray-400 group-hover:translate-x-1 transition-transform"></iconify-icon>
+                            </a>
+                            <a href="javascript:navTo('mock-results')"
+                                class="group flex items-center gap-4 p-4 rounded-3xl border-2 border-transparent hover:border-orange-100 hover:bg-orange-50 transition-playful">
+                                <div
+                                    class="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-orange-500 group-hover:scale-110 transition-transform">
+                                    <iconify-icon icon="ph:file-arrow-up-bold" class="text-xl"></iconify-icon>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-bold text-lg text-gray-900">Upload Mock Results</div>
+                                    <div class="text-sm text-gray-500">Enter scores for recent test takers</div>
+                                </div>
+                                <iconify-icon icon="ph:caret-right-bold"
+                                    class="text-gray-400 group-hover:translate-x-1 transition-transform"></iconify-icon>
+                            </a>
+                            <a href="javascript:navTo('actual-results')"
+                                class="group flex items-center gap-4 p-4 rounded-3xl border-2 border-transparent hover:border-yellow-100 hover:bg-yellow-50 transition-playful">
+                                <div
+                                    class="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-yellow-600 group-hover:scale-110 transition-transform">
+                                    <iconify-icon icon="ph:certificate-bold" class="text-xl"></iconify-icon>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-bold text-lg text-gray-900">Upload Official TRF</div>
+                                    <div class="text-sm text-gray-500">Build your public success rating</div>
+                                </div>
+                                <iconify-icon icon="ph:caret-right-bold"
+                                    class="text-gray-400 group-hover:translate-x-1 transition-transform"></iconify-icon>
+                            </a>
+                            <a href="javascript:navTo('inquiries')"
+                                class="group flex items-center gap-4 p-4 rounded-3xl border-2 border-transparent hover:border-red-100 hover:bg-red-50 transition-playful">
+                                <div
+                                    class="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-red-500 group-hover:scale-110 transition-transform">
+                                    <iconify-icon icon="ph:chat-teardrop-text-bold" class="text-xl"></iconify-icon>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-bold text-lg text-gray-900">View Inquiries</div>
+                                    <div class="text-sm text-gray-500">Respond to prospective students</div>
+                                </div>
+                                <span id="quickActionsInquiriesBadge" class="badge-red px-3 py-1 rounded-xl text-xs">—</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Mocks -->
+                    <div class="panel">
+                        <div class="panel-title text-orange-500">
+                            <iconify-icon icon="ph:clock-countdown-fill"></iconify-icon> Upcoming Sessions
+                        </div>
+                        <div id="upcomingSessionsList" class="flex flex-col gap-4">
+                            <div class="text-center text-gray-400 py-6">Loading sessions...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mock Session Applicants -->
+                <div class="panel">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="panel-title text-purple-600 mb-0">
+                            <iconify-icon icon="ph:users-three-fill" class="text-purple-600"></iconify-icon> Mock Test Applicants
+                        </div>
+                        <span id="mockApplicantsBadge" class="badge badge-yellow">0 Pending</span>
+                    </div>
+                    <p class="text-sm text-gray-500 font-medium mb-4">We will get in touch shortly with applicants to confirm their spot.</p>
+                    <div class="overflow-x-auto bg-white rounded-3xl border border-gray-100">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Applicant</th>
+                                    <th>Phone</th>
+                                    <th>Session</th>
+                                    <th>Telegram</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mockApplicantsTbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="panel">
+                    <div class="panel-title">
+                        <iconify-icon icon="ph:activity-fill" class="text-emerald-500"></iconify-icon> Recent Activity
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Activity</th>
+                                    <th>Student / Detail</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentActivityTbody">
+                                <tr><td colspan="4" class="text-center text-gray-400 py-6">Loading activity...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===================== MOCK DATE MANAGER ===================== -->
+            <div id="page-mock-dates" class="page-content">
+                <div class="mb-10">
+                    <h2 class="text-4xl md:text-5xl font-black mb-2">Mock Date <span
+                            class="text-[#FF6B35]">Manager</span></h2>
+                    <p class="text-gray-500 text-lg font-medium">Schedule and manage your upcoming IELTS mock test
+                        sessions.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Form -->
+                    <div class="lg:col-span-4 panel h-max">
+                        <div class="panel-title">
+                            <iconify-icon icon="ph:calendar-plus-fill" class="text-purple-600"></iconify-icon> Create
+                            Session
+                        </div>
+
+                        <form onsubmit="addMock(event)">
+                            <div class="form-group">
+                                <label class="form-label">Test Date & Time</label>
+                                <input type="datetime-local" class="input-field" id="mockDateTime" />
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="form-group">
+                                    <label class="form-label">Price (UZS)</label>
+                                    <input type="number" class="input-field" id="mockPrice" placeholder="150000" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Capacity</label>
+                                    <input type="number" class="input-field" id="mockCapacity" placeholder="30" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Location / Room</label>
+                                <input type="text" class="input-field" id="mockLocation" placeholder="Branch A, Room 2" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Test Type</label>
+                                <div class="toggle-group">
+                                    <button type="button" class="toggle-btn active"
+                                        onclick="toggleBtn(this)">Academic</button>
+                                    <button type="button" class="toggle-btn" onclick="toggleBtn(this)">General</button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Format</label>
+                                <div class="toggle-group">
+                                    <button type="button" class="toggle-btn active"
+                                        onclick="toggleBtn(this)">Paper</button>
+                                    <button type="button" class="toggle-btn" onclick="toggleBtn(this)">Computer</button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Notes</label>
+                                <textarea class="input-field" id="mockNotes" rows="2" placeholder="Optional notes..."></textarea>
+                            </div>
+                            <div class="flex gap-3 mt-4">
+                                <button type="submit" id="mockSubmitBtn" class="btn-primary flex-1 justify-center">
+                                    <iconify-icon icon="ph:plus-bold"></iconify-icon> Schedule Mock
+                                </button>
+                                <button type="button" id="mockCancelBtn" class="btn-sm hidden" onclick="cancelEditMock()">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Active List -->
+                    <div class="lg:col-span-8 panel">
+                        <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+                            <div class="panel-title mb-0">
+                                <iconify-icon icon="ph:calendar-check-fill" class="text-orange-500"></iconify-icon>
+                                Active Sessions
+                            </div>
+                            <span class="badge badge-green text-sm" id="mockActiveBadge">0 Active</span>
+                        </div>
+                        <div id="mock-list" class="flex flex-col gap-4">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mock Test Applicants -->
+                <div class="panel mt-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="panel-title text-purple-600 mb-0">
+                            <iconify-icon icon="ph:users-three-fill" class="text-purple-600"></iconify-icon> Mock Test Applicants
+                        </div>
+                        <span id="mockDatesApplicantsBadge" class="badge badge-yellow">0 Pending</span>
+                    </div>
+                    <p class="text-sm text-gray-500 font-medium mb-4">We will get in touch shortly with applicants to confirm their spot.</p>
+                    <div class="overflow-x-auto bg-white rounded-3xl border border-gray-100">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Applicant</th>
+                                    <th>Phone</th>
+                                    <th>Session</th>
+                                    <th>Telegram</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mockDatesApplicantsTbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===================== MOCK RESULTS ===================== -->
+            <div id="page-mock-results" class="page-content">
+                <div class="mb-10">
+                    <h2 class="text-4xl md:text-5xl font-black mb-2">Mock <span class="text-[#FF6B35]">Results</span>
+                    </h2>
+                    <p class="text-gray-500 text-lg font-medium">Enter scores and analyze performance distributions.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Score Entry -->
+                    <div class="lg:col-span-8 panel">
+                        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                            <div class="panel-title mb-0">
+                                <iconify-icon icon="ph:exam-fill" class="text-purple-600"></iconify-icon> Score Entry
+                            </div>
+                            <select id="resultsSessionSelect" class="input-field form-select w-auto py-2 px-4 rounded-xl" onchange="renderScoreTable()">
+                                <option value="">All Sessions</option>
+                            </select>
+                        </div>
+
+                        <div class="relative mb-6">
+                            <iconify-icon icon="ph:magnifying-glass-bold"
+                                class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></iconify-icon>
+                            <input type="text" class="input-field pl-12" placeholder="Search student by name or ID..."
+                                oninput="filterStudents(this.value)" />
+                        </div>
+
+                        <div class="overflow-x-auto bg-white rounded-3xl border border-gray-100">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Student Name</th>
+                                        <th class="text-center">L</th>
+                                        <th class="text-center">R</th>
+                                        <th class="text-center">W</th>
+                                        <th class="text-center">S</th>
+                                        <th class="text-center">Overall</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="score-tbody"></tbody>
+                            </table>
+                        </div>
+                        <div class="mt-6 flex justify-end">
+                            <button class="btn-primary" onclick="saveAllScores()">
+                                <iconify-icon icon="ph:floppy-disk-bold"></iconify-icon> Save All Scores
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Analytics Sidebar -->
+                    <div class="lg:col-span-4 flex flex-col gap-8">
+                        <div class="panel">
+                            <div class="panel-title text-orange-500">
+                                <iconify-icon icon="ph:chart-bar-fill"></iconify-icon> Band Distribution
+                            </div>
+                            <div id="band-chart" class="flex flex-col gap-3"></div>
+                        </div>
+                        <div class="panel">
+                            <div class="panel-title text-yellow-500">
+                                <iconify-icon icon="ph:funnel-fill"></iconify-icon> Filter Results
+                            </div>
+                            <div id="filterResultsList" class="flex flex-col gap-2">
+                                <!-- Dynamically populated by renderFilterResults() -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===================== PERFORMANCE PORTFOLIO ===================== -->
+            <div id="page-actual-results" class="page-content">
+                <div class="mb-10">
+                    <h2 class="text-4xl md:text-5xl font-black mb-2">Performance <span
+                            class="text-[#FF6B35]">Portfolio</span></h2>
+                    <p class="text-gray-500 text-lg font-medium">Upload official TRFs to build your verified public
+                        rating.</p>
+                </div>
+
+                <div class="bg-purple-50 border-2 border-purple-200 rounded-3xl p-8 text-center mb-8">
+                    <iconify-icon icon="ph:seal-check-bold" class="text-4xl text-purple-500 mb-3"></iconify-icon>
+                    <h3 class="font-clash text-2xl font-black text-gray-900 mb-2">Coming Soon</h3>
+                    <p class="text-gray-600 font-medium max-w-lg mx-auto">Performance Portfolio will let you upload official IELTS Test Report Forms (TRFs), verify student results, and showcase your centre's public success rate and average band score.</p>
+                </div>
+            </div>
+
+            <!-- ===================== PODCAST STUDIO ===================== -->
+            <div id="page-podcasts" class="page-content">
+                <div class="mb-10">
+                    <h2 class="text-4xl md:text-5xl font-black mb-2">Podcast <span class="text-[#FF6B35]">Studio</span>
+                    </h2>
+                    <p class="text-gray-500 text-lg font-medium">Upload and manage audio content for your students.</p>
+                </div>
+
+                <div class="bg-yellow-50 border-2 border-yellow-200 rounded-3xl p-8 text-center mb-8">
+                    <iconify-icon icon="ph:clock-countdown-bold" class="text-4xl text-yellow-500 mb-3"></iconify-icon>
+                    <h3 class="font-clash text-2xl font-black text-gray-900 mb-2">Coming Soon</h3>
+                    <p class="text-gray-600 font-medium max-w-lg mx-auto">Podcast Studio is planned for a future release. You'll be able to upload audio lessons, track listens, and manage episode publishing from here.</p>
+                </div>
+            </div>
+
+            <!-- ===================== STUDENT INQUIRIES ===================== -->
+            <div id="page-inquiries" class="page-content">
+                <div class="mb-10">
+                    <h2 class="text-4xl md:text-5xl font-black mb-2">Student <span
+                            class="text-[#FF6B35]">Inquiries</span></h2>
+                    <p class="text-gray-500 text-lg font-medium">Manage leads and messages from prospective students.
+                    </p>
+                </div>
+
+                <div class="flex flex-wrap gap-4 mb-8">
+                    <div class="relative flex-1 min-w-[250px]">
+                        <iconify-icon icon="ph:magnifying-glass-bold"
+                            class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></iconify-icon>
+                        <input type="text" id="inquirySearch" class="input-field pl-12 py-3" placeholder="Search by student name..." oninput="filterInquiries(this.value)" />
+                    </div>
+                    <select id="inquiryStatusFilter" class="input-field form-select w-auto py-3 px-4 rounded-xl" onchange="filterInquiriesByStatus(this.value)">
+                        <option value="all">All Status</option>
+                        <option value="unread">New</option>
+                        <option value="read">Read</option>
+                    </select>
+                </div>
+
+                <div id="inquiries-list" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- JS Populated -->
+                </div>
+            </div>
+
+            <!-- ===================== GROUPS & TEACHERS ===================== -->
+            <div id="page-groups" class="page-content">
+                <div class="mb-10">
+                    <h2 class="text-4xl md:text-5xl font-black mb-2">Groups & <span
+                            class="text-[#FF6B35]">Teachers</span></h2>
+                    <p class="text-gray-500 text-lg font-medium">Create study groups, assign teachers, and manage
+                        applications.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Form -->
+                    <div class="lg:col-span-4 panel h-max">
+                        <div class="panel-title text-purple-600">
+                            <iconify-icon icon="ph:users-three-fill"></iconify-icon> Create Group
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Group Name</label>
+                            <input type="text" class="input-field" id="g-name" placeholder="Intensive 7.0+" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Teacher</label>
+                            <input type="text" class="input-field" id="g-teacher" placeholder="e.g. Malika Yusupova" />
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div><label class="form-label">Start</label><input type="date" class="input-field p-3"
+                                    id="g-start" /></div>
+                            <div><label class="form-label">End</label><input type="date" class="input-field p-3"
+                                    id="g-end" /></div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div><label class="form-label">Capacity</label><input type="number" class="input-field p-3"
+                                    id="g-capacity" placeholder="15" /></div>
+                            <div><label class="form-label">Level</label><select class="input-field form-select p-3"
+                                    id="g-level">
+                                    <option value="Beginner">Beginner (4.0-5.0)</option>
+                                    <option value="Intermediate">Intermediate (5.5-6.0)</option>
+                                    <option value="Upper Intermediate">Upper Intermediate (6.5-7.0)</option>
+                                    <option value="Advanced">Advanced (7.5+)</option>
+                                </select></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Location</label>
+                            <input type="text" class="input-field" id="g-location" placeholder="e.g. Winners Academy Avtovokzal filiali, Termiz" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Google Maps Link <span class="text-gray-400 font-normal text-xs">(optional)</span></label>
+                            <input type="text" class="input-field" id="g-mapurl" placeholder="Paste embed URL or short link..." onchange="extractCoordsFromMapUrl(this.value)" />
+                            <div class="text-[10px] text-gray-400 mt-1">Paste a Google Maps embed URL to auto-fill coordinates below</div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="form-label">Latitude <span class="text-gray-400 font-normal text-xs">(optional)</span></label>
+                                <input type="number" step="any" class="input-field p-3" id="g-lat" placeholder="37.2353" />
+                            </div>
+                            <div>
+                                <label class="form-label">Longitude <span class="text-gray-400 font-normal text-xs">(optional)</span></label>
+                                <input type="number" step="any" class="input-field p-3" id="g-lng" placeholder="67.2566" />
+                            </div>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label class="form-label">Description / Contact <span class="text-gray-400 font-normal text-xs">(phone number, notes)</span></label>
+                            <textarea class="input-field p-3 resize-none" id="g-description" rows="3" placeholder="Phone: +998 90 123 45 67&#10;Additional info..."></textarea>
+                        </div>
+                        <button class="btn-primary w-full justify-center" onclick="createGroup(event)">
+                            <iconify-icon icon="ph:plus-bold"></iconify-icon> Create Group
+                        </button>
+                    </div>
+
+                    <!-- List -->
+                    <div class="lg:col-span-8 flex flex-col gap-8">
+                        <div class="panel">
+                            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                                <div class="panel-title mb-0">
+                                    <iconify-icon icon="ph:chalkboard-teacher-fill"
+                                        class="text-orange-500"></iconify-icon> Active Groups
+                                </div>
+                                <input type="text" class="input-field w-auto py-2 px-4 rounded-xl"
+                                    placeholder="Search..." oninput="filterGroups(this.value)" />
+                            </div>
+                            <div id="groups-list" class="flex flex-col gap-4">
+                                <!-- JS Populated -->
+                            </div>
+                        </div>
+
+                        <!-- Previous & Closed Groups -->
+                        <div class="panel">
+                            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                                <div class="panel-title mb-0">
+                                    <iconify-icon icon="ph:archive-box-fill"
+                                        class="text-gray-500"></iconify-icon> Previous & Closed Created Groups
+                                </div>
+                                <div class="text-sm text-gray-400 font-medium" id="closed-groups-count">0 groups</div>
+                            </div>
+                            <div id="closed-groups-list" class="flex flex-col gap-4">
+                                <!-- JS Populated -->
+                            </div>
+                        </div>
+
+                        <!-- Applications Table -->
+                        <div class="panel">
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="panel-title mb-0">
+                                    <iconify-icon icon="ph:envelope-simple-open-fill"
+                                        class="text-yellow-500"></iconify-icon> Inbox
+                                </div>
+                                <span id="inboxPendingBadge" class="badge badge-yellow">0 Pending</span>
+                            </div>
+                            <div class="overflow-x-auto bg-white rounded-3xl border border-gray-100">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Student</th>
+                                            <th>Applied For</th>
+                                            <th>Band</th>
+                                            <th>Phone</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="applications-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===================== MARKETING ===================== -->
+            <div id="page-marketing" class="page-content">
+                <div class="mb-10">
+                    <h2 class="text-4xl md:text-5xl font-black mb-2">Marketing <span
+                            class="text-[#FF6B35]">Centre</span></h2>
+                    <p class="text-gray-500 text-lg font-medium">Manage your public profile presence and share your centre.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Public Profile Preview -->
+                    <div class="panel">
+                        <div class="panel-title">Public Profile Preview</div>
+                        <div id="marketingPreview" class="bg-gradient-to-br from-purple-50 to-orange-50 rounded-3xl p-8 border border-gray-100">
+                            <div class="flex items-center gap-4 mb-6">
+                                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-clash text-3xl font-black shadow-lg" id="marketingInitial">B</div>
+                                <div>
+                                    <div class="font-clash text-2xl font-black text-gray-900" id="marketingName">British IELTS Centre</div>
+                                    <div class="text-sm text-gray-500 font-medium" id="marketingLocation">Tashkent, Uzbekistan</div>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap gap-3 mb-6">
+                                <span class="badge badge-purple" id="marketingRating">⭐ 4.5</span>
+                                <span class="badge badge-green" id="marketingStatus">Active</span>
+                            </div>
+                            <div class="space-y-2 text-sm text-gray-600 font-medium">
+                                <div class="flex items-center gap-2"><iconify-icon icon="ph:map-pin-bold" class="text-gray-400"></iconify-icon> <span id="marketingAddress">—</span></div>
+                                <div class="flex items-center gap-2"><iconify-icon icon="ph:envelope-bold" class="text-gray-400"></iconify-icon> <span id="marketingEmail">—</span></div>
+                                <div class="flex items-center gap-2"><iconify-icon icon="ph:phone-bold" class="text-gray-400"></iconify-icon> <span id="marketingPhone">—</span></div>
+                                <div class="flex items-center gap-2"><iconify-icon icon="ph:globe-bold" class="text-gray-400"></iconify-icon> <a href="#" target="_blank" class="text-purple-600 hover:underline" id="marketingWebsite">—</a></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Share & Quick Stats -->
+                    <div class="flex flex-col gap-8">
+                        <div class="panel">
+                            <div class="panel-title">Share Your Centre</div>
+                            <div class="form-group">
+                                <label class="form-label">Public Link</label>
+                                <div class="flex gap-2">
+                                    <input type="text" class="input-field bg-gray-50 flex-1" id="marketingLink" readonly value="https://ieltsedu.com/centres/british-ielts-centre" />
+                                    <button class="btn-primary whitespace-nowrap" onclick="copyMarketingLink()">Copy</button>
+                                </div>
+                            </div>
+                            <div id="marketingCopyMsg" class="text-sm font-bold text-green-600 hidden mt-2">Link copied to clipboard!</div>
+                        </div>
+
+                        <div class="panel">
+                            <div class="panel-title">Quick Stats</div>
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="text-center p-4 bg-purple-50 rounded-2xl">
+                                    <div class="font-clash text-2xl font-black text-purple-600" id="marketingStatGroups">0</div>
+                                    <div class="text-xs font-bold text-gray-500 uppercase">Groups</div>
+                                </div>
+                                <div class="text-center p-4 bg-orange-50 rounded-2xl">
+                                    <div class="font-clash text-2xl font-black text-orange-600" id="marketingStatSessions">0</div>
+                                    <div class="text-xs font-bold text-gray-500 uppercase">Sessions</div>
+                                </div>
+                                <div class="text-center p-4 bg-green-50 rounded-2xl">
+                                    <div class="font-clash text-2xl font-black text-green-600" id="marketingStatInquiries">0</div>
+                                    <div class="text-xs font-bold text-gray-500 uppercase">Inquiries</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===================== PROFILE ===================== -->
+            <div id="page-profile" class="page-content">
+                <div class="mb-10">
+                    <h2 class="text-4xl md:text-5xl font-black mb-2">Centre <span class="text-[#FF6B35]">Profile</span>
+                    </h2>
+                    <p class="text-gray-500 text-lg font-medium">Manage your centre details and public presence.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Stats -->
+                    <div class="lg:col-span-1 flex flex-col gap-6">
+                        <div class="panel">
+                            <div class="panel-title">Overview</div>
+                            <div class="flex flex-col gap-4">
+                                <div class="flex items-center justify-between p-4 bg-purple-50 rounded-2xl">
+                                    <span class="text-sm font-bold text-gray-600">Mock Sessions</span>
+                                    <span id="profileStatSessions" class="font-clash text-2xl font-black text-purple-600">0</span>
+                                </div>
+                                <div class="flex items-center justify-between p-4 bg-orange-50 rounded-2xl">
+                                    <span class="text-sm font-bold text-gray-600">Study Groups</span>
+                                    <span id="profileStatGroups" class="font-clash text-2xl font-black text-orange-600">0</span>
+                                </div>
+                                <div class="flex items-center justify-between p-4 bg-green-50 rounded-2xl">
+                                    <span class="text-sm font-bold text-gray-600">Inquiries</span>
+                                    <span id="profileStatInquiries" class="font-clash text-2xl font-black text-green-600">0</span>
+                                </div>
+                                <div class="flex items-center justify-between p-4 bg-yellow-50 rounded-2xl">
+                                    <span class="text-sm font-bold text-gray-600">Rating</span>
+                                    <span id="profileStatRating" class="font-clash text-2xl font-black text-yellow-600">4.5</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form -->
+                    <div class="lg:col-span-2 panel">
+                        <div class="panel-title">Centre Details</div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="form-group">
+                                <label class="form-label">Centre Name</label>
+                                <input type="text" class="input-field" id="p-name" placeholder="Your Centre Name" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Code</label>
+                                <input type="text" class="input-field bg-gray-50" id="p-code" readonly placeholder="Auto-generated" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">City</label>
+                                <input type="text" class="input-field" id="p-city" placeholder="Tashkent" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Country</label>
+                                <input type="text" class="input-field" id="p-country" placeholder="Uzbekistan" />
+                            </div>
+                            <div class="form-group md:col-span-2">
+                                <label class="form-label">Address</label>
+                                <input type="text" class="input-field" id="p-address" placeholder="123 Main Street" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="input-field" id="p-email" placeholder="info@centre.com" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Phone</label>
+                                <input type="tel" class="input-field" id="p-phone" placeholder="+998 90 123 45 67" />
+                            </div>
+                            <div class="form-group md:col-span-2">
+                                <label class="form-label">Website</label>
+                                <input type="url" class="input-field" id="p-website" placeholder="https://centre.com" />
+                            </div>
+                        </div>
+                        <div class="flex gap-3 mt-6">
+                            <button class="btn-primary" onclick="saveProfile()">Save Changes</button>
+                            <button class="btn-secondary" onclick="loadProfile()">Reset</button>
+                        </div>
+                        <div id="profileSaveMsg" class="mt-4 text-sm font-bold hidden"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+    // ================================================================
+    // Backend-ready core (API/auth/state)
+    // ================================================================
+    const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? `${window.location.protocol}//${window.location.hostname}:4000/api`
+      : `${window.location.protocol}//${window.location.host}/api`;
+
+
+    const userState = {
+      token: null,
+      role: null,
+      user: null,
+    };
+
+    function loadUserState() {
+      try {
+        const token = localStorage.getItem('education_token') || null;
+        const rawUser = localStorage.getItem('education_user');
+        const parsedUser = rawUser ? JSON.parse(rawUser) : null;
+        const rawCentre = localStorage.getItem('education_centre');
+        const parsedCentre = rawCentre ? JSON.parse(rawCentre) : null;
+
+        userState.token = token;
+        userState.user = parsedUser;
+        userState.centre = parsedCentre;
+        userState.role = (parsedUser && parsedUser.role) || 'CENTRE_ADMIN';
+      } catch {
+        userState.token = localStorage.getItem('education_token') || null;
+        userState.user = null;
+        userState.centre = null;
+        userState.role = 'CENTRE_ADMIN';
+      }
+      return userState;
+    }
+
+    function redirectToLogin() {
+      window.location.href = '/education-login.html';
+    }
+
+    async function apiFetch(endpoint, options = {}) {
+      loadUserState();
+
+      const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+      const headers = new Headers(options.headers || {});
+      headers.set('Accept', headers.get('Accept') || 'application/json');
+      if (!headers.has('Content-Type') && options.body && !(options.body instanceof FormData)) {
+        headers.set('Content-Type', 'application/json');
+      }
+      if (userState.token) headers.set('Authorization', `Bearer ${userState.token}`);
+
+      const res = await fetch(url, { ...options, headers });
+      if (res.status === 401) {
+        redirectToLogin();
+        throw new Error('Unauthorized (401)');
+      }
+
+      const contentType = res.headers.get('content-type') || '';
+      const isJson = contentType.includes('application/json');
+      const payload = isJson ? await res.json().catch(() => null) : await res.text().catch(() => null);
+
+      if (!res.ok) {
+        const msg =
+          (payload && typeof payload === 'object' && (payload.message || payload.error)) ||
+          (typeof payload === 'string' && payload) ||
+          `Request failed (${res.status})`;
+        const err = new Error(msg);
+        err.status = res.status;
+        err.payload = payload;
+        throw err;
+      }
+
+      // Unwrap backend {success: true, data: ...} envelope
+      if (payload && payload.success === true && payload.data !== undefined) {
+        return payload.data;
+      }
+
+      return payload;
+    }
+
+    // ─── DATA ───────────────────────────────────────────────
+    const mockDates = [];
+    const mockBookings = [];
+    const students = [];
+    const bandDist = [
+      { band: '9.0', count: 0, max: 22 },
+      { band: '8.5', count: 0, max: 22 },
+      { band: '8.0', count: 0, max: 22 },
+      { band: '7.5', count: 0, max: 22 },
+      { band: '7.0', count: 0, max: 22 },
+      { band: '6.5', count: 0, max: 22 },
+      { band: '6.0', count: 0, max: 22 },
+      { band: '5.5', count: 0, max: 22 },
+      { band: '5.0', count: 0, max: 22 },
+      { band: '4.5', count: 0, max: 22 },
+      { band: '4.0', count: 0, max: 22 },
+    ];
+    let editingMockId = null;
+    let editingGroupId = null;
+    let groups = [];
+    let inquiries = [];
+    const applications = [];
+    const headings = {
+      'dashboard': 'Dashboard',
+      'mock-dates': 'Mock Date Manager',
+      'mock-results': 'Mock Results & Analytics',
+      'actual-results': 'Performance Portfolio',
+      'podcasts': 'Podcast Studio',
+      'inquiries': 'Student Inquiries',
+      'groups': 'Groups & Teachers',
+      'marketing': 'Marketing Centre',
+      'profile': 'Centre Profile',
+    };
+
+
+    // ─── NAVIGATION ─────────────────────────────────────────
+    function navTo(page) {
+      document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      const el = document.getElementById('page-' + page);
+      if (el) el.classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(n => {
+        if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + page + "'")) n.classList.add('active');
+      });
+      const headingEl = document.getElementById('page-heading');
+      if (headingEl) headingEl.textContent = headings[page] || page;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // close sidebar on mobile
+      if (window.innerWidth < 1024) {
+          const sidebar = document.getElementById('sidebar');
+          if (sidebar) sidebar.classList.remove('open');
+      }
+    }
+
+    function toggleBtn(btn) {
+      const group = btn.closest('.toggle-group');
+      if (!group) return;
+      group.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+// ─── MOCKS ───
+function renderMocks() {
+            const badge = document.getElementById('mockActiveBadge');
+            if (badge) badge.textContent = (mockDates.length || 0) + ' Active';
+            const list = document.getElementById('mock-list');
+            if (!list) return;
+            list.innerHTML = mockDates.map(m => {
+                const pct = Math.round((m.registered / m.capacity) * 100);
+                const full = m.registered >= m.capacity;
+                const barColor = pct > 80 ? '#EF4444' : pct > 50 ? '#F59E0B' : '#10B981';
+                return `
+      <div class="bg-white border-2 border-gray-100 rounded-[24px] p-6 card-lift transition-playful" data-backend-id="${m.id}">
+        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+          <div class="flex-1">
+            <div class="font-clash text-xl font-bold text-gray-900 mb-2">${m.type} · ${m.format}</div>
+            <div class="flex flex-wrap gap-3 text-sm text-gray-500 font-medium">
+              <span class="flex items-center gap-1"><iconify-icon icon="ph:calendar-blank-bold"></iconify-icon> ${m.date}</span>
+              <span class="flex items-center gap-1"><iconify-icon icon="ph:map-pin-bold"></iconify-icon> ${m.location}</span>
+              <span class="flex items-center gap-1 text-[#FF6B35]"><iconify-icon icon="ph:wallet-bold"></iconify-icon> ${m.price}</span>
+            </div>
+          </div>
+          <div class="text-left sm:text-right">
+            <div class="font-clash text-2xl font-black ${full ? 'text-red-500' : 'text-green-500'}">${m.registered}<span class="text-sm text-gray-400 font-satoshi">/${m.capacity} seats</span></div>
+          </div>
+        </div>
+        <div class="mt-4 mb-5">
+          <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all duration-500" style="width:${pct}%; background:${barColor};"></div>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <button class="btn-sm" onclick="editMock(${m.id})"><iconify-icon icon="ph:pencil-simple-bold"></iconify-icon> Edit</button>
+          <button class="btn-danger" onclick="closeMock(${m.id})"><iconify-icon icon="ph:x-circle-bold"></iconify-icon> Close Registration</button>
+        </div>
+      </div>
+    `;
+            }).join('');
+        }
+async function closeMock(id) {
+      if (!confirm('Close this session? Registered students will be notified.')) return;
+      try {
+        await apiFetch('/centre/mock-sessions/' + encodeURIComponent(id), { method: 'DELETE' });
+      } catch (e) { console.error('Failed to delete mock session:', e); }
+      const idx = mockDates.findIndex(m => m.id === id);
+      if (idx > -1) { mockDates.splice(idx, 1); renderMocks(); }
+    }
+function editMock(id) {
+      const m = mockDates.find(x => x.id === id);
+      if (!m) return;
+      editingMockId = id;
+      const dtVal = m.date && m.date !== '—' ? new Date(m.date) : new Date();
+      const iso = isNaN(dtVal) ? '' : new Date(dtVal.getTime() - (dtVal.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+      document.getElementById('mockDateTime').value = iso;
+      const priceNum = parseInt(String(m.price).replace(/[^0-9]/g, ''), 10) || 0;
+      document.getElementById('mockPrice').value = priceNum;
+      document.getElementById('mockCapacity').value = m.capacity || 30;
+      document.getElementById('mockLocation').value = m.location || '';
+      document.getElementById('mockNotes').value = m.notes || '';
+      // Set toggle buttons
+      const typeBtns = document.querySelectorAll('#page-mock-dates .toggle-group')[0]?.querySelectorAll('.toggle-btn');
+      if (typeBtns) {
+        typeBtns.forEach(b => b.classList.remove('active'));
+        const target = Array.from(typeBtns).find(b => b.textContent.trim().toLowerCase() === (m.type || 'academic').toLowerCase());
+        if (target) target.classList.add('active');
+        else typeBtns[0]?.classList.add('active');
+      }
+      const formatBtns = document.querySelectorAll('#page-mock-dates .toggle-group')[1]?.querySelectorAll('.toggle-btn');
+      if (formatBtns) {
+        formatBtns.forEach(b => b.classList.remove('active'));
+        const target = Array.from(formatBtns).find(b => b.textContent.trim().toLowerCase() === (m.format || 'paper').toLowerCase());
+        if (target) target.classList.add('active');
+        else formatBtns[0]?.classList.add('active');
+      }
+      const btn = document.getElementById('mockSubmitBtn');
+      if (btn) { btn.innerHTML = '<iconify-icon icon=\"ph:floppy-disk-bold\"></iconify-icon> Update Session'; }
+      const cancelBtn = document.getElementById('mockCancelBtn');
+      if (cancelBtn) cancelBtn.classList.remove('hidden');
+      document.getElementById('mockDateTime').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+function cancelEditMock() {
+      editingMockId = null;
+      document.getElementById('mockDateTime').value = '2026-06-15T09:00';
+      document.getElementById('mockPrice').value = '150000';
+      document.getElementById('mockCapacity').value = '30';
+      document.getElementById('mockLocation').value = 'Branch A, Room 2';
+      document.getElementById('mockNotes').value = '';
+      const typeBtns = document.querySelectorAll('#page-mock-dates .toggle-group')[0]?.querySelectorAll('.toggle-btn');
+      if (typeBtns) { typeBtns.forEach(b => b.classList.remove('active')); typeBtns[0]?.classList.add('active'); }
+      const formatBtns = document.querySelectorAll('#page-mock-dates .toggle-group')[1]?.querySelectorAll('.toggle-btn');
+      if (formatBtns) { formatBtns.forEach(b => b.classList.remove('active')); formatBtns[0]?.classList.add('active'); }
+      const btn = document.getElementById('mockSubmitBtn');
+      if (btn) { btn.innerHTML = '<iconify-icon icon=\"ph:plus-bold\"></iconify-icon> Schedule Mock'; }
+      const cancelBtn = document.getElementById('mockCancelBtn');
+      if (cancelBtn) cancelBtn.classList.add('hidden');
+    }
+async function addMock(e) {
+      if (e && typeof e.preventDefault === 'function') e.preventDefault();
+
+      const dt = document.getElementById('mockDateTime')?.value || '';
+      const price = parseInt(document.getElementById('mockPrice')?.value || '0', 10) || 0;
+      const capacity = parseInt(document.getElementById('mockCapacity')?.value || '0', 10) || 0;
+      const location = (document.getElementById('mockLocation')?.value || '').trim();
+      const notes = (document.getElementById('mockNotes')?.value || '').trim();
+
+      const typeToggle = document.querySelectorAll('#page-mock-dates .toggle-group')[0]?.querySelector('.toggle-btn.active');
+      const formatToggle = document.querySelectorAll('#page-mock-dates .toggle-group')[1]?.querySelector('.toggle-btn.active');
+      const type = typeToggle ? typeToggle.textContent.trim() : 'Academic';
+      const format = formatToggle ? formatToggle.textContent.trim() : 'Paper';
+
+      const payload = { dateTime: dt, price, capacity, location, type, format, notes };
+
+      if (editingMockId) {
+        try {
+          await apiFetch('/centre/mock-sessions/' + encodeURIComponent(editingMockId), { method: 'PUT', body: JSON.stringify(payload) });
+          const idx = mockDates.findIndex(m => m.id === editingMockId);
+          if (idx > -1) {
+            mockDates[idx] = {
+              ...mockDates[idx],
+              date: dt ? new Date(dt).toLocaleString() : mockDates[idx].date,
+              type,
+              format,
+              location: location || 'TBD',
+              price: price ? `${price.toLocaleString()} UZS` : '—',
+              capacity: capacity || 30,
+              notes
+            };
+          }
+        } catch (e) { console.error('Failed to update mock session:', e); }
+        cancelEditMock();
+        renderMocks();
+        return;
+      }
+
+      try {
+        const created = await apiFetch('/centre/mock-sessions', { method: 'POST', body: JSON.stringify(payload) });
+        const newId = (created && created.id) || (mockDates.length ? Math.max(...mockDates.map(m => m.id)) + 1 : 1);
+        mockDates.unshift({
+          id: newId,
+          date: (created && created.dateTime) ? new Date(created.dateTime).toLocaleString() : (dt ? new Date(dt).toLocaleString() : 'New Mock Date'),
+          type: (created && created.type) || type,
+          format: (created && created.format) || format,
+          location: (created && created.location) || (location || 'TBD'),
+          price: (created && created.price !== undefined) ? `${Number(created.price).toLocaleString()} UZS` : (price ? `${price.toLocaleString()} UZS` : '—'),
+          capacity: (created && created.capacity) || (capacity || 30),
+          registered: (created && created._count && created._count.results) || 0,
+          notes
+        });
+      } catch {
+        const newId = mockDates.length ? Math.max(...mockDates.map(m => m.id)) + 1 : 1;
+        mockDates.unshift({
+          id: newId,
+          date: dt ? new Date(dt).toLocaleString() : 'New Mock Date',
+          type,
+          format,
+          location: location || 'TBD',
+          price: price ? `${price.toLocaleString()} UZS` : '—',
+          capacity: capacity || 30,
+          registered: 0,
+          notes
+        });
+      }
+
+      renderMocks();
+      cancelEditMock();
+    }
+// ─── SCORES ───
+function calcOverall(l, r, w, s) {
+      const vals = [l, r, w, s].map(v => parseFloat(v)).filter(v => !isNaN(v));
+      if (vals.length < 4) return '';
+      const sum = vals.reduce((a, b) => a + b, 0);
+      const avg = sum / 4;
+      return (Math.round(avg * 2) / 2).toFixed(1);
+    }
+function renderScoreTable(filter) {
+            const tbody = document.getElementById('score-tbody');
+            if (!tbody) return;
+            const sessionId = document.getElementById('resultsSessionSelect')?.value;
+            let list = filter ? students.filter(s => s.name.toLowerCase().includes(filter.toLowerCase())) : students;
+            if (sessionId) {
+              list = list.filter(s => String(s.sessionId) === String(sessionId));
+            }
+            if (list.length === 0) {
+              tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-gray-400">No results found. Scores appear here after mock sessions are completed.</td></tr>`;
+            } else {
+              tbody.innerHTML = list.map((s) => `
+    <tr data-backend-id="${s.id}">
+      <td class="text-xs text-gray-400">${s.studentId || s.id}</td>
+      <td class="font-bold">${s.name}</td>
+      ${['l', 'r', 'w', 's'].map(k => `
+        <td class="p-2">
+          <input type="number" class="w-16 p-2 border-2 border-gray-100 rounded-xl text-center focus:border-purple-500 outline-none transition-all font-bold" data-id="${s.id}" data-key="${k}" value="${s[k]}" min="0" max="9" step="0.5" oninput="updateScore('${s.id}','${k}',this.value)" />
+        </td>
+      `).join('')}
+      <td class="text-center">
+        <span id="overall-${s.id}" class="font-clash text-2xl font-black ${s.overall >= 7 ? 'text-green-500' : s.overall >= 6 ? 'text-orange-500' : 'text-gray-300'}">${s.overall || '—'}</span>
+      </td>
+      <td><button class="btn-sm" onclick="saveScore('${s.id}')">Save</button></td>
+    </tr>
+  `).join('');
+            }
+            renderBandChart();
+            renderFilterResults();
+        }
+function updateScore(id, key, val) {
+            const st = students.find(s => s.id === id);
+            if (!st) return;
+            st[key] = val;
+            st.overall = calcOverall(st.l, st.r, st.w, st.s);
+            const el = document.getElementById('overall-' + id);
+            if (el) {
+                el.textContent = st.overall || '—';
+                el.className = `font-clash text-2xl font-black ${st.overall >= 7 ? 'text-green-500' : st.overall >= 6 ? 'text-orange-500' : 'text-red-500'}`;
+            }
+            updateBandDist();
+            renderBandChart();
+            renderFilterResults();
+        }
+function saveScore(id) {
+      const st = students.find(s => s.id === id);
+      if (st && st.overall) {
+        const payload = { listening: st.l, reading: st.r, writing: st.w, speaking: st.s, overall: st.overall };
+        apiFetch('/centre/mock-results/' + encodeURIComponent(id), { method: 'PUT', body: JSON.stringify(payload) }).catch(() => { });
+        const btn = document.querySelector(`[onclick="saveScore('${id}')"]`);
+        if (btn) { btn.textContent = '✓ Saved'; btn.style.background = '#d1fae5'; btn.style.color = '#065f46'; setTimeout(() => { btn.textContent = 'Save'; btn.style.background = ''; btn.style.color = ''; }, 1800); }
+      }
+    }
+function filterStudents(val) { renderScoreTable(val); }
+
+// ─── CHARTS ───
+function renderBandChart() {
+            const el = document.getElementById('band-chart');
+            if (!el) return;
+            const max = Math.max(...bandDist.map(b => b.count)) || 1;
+            el.innerHTML = bandDist.map(b => `
+    <div class="bar-row">
+      <div class="bar-label">${b.band}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${Math.round((b.count / max) * 100)}%; background:${b.band >= '7.0' ? '#10B981' : b.band >= '6.5' ? '#8B5CF6' : '#FF6B35'};"></div>
+      </div>
+      <div class="text-sm font-bold text-gray-500 w-6">${b.count}</div>
+    </div>
+  `).join('');
+        }
+function populateResultsSessionSelect() {
+      const select = document.getElementById('resultsSessionSelect');
+      if (!select) return;
+      const current = select.value;
+      select.innerHTML = '<option value="">All Sessions</option>' +
+        mockDates.map(m => `<option value="${m.id}">${m.date} — ${m.type}, ${m.format}</option>`).join('');
+      select.value = current;
+    }
+function saveAllScores() {
+      let saved = 0;
+      students.forEach(st => {
+        if (st.overall) {
+          const payload = { listening: st.l, reading: st.r, writing: st.w, speaking: st.s, overall: st.overall };
+          apiFetch('/centre/mock-results/' + encodeURIComponent(st.id), { method: 'PUT', body: JSON.stringify(payload) }).catch(() => { });
+          saved++;
+        }
+      });
+      const btn = document.querySelector('[onclick="saveAllScores()"]');
+      if (btn) { btn.textContent = `✓ Saved ${saved}`; setTimeout(() => { btn.innerHTML = '<iconify-icon icon=\"ph:floppy-disk-bold\"></iconify-icon> Save All Scores'; }, 2000); }
+    }
+function renderFilterResults() {
+      const container = document.getElementById('filterResultsList');
+      if (!container) return;
+      const total = students.length;
+      const band8plus = students.filter(s => parseFloat(s.overall) >= 8).length;
+      const band7plus = students.filter(s => parseFloat(s.overall) >= 7).length;
+      const band65plus = students.filter(s => parseFloat(s.overall) >= 6.5).length;
+      const band6 = students.filter(s => parseFloat(s.overall) >= 6 && parseFloat(s.overall) < 6.5).length;
+      const below6 = students.filter(s => parseFloat(s.overall) < 6).length;
+      container.innerHTML = `
+    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-2xl">
+      <span class="font-bold text-gray-700">Band 8.0+</span><span class="badge badge-purple">${band8plus} students</span>
+    </div>
+    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-2xl">
+      <span class="font-bold text-gray-700">Band 7.0+</span><span class="badge badge-green">${band7plus} students</span>
+    </div>
+    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-2xl">
+      <span class="font-bold text-gray-700">Band 6.5+</span><span class="badge badge-blue">${band65plus} students</span>
+    </div>
+    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-2xl">
+      <span class="font-bold text-gray-700">Band 6.0</span><span class="badge badge-yellow">${band6} students</span>
+    </div>
+    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-2xl">
+      <span class="font-bold text-gray-700">Below 6.0</span><span class="badge badge-red">${below6} students</span>
+    </div>
+  `;
+    }
+// ─── GROUPS ───
+function renderGroupCard(g) {
+  const pct = Math.round((g.enrolled / g.capacity) * 100);
+  const isOpen = g.status === 'open';
+  const isFull = g.enrolled >= g.capacity;
+  const opacityClass = isOpen ? '' : ' opacity-80';
+  return `
+    <div class="bg-white border-2 border-gray-100 rounded-[24px] p-6 card-lift transition-playful${opacityClass}">
+      <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
+        <div class="flex-1">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="font-clash text-xl font-bold text-gray-900">${g.name}</div>
+            <span class="badge ${isOpen && !isFull ? 'badge-green' : isFull ? 'badge-red' : 'badge-gray'}">${isFull ? 'Full' : isOpen ? 'Open' : 'Closed'}</span>
+            <span class="badge badge-purple">${g.level}</span>
+          </div>
+          <div class="flex flex-wrap gap-4 text-sm text-gray-500 font-medium mb-2">
+            <span class="flex items-center gap-1"><iconify-icon icon="ph:user-bold"></iconify-icon> ${g.teacher}</span>
+            <span class="flex items-center gap-1"><iconify-icon icon="ph:calendar-bold"></iconify-icon> ${g.start} → ${g.end}</span>
+          </div>
+          ${g.location ? `<div class="text-sm text-gray-600 font-medium mb-1 flex items-center gap-1"><iconify-icon icon="ph:map-pin-bold" class="text-orange-500"></iconify-icon> ${g.location}</div>` : ''}
+          ${g.mapUrl ? `<div class="text-xs mb-1"><a href="${g.mapUrl}" target="_blank" class="text-purple-600 font-bold hover:underline flex items-center gap-1"><iconify-icon icon="ph:map-trifold-bold"></iconify-icon> View on Google Maps</a></div>` : ''}
+          ${g.desc ? `<div class="text-xs text-gray-500 bg-gray-50 rounded-lg p-2 mt-2">${g.desc.replace(/\n/g, '<br>')}</div>` : ''}
+        </div>
+        <div class="text-left sm:text-right">
+           <div class="font-clash text-3xl font-black ${isFull ? 'text-red-500' : 'text-gray-900'}">${g.enrolled}<span class="text-sm text-gray-400 font-satoshi">/${g.capacity}</span></div>
+        </div>
+      </div>
+      <div class="mb-4">
+        <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+          <div class="h-full rounded-full transition-all duration-500" style="width:${pct}%; background:${pct >= 100 ? '#EF4444' : pct >= 75 ? '#F59E0B' : '#10B981'}"></div>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button class="btn-sm" onclick="editGroup('${g.id}')">Edit</button>
+        <button class="btn-sm" style="${!isOpen ? 'background:#FFFBEB;color:#D97706;' : ''}" onclick="toggleGroupStatus('${g.id}')">${isOpen ? 'Close' : 'Reopen'}</button>
+        <button class="btn-danger" onclick="deleteGroup('${g.id}')">Delete</button>
+      </div>
+    </div>`;
+}
+
+function renderGroups(filter) {
+  const activeList = document.getElementById('groups-list');
+  const closedList = document.getElementById('closed-groups-list');
+  const closedCount = document.getElementById('closed-groups-count');
+  if (!activeList || !closedList) return;
+
+  const active = groups.filter(g => g.status === 'open');
+  const closed = groups.filter(g => g.status !== 'open');
+
+  const filteredActive = filter ? active.filter(g => g.name.toLowerCase().includes(filter.toLowerCase())) : active;
+
+  activeList.innerHTML = filteredActive.length
+    ? filteredActive.map(g => renderGroupCard(g)).join('')
+    : `<div class="text-center text-gray-400 py-8">No active groups</div>`;
+
+  closedList.innerHTML = closed.length
+    ? closed.map(g => renderGroupCard(g)).join('')
+    : `<div class="text-center text-gray-400 py-8">No closed groups</div>`;
+
+  if (closedCount) closedCount.textContent = closed.length + ' group' + (closed.length !== 1 ? 's' : '');
+}
+function filterGroups(val) { renderGroups(val); }
+
+// Auto-extract lat/lng from Google Maps embed URL
+function extractCoordsFromMapUrl(url) {
+  if (!url) return;
+  // Pattern for embed URLs: !2d<lng>!3d<lat> or !3d<lat>!2d<lng>
+  const d2Match = url.match(/!2d(-?\d+\.?\d*)/);
+  const d3Match = url.match(/!3d(-?\d+\.?\d*)/);
+  if (d2Match && d3Match) {
+    document.getElementById('g-lng').value = d2Match[1];
+    document.getElementById('g-lat').value = d3Match[1];
+  }
+}
+
+async function createGroup(e) {
+      if (e && typeof e.preventDefault === 'function') e.preventDefault();
+      const name = document.getElementById('g-name').value.trim();
+      const teacher = document.getElementById('g-teacher').value;
+      const start = document.getElementById('g-start').value;
+      const end = document.getElementById('g-end').value;
+      const schedule = '—';
+      const capacity = parseInt(document.getElementById('g-capacity').value) || 15;
+      const level = document.getElementById('g-level').value;
+      const location = document.getElementById('g-location').value.trim();
+      const mapUrl = document.getElementById('g-mapurl').value.trim();
+      const lat = document.getElementById('g-lat').value;
+      const lng = document.getElementById('g-lng').value;
+      const desc = document.getElementById('g-description').value.trim();
+
+      if (!name) { alert('Please enter a group name.'); return; }
+
+      const fmt = d => d ? new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+      const payload = { name, level, schedule: schedule || '—', startDate: start || null, endDate: end || null, capacity, description: desc || null, teacherName: teacher || null, location: location || null, mapUrl: mapUrl || null, latitude: lat || null, longitude: lng || null };
+
+      if (editingGroupId) {
+        try {
+          await apiFetch('/centre/groups/' + encodeURIComponent(editingGroupId), { method: 'PUT', body: JSON.stringify(payload) });
+          const idx = groups.findIndex(g => g.id === editingGroupId);
+          if (idx > -1) {
+            groups[idx] = {
+              ...groups[idx],
+              name,
+              teacher: teacher || groups[idx].teacher,
+              level,
+              start: fmt(start) || groups[idx].start,
+              end: fmt(end) || groups[idx].end,
+              capacity,
+              location: location || groups[idx].location,
+              mapUrl: mapUrl || groups[idx].mapUrl,
+              lat: lat || groups[idx].lat,
+              lng: lng || groups[idx].lng,
+              desc: desc || groups[idx].desc
+            };
+          }
+        } catch (e) { console.error('Failed to update group:', e); }
+        cancelEditGroup();
+        renderGroups();
+        return;
+      }
+
+      try {
+        const created = await apiFetch('/centre/groups', { method: 'POST', body: JSON.stringify(payload) });
+        const newId = (created && created.id) || ('G' + String(groups.length + 1).padStart(3, '0'));
+        groups.unshift({
+          id: newId,
+          name: (created && created.name) || name,
+          teacher: teacher || '—',
+          level: (created && created.level) || level,
+          schedule: (created && created.schedule) || (schedule || '—'),
+          start: (created && created.startDate) ? fmt(created.startDate) : fmt(start),
+          end: (created && created.endDate) ? fmt(created.endDate) : fmt(end),
+          capacity: (created && created.capacity) || capacity,
+          enrolled: (created && created.enrolled) || 0,
+          status: 'open',
+          desc: (created && created.description) || desc || '',
+          location: (created && created.location) || location || '',
+          mapUrl: (created && created.mapUrl) || mapUrl || '',
+          lat: (created && created.latitude) || lat || '',
+          lng: (created && created.longitude) || lng || '',
+        });
+      } catch {
+        const newId = 'G' + String(groups.length + 1).padStart(3, '0');
+        groups.unshift({ id: newId, name, teacher, level, schedule: schedule || '—', start: fmt(start), end: fmt(end), capacity, enrolled: 0, status: 'open', desc: desc || '', location: location || '', mapUrl: mapUrl || '', lat: lat || '', lng: lng || '' });
+      }
+
+      renderGroups();
+
+      // Reset form
+      ['g-name', 'g-start', 'g-end', 'g-capacity', 'g-location', 'g-mapurl', 'g-lat', 'g-lng', 'g-description'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+      document.getElementById('g-teacher').value = '';
+      document.getElementById('g-level').value = 'Beginner';
+    }
+function editGroup(id) {
+      const g = groups.find(g => g.id === id);
+      if (!g) return;
+      editingGroupId = id;
+      document.getElementById('g-name').value = g.name;
+      document.getElementById('g-capacity').value = g.capacity;
+      document.getElementById('g-start').value = g.startDate || '';
+      document.getElementById('g-end').value = g.endDate || '';
+      document.getElementById('g-level').value = g.level || 'Beginner';
+      document.getElementById('g-teacher').value = g.teacher || '';
+      document.getElementById('g-location').value = g.location || '';
+      document.getElementById('g-mapurl').value = g.mapUrl || '';
+      document.getElementById('g-lat').value = g.lat || '';
+      document.getElementById('g-lng').value = g.lng || '';
+      document.getElementById('g-description').value = g.desc || '';
+      const btn = document.querySelector('[onclick="createGroup(event)"]');
+      if (btn) btn.innerHTML = '<iconify-icon icon=\"ph:floppy-disk-bold\"></iconify-icon> Update Group';
+      document.getElementById('g-name').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      document.getElementById('g-name').focus();
+    }
+function cancelEditGroup() {
+      editingGroupId = null;
+      ['g-name', 'g-start', 'g-end', 'g-capacity', 'g-location', 'g-mapurl', 'g-lat', 'g-lng', 'g-description'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+      document.getElementById('g-teacher').value = '';
+      document.getElementById('g-level').value = 'Beginner';
+      const btn = document.querySelector('[onclick="createGroup(event)"]');
+      if (btn) btn.innerHTML = '<iconify-icon icon=\"ph:plus-bold\"></iconify-icon> Create Group';
+    }
+async function toggleGroupStatus(id) {
+      const g = groups.find(g => g.id === id);
+      if (!g) return;
+      const newStatus = g.status === 'open' ? 'CLOSED' : 'OPEN';
+      try {
+        await apiFetch('/centre/groups/' + encodeURIComponent(id), { method: 'PUT', body: JSON.stringify({ status: newStatus }) });
+        g.status = newStatus.toLowerCase();
+      } catch (e) { console.error('Failed to toggle group status:', e); }
+      renderGroups();
+    }
+async function deleteGroup(id) {
+      if (confirm('Delete this group? This cannot be undone.')) {
+        try {
+          await apiFetch('/centre/groups/' + encodeURIComponent(id), { method: 'DELETE' });
+        } catch (e) { console.error('Failed to delete group:', e); }
+        const idx = groups.findIndex(g => g.id === id);
+        if (idx > -1) { groups.splice(idx, 1); renderGroups(); }
+      }
+    }
+// ─── APPS ───
+function renderApplications() {
+            const tbody = document.getElementById('applications-tbody');
+            if (!tbody) return;
+            const pendingCount = applications.filter(a => a.status === 'pending').length;
+            const badge = document.getElementById('inboxPendingBadge');
+            if (badge) badge.textContent = `${pendingCount} Pending`;
+            if (applications.length === 0) {
+              tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-gray-400">No applications yet.</td></tr>`;
+              return;
+            }
+            tbody.innerHTML = applications.map(a => `
+    <tr>
+      <td><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center font-clash font-bold">${a.initials}</div><span class="font-bold">${a.name}</span></div></td>
+      <td>${a.group}</td>
+      <td class="font-clash font-bold text-lg text-[#FF6B35]">${a.band}</td>
+      <td class="text-sm font-medium text-gray-600">${a.phone}</td>
+      <td><span class="badge ${a.status === 'pending' ? 'badge-yellow' : a.status === 'accepted' ? 'badge-green' : 'badge-gray'}">${a.status}</span></td>
+      <td>
+        ${a.status === 'pending' ? `
+          <div style="display:flex;gap:6px;">
+            <button class="btn-primary" style="padding:5px 12px;font-size:12px;" onclick="acceptApp('${a.id}')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Accept
+            </button>
+            <button class="btn-sm" onclick="messageApp('${a.id}','${a.name}')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Message
+            </button>
+            <button class="btn-danger" style="padding:5px 10px;font-size:12px;" onclick="declineApp('${a.id}')">Decline</button>
+          </div>` :
+          `<button class="btn-sm" onclick="messageApp('${a.id}','${a.name}')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Message
+          </button>`
+        }
+      </td>
+    </tr>
+  `).join('');
+        }
+function acceptApp(id) {
+      const app = applications.find(a => a.id === id);
+      if (app) {
+        app.status = 'accepted';
+        apiFetch('/centre/applications/' + encodeURIComponent(id) + '/respond', { method: 'POST', body: JSON.stringify({ action: 'accept' }) }).catch(() => { });
+        // bump enrolled count on corresponding group
+        const g = groups.find(g => g.name === app.group);
+        if (g && g.enrolled < g.capacity) g.enrolled++;
+        renderApplications();
+        renderGroups();
+      }
+    }
+function declineApp(id) {
+      const app = applications.find(a => a.id === id);
+      if (app) {
+        app.status = 'declined';
+        apiFetch('/centre/applications/' + encodeURIComponent(id) + '/respond', { method: 'POST', body: JSON.stringify({ action: 'decline' }) }).catch(() => { });
+        renderApplications();
+      }
+    }
+function messageApp(id, name) {
+      alert(`Open messaging thread with ${name}.
+(Integrate with Student Inquiries module in production.)`);
+    }
+// ─── INQUIRIES ───
+function renderInquiries(filter, statusFilter) {
+      const container = document.getElementById('inquiries-list');
+      if (!container) return;
+
+      let filtered = inquiries;
+      if (filter) {
+        filtered = filtered.filter(i => (i.studentName || '').toLowerCase().includes(filter.toLowerCase()));
+      }
+      if (statusFilter && statusFilter !== 'all') {
+        const isRead = statusFilter === 'read';
+        filtered = filtered.filter(i => i.isRead === isRead);
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400">No inquiries found.</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(i => {
+        const initial = (i.studentName || '?')[0].toUpperCase();
+        const date = i.createdAt ? new Date(i.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+        const time = i.createdAt ? new Date(i.createdAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : '';
+        const statusBadge = i.isRead ? 'badge-green' : 'badge-purple';
+        const statusText = i.isRead ? 'Read' : 'New';
+        return `
+    <div class="bg-white rounded-3xl p-6 border border-gray-100 card-lift transition-playful">
+      <div class="flex justify-between items-start mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-${i.isRead ? 'green' : 'purple'}-100 text-${i.isRead ? 'green' : 'purple'}-600 flex items-center justify-center font-clash text-xl font-black">${initial}</div>
+          <div>
+            <div class="font-bold text-lg text-gray-900">${i.studentName || 'Anonymous'}</div>
+            <div class="text-xs text-gray-500 font-medium">${i.studentEmail || ''} · ${date}${time ? ', ' + time : ''}</div>
+          </div>
+        </div>
+        <span class="badge ${statusBadge}">${statusText}</span>
+      </div>
+      <div class="bg-gray-50 p-4 rounded-2xl text-sm text-gray-700 italic mb-4">"${i.message || ''}"</div>
+      <div class="flex gap-3">
+        ${!i.isRead ? `<button class="btn-sm" onclick="markInquiryRead('${i.id}')">Mark Read</button>` : ''}
+        <button class="btn-danger ml-auto" onclick="deleteInquiry('${i.id}')">Delete</button>
+      </div>
+    </div>`;
+      }).join('');
+    }
+
+function filterInquiries(val) { renderInquiries(val, document.getElementById('inquiryStatusFilter')?.value); }
+function filterInquiriesByStatus(val) { renderInquiries(document.getElementById('inquirySearch')?.value, val); }
+
+async function markInquiryRead(id) {
+      try {
+        await apiFetch('/centre/inquiries/' + encodeURIComponent(id) + '/mark-read', { method: 'PATCH' });
+        const idx = inquiries.findIndex(i => String(i.id) === String(id));
+        if (idx > -1) { inquiries[idx].isRead = true; }
+      } catch (e) { console.error('Failed to mark inquiry as read:', e); }
+      renderInquiries(document.getElementById('inquirySearch')?.value, document.getElementById('inquiryStatusFilter')?.value);
+    }
+
+async function deleteInquiry(id) {
+      if (!confirm('Delete this inquiry?')) return;
+      try {
+        await apiFetch('/centre/inquiries/' + encodeURIComponent(id), { method: 'DELETE' });
+        const idx = inquiries.findIndex(i => String(i.id) === String(id));
+        if (idx > -1) { inquiries.splice(idx, 1); }
+      } catch (e) { console.error('Failed to delete inquiry:', e); }
+      renderInquiries(document.getElementById('inquirySearch')?.value, document.getElementById('inquiryStatusFilter')?.value);
+    }
+
+// ─── DATA LOAD ───
+async function loadCentreData() {
+      const results = await Promise.allSettled([
+        apiFetch('/centre/mock-sessions'),
+        apiFetch('/centre/mock-results'),
+        apiFetch('/centre/groups'),
+        apiFetch('/centre/applications'),
+        apiFetch('/centre/inquiries'),
+        apiFetch('/centre/mock-session-bookings'),
+      ]);
+
+      // Mock session bookings: backend returns {data: []}
+      const bData = results[5].status === 'fulfilled' ? results[5].value : null;
+      const bArr = bData?.data || bData || [];
+      mockBookings.length = 0;
+      bArr.forEach(b => {
+        const sessionDate = b.session?.dateTime
+          ? new Date(b.session.dateTime).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })
+          : '—';
+        mockBookings.push({
+          id: String(b.id),
+          initials: (b.firstName?.[0] || '?').toUpperCase(),
+          name: `${b.firstName || ''} ${b.lastName || ''}`.trim() || 'Unknown',
+          phone: b.phone || '—',
+          telegram: b.telegram || '—',
+          centre: b.centre || '—',
+          session: b.session ? `${sessionDate} · ${b.session.type || 'Mock'}` : '—',
+          sessionId: String(b.sessionId || ''),
+          status: (b.status || 'PENDING').toLowerCase()
+        });
+      });
+
+      // Mock sessions: backend returns {sessions, pagination}
+      const mData = results[0].status === 'fulfilled' ? results[0].value : null;
+      const mArr = mData?.sessions || mData || [];
+      mockDates.length = 0;
+      mArr.forEach(s => {
+        const fmtDate = s.dateTime
+          ? new Date(s.dateTime).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + new Date(s.dateTime).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+          : '—';
+        // Count accepted bookings for this session
+        const acceptedCount = mockBookings.filter(b => b.sessionId === String(s.id) && b.status === 'accepted').length;
+        mockDates.push({
+          id: s.id,
+          date: fmtDate,
+          rawDateTime: s.dateTime || null,
+          type: s.type || 'Academic',
+          format: s.format || 'Paper',
+          location: s.location || 'TBD',
+          price: s.price ? `${Number(s.price).toLocaleString()} UZS` : '—',
+          capacity: s.capacity || 30,
+          registered: acceptedCount
+        });
+      });
+
+      // Mock results: backend returns {results, pagination}
+      const rData = results[1].status === 'fulfilled' ? results[1].value : null;
+      const rArr = rData?.results || rData || [];
+      students.length = 0;
+      rArr.forEach(r => {
+        students.push({
+          id: String(r.id || r.studentId || '0'),
+          studentId: String(r.studentId || ''),
+          name: r.student?.full_name || 'Unknown',
+          l: r.listening ?? '',
+          r: r.reading ?? '',
+          w: r.writing ?? '',
+          s: r.speaking ?? '',
+          overall: r.overall ?? ''
+        });
+      });
+      updateBandDist();
+
+      // Study groups: backend returns {groups, pagination}
+      const gData = results[2].status === 'fulfilled' ? results[2].value : null;
+      const gArr = gData?.groups || gData || [];
+      groups.length = 0;
+      gArr.forEach(g => {
+        groups.push({
+          id: String(g.id),
+          name: g.name,
+          teacher: g.teacherName || g.teacher?.full_name || '—',
+          level: g.level || 'All Levels',
+          schedule: g.schedule || '—',
+          startDate: g.startDate || '',
+          endDate: g.endDate || '',
+          start: g.startDate
+            ? new Date(g.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+            : '—',
+          end: g.endDate
+            ? new Date(g.endDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+            : '—',
+          capacity: g.capacity || 15,
+          enrolled: g._count?.applications || 0,
+          desc: g.description || '',
+          location: g.location || '',
+          mapUrl: g.mapUrl || '',
+          lat: g.latitude || '',
+          lng: g.longitude || '',
+          status: (g.status || 'OPEN').toLowerCase()
+        });
+      });
+
+      // Applications: backend returns flat array
+      const aData = results[3].status === 'fulfilled' ? results[3].value : null;
+      const aArr = Array.isArray(aData) ? aData : (aData?.applications || aData?.data || []);
+      applications.length = 0;
+      aArr.forEach(a => {
+        const name = a.student?.full_name || (a.firstName && a.lastName ? a.firstName + ' ' + a.lastName : 'Unknown');
+        const initials = (a.firstName?.[0] || a.student?.full_name?.[0] || '?').toUpperCase();
+        applications.push({
+          id: String(a.id),
+          initials: initials,
+          name: name,
+          phone: a.phone || '—',
+          group: a.group?.name || '—',
+          band: a.previousScore ? String(a.previousScore) : (a.student?.current_band || '—'),
+          status: (a.status || 'PENDING').toLowerCase()
+        });
+      });
+      // Inquiries: backend returns {inquiries, pagination}
+      const iData = results[4].status === 'fulfilled' ? results[4].value : null;
+      const iArr = iData?.inquiries || iData || [];
+      inquiries.length = 0;
+      iArr.forEach(i => {
+        inquiries.push({
+          id: String(i.id),
+          studentName: i.studentName || 'Anonymous',
+          studentEmail: i.studentEmail || '',
+          message: i.message || '',
+          isRead: !!i.isRead,
+          createdAt: i.createdAt
+        });
+      });
+
+      populateResultsSessionSelect();
+      renderFilterResults();
+      renderGroups();
+      renderApplications();
+      renderInquiries();
+      renderUpcomingSessions();
+      renderMockApplicants();
+    }
+
+    async function loadProfile() {
+      try {
+        const data = await apiFetch('/centre/profile');
+        const centre = data?.data || data;
+        if (!centre) return;
+
+        // Update localStorage so other parts of the app stay in sync
+        localStorage.setItem('education_centre', JSON.stringify(centre));
+        userState.centre = centre;
+        renderMarketing();
+
+        const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+        set('p-name', centre.name);
+        set('p-code', centre.code);
+        set('p-city', centre.city);
+        set('p-country', centre.country);
+        set('p-address', centre.address);
+        set('p-email', centre.email);
+        set('p-phone', centre.phone);
+        set('p-website', centre.website);
+
+        const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val ?? '0'; };
+        setText('profileStatSessions', centre._count?.mockSessions ?? 0);
+        setText('profileStatGroups', centre._count?.StudyGroup ?? 0);
+        setText('profileStatInquiries', centre._count?.inquiries ?? 0);
+        setText('profileStatRating', centre.rating ?? '4.5');
+      } catch (e) {
+        console.error('Failed to load profile:', e);
+      }
+    }
+
+    async function saveProfile() {
+      const payload = {
+        name: document.getElementById('p-name')?.value?.trim(),
+        city: document.getElementById('p-city')?.value?.trim(),
+        country: document.getElementById('p-country')?.value?.trim(),
+        address: document.getElementById('p-address')?.value?.trim(),
+        email: document.getElementById('p-email')?.value?.trim(),
+        phone: document.getElementById('p-phone')?.value?.trim(),
+        website: document.getElementById('p-website')?.value?.trim()
+      };
+
+      if (!payload.name) { alert('Centre name is required.'); return; }
+
+      const msg = document.getElementById('profileSaveMsg');
+      if (msg) { msg.classList.add('hidden'); msg.textContent = ''; }
+
+      try {
+        await apiFetch('/centre/profile', { method: 'PUT', body: JSON.stringify(payload) });
+        // Refresh from backend
+        await loadProfile();
+        // Update sidebar and dashboard greetings
+        const sidebarCentreName = document.getElementById('sidebarCentreName');
+        if (sidebarCentreName) sidebarCentreName.textContent = payload.name || 'Your Centre';
+        const centreEl = document.getElementById('dashboardCentreName');
+        if (centreEl) centreEl.textContent = `Here's what's happening at ${payload.name || 'your centre'} today.`;
+        if (msg) {
+          msg.textContent = 'Profile saved successfully.';
+          msg.className = 'mt-4 text-sm font-bold text-green-600';
+          setTimeout(() => msg.classList.add('hidden'), 3000);
+        }
+      } catch (e) {
+        console.error('Failed to save profile:', e);
+        if (msg) {
+          msg.textContent = 'Failed to save profile. Please try again.';
+          msg.className = 'mt-4 text-sm font-bold text-red-600';
+        }
+      }
+    }
+
+    function renderMarketing() {
+      const c = userState.centre;
+      if (!c) return;
+      const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val || '—'; };
+      const setHref = (id, val) => { const el = document.getElementById(id); if (el) { el.href = val || '#'; el.textContent = val || '—'; } };
+
+      set('marketingName', c.name);
+      set('marketingLocation', [c.city, c.country].filter(Boolean).join(', ') || '—');
+      set('marketingAddress', c.address);
+      set('marketingEmail', c.email);
+      set('marketingPhone', c.phone);
+      setHref('marketingWebsite', c.website);
+      set('marketingRating', '⭐ ' + (c.rating ?? '4.5'));
+      set('marketingStatus', c.isActive ? 'Active' : 'Inactive');
+
+      const initial = c.name?.[0]?.toUpperCase() || 'B';
+      const mInit = document.getElementById('marketingInitial');
+      if (mInit) mInit.textContent = initial;
+
+      const link = `https://ieltsedu.com/centres/${(c.code || c.name || 'centre').toLowerCase().replace(/\s+/g, '-')}`;
+      const linkEl = document.getElementById('marketingLink');
+      if (linkEl) linkEl.value = link;
+
+      set('marketingStatGroups', c._count?.StudyGroup ?? 0);
+      set('marketingStatSessions', c._count?.mockSessions ?? 0);
+      set('marketingStatInquiries', c._count?.inquiries ?? 0);
+    }
+
+    function copyMarketingLink() {
+      const el = document.getElementById('marketingLink');
+      if (!el) return;
+      el.select();
+      navigator.clipboard.writeText(el.value).then(() => {
+        const msg = document.getElementById('marketingCopyMsg');
+        if (msg) { msg.classList.remove('hidden'); setTimeout(() => msg.classList.add('hidden'), 2000); }
+      }).catch(() => {
+        document.execCommand('copy');
+      });
+    }
+
+    function updateBandDist() {
+      bandDist.forEach(b => b.count = 0);
+      students.forEach(s => {
+        const o = parseFloat(s.overall);
+        if (isNaN(o)) return;
+        const band = (Math.round(o * 2) / 2).toFixed(1);
+        const entry = bandDist.find(b => b.band === band);
+        if (entry) entry.count++;
+      });
+    }
+
+    // ─── DASHBOARD DYNAMIC DATA ──────────────────────────────
+    async function loadDashboardStats() {
+      try {
+        const stats = await apiFetch('/centre/dashboard-stats');
+        if (!stats) return;
+
+        // Dashboard stat cards show — until real data is explicitly desired
+        const totalEl = document.getElementById('statTotalUsers');
+        if (totalEl) totalEl.textContent = '—';
+
+        const activeEl = document.getElementById('statActiveUsers');
+        if (activeEl) activeEl.textContent = '—';
+
+        const inactiveEl = document.getElementById('statInactiveUsers');
+        if (inactiveEl) inactiveEl.textContent = '—';
+
+        const revenueEl = document.getElementById('statRevenue');
+        if (revenueEl) revenueEl.textContent = '—';
+
+        // Sidebar badges
+        const groupsBadge = document.getElementById('sidebarGroupsBadge');
+        if (groupsBadge) groupsBadge.textContent = '—';
+
+        const inquiriesBadge = document.getElementById('sidebarInquiriesBadge');
+        if (inquiriesBadge) inquiriesBadge.textContent = '—';
+
+        const activeBadge = document.querySelector('#page-mock-dates .badge-green');
+        if (activeBadge) activeBadge.textContent = '—';
+
+        const pendingBadge = document.querySelector('#page-groups .badge-yellow');
+        if (pendingBadge) pendingBadge.textContent = '—';
+
+        const qaBadge = document.getElementById('quickActionsInquiriesBadge');
+        if (qaBadge) qaBadge.textContent = '—';
+      } catch (e) {
+        console.error('Dashboard stats error:', e);
+      }
+    }
+
+    function renderUpcomingSessions() {
+      const container = document.getElementById('upcomingSessionsList');
+      if (!container) return;
+
+      const now = new Date();
+      const upcoming = mockDates
+        .filter(m => {
+          if (!m.rawDateTime) return false;
+          const dt = new Date(m.rawDateTime);
+          return !isNaN(dt) && dt >= now;
+        })
+        .sort((a, b) => new Date(a.rawDateTime) - new Date(b.rawDateTime))
+        .slice(0, 5);
+
+      if (!upcoming.length) {
+        container.innerHTML = `<div class="text-center text-gray-400 py-6">No upcoming sessions</div>`;
+        return;
+      }
+
+      container.innerHTML = upcoming.map(m => {
+        const dt = new Date(m.rawDateTime);
+        const dayStr = isNaN(dt) ? '—' : dt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        const timeStr = isNaN(dt) ? '' : dt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+        const pct = m.capacity ? Math.round((m.registered / m.capacity) * 100) : 0;
+        const spotsLeft = m.capacity - m.registered;
+        return `
+        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl hover:bg-purple-50 transition-colors">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-[#FF6B35]/10 rounded-xl flex flex-col items-center justify-center text-[#FF6B35] shrink-0">
+              <span class="text-xs font-black">${isNaN(dt) ? '—' : dt.toLocaleString('en', { month: 'short' }).toUpperCase()}</span>
+              <span class="text-lg font-black leading-none">${isNaN(dt) ? '—' : dt.getDate()}</span>
+            </div>
+            <div>
+              <div class="font-bold text-gray-900 text-sm">${m.type} · ${m.format}</div>
+              <div class="text-xs text-gray-400 mt-0.5">${m.location} · ${timeStr}</div>
+              <div class="text-xs mt-1">
+                <span class="font-bold ${spotsLeft <= 0 ? 'text-red-500' : 'text-green-600'}">${spotsLeft <= 0 ? 'Full' : spotsLeft + ' spots left'}</span>
+                <span class="text-gray-300 mx-1">·</span>
+                <span class="text-gray-400">${m.price}</span>
+              </div>
+            </div>
+          </div>
+          <div class="text-right shrink-0 ml-4">
+            <div class="text-sm font-black text-gray-700">${m.registered}/${m.capacity}</div>
+            <div class="w-16 h-1.5 bg-gray-200 rounded-full mt-1 overflow-hidden">
+              <div class="h-full rounded-full" style="width:${pct}%; background:${pct > 80 ? '#EF4444' : pct > 50 ? '#F59E0B' : '#10B981'};"></div>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function renderMockApplicants() {
+      const pendingCount = mockBookings.filter(b => b.status === 'pending').length;
+      const rowHtml = mockBookings.length === 0
+        ? `<tr><td colspan="6" class="text-center py-8 text-gray-400">No applicants yet.</td></tr>`
+        : mockBookings.map(b => `
+        <tr>
+          <td><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center font-clash font-bold">${b.initials}</div><span class="font-bold">${b.name}</span></div></td>
+          <td class="text-sm font-medium text-gray-600">${b.phone}</td>
+          <td class="text-sm font-medium text-gray-600">${b.session}</td>
+          <td class="text-sm font-medium text-gray-600">${b.telegram}</td>
+          <td><span class="badge ${b.status === 'pending' ? 'badge-yellow' : b.status === 'accepted' ? 'badge-green' : 'badge-gray'}">${b.status}</span></td>
+          <td>
+            ${b.status === 'pending' ? `
+              <div style="display:flex;gap:6px;">
+                <button class="btn-primary" style="padding:5px 12px;font-size:12px;" onclick="acceptMockBooking('${b.id}')">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  Accept
+                </button>
+                <button class="btn-danger" style="padding:5px 10px;font-size:12px;" onclick="declineMockBooking('${b.id}')">Deny</button>
+              </div>` :
+              `<span class="text-xs text-gray-400 font-medium">${b.status === 'accepted' ? 'Accepted' : 'Declined'}</span>`
+            }
+          </td>
+        </tr>
+      `).join('');
+
+      // Dashboard applicants
+      const tbody1 = document.getElementById('mockApplicantsTbody');
+      if (tbody1) tbody1.innerHTML = rowHtml;
+      const badge1 = document.getElementById('mockApplicantsBadge');
+      if (badge1) badge1.textContent = `${pendingCount} Pending`;
+
+      // Mock Dates page applicants
+      const tbody2 = document.getElementById('mockDatesApplicantsTbody');
+      if (tbody2) tbody2.innerHTML = rowHtml;
+      const badge2 = document.getElementById('mockDatesApplicantsBadge');
+      if (badge2) badge2.textContent = `${pendingCount} Pending`;
+    }
+
+    async function acceptMockBooking(id) {
+      const booking = mockBookings.find(b => b.id === id);
+      if (!booking) return;
+      booking.status = 'accepted';
+      // Update registered count for the corresponding session
+      const session = mockDates.find(m => String(m.id) === booking.sessionId);
+      if (session && session.registered < session.capacity) {
+        session.registered++;
+      }
+      apiFetch('/centre/mock-session-bookings/' + encodeURIComponent(id) + '/respond', { method: 'POST', body: JSON.stringify({ action: 'accept' }) }).catch(() => { });
+      renderMockApplicants();
+      renderUpcomingSessions();
+      renderMocks();
+    }
+
+    async function declineMockBooking(id) {
+      const booking = mockBookings.find(b => b.id === id);
+      if (!booking) return;
+      booking.status = 'declined';
+      apiFetch('/centre/mock-session-bookings/' + encodeURIComponent(id) + '/respond', { method: 'POST', body: JSON.stringify({ action: 'decline' }) }).catch(() => { });
+      renderMockApplicants();
+    }
+
+    async function renderRecentActivity() {
+      const tbody = document.getElementById('recentActivityTbody');
+      if (!tbody) return;
+      tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-400 py-6">No recent activity</td></tr>`;
+    }
+
+    // ─── INIT ────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+      (async () => {
+        loadUserState();
+        // Update welcome message with logged-in user
+        const welcomeEl = document.getElementById('welcomeMessage');
+        if (welcomeEl && userState.user) {
+          const name = userState.user.fullName || userState.user.email || 'Admin';
+          welcomeEl.innerHTML = `Welcome back, <span class="text-[#FF6B35]">${name}</span>!`;
+        }
+        // Update centre info
+        const centreEl = document.getElementById('centreInfo');
+        if (centreEl && userState.centre) {
+          centreEl.textContent = `Here's what's happening at ${userState.centre.name || 'your centre'} today.`;
+        }
+        // Update avatar and sidebar profile
+        const userInitial = userState.user?.fullName?.[0]?.toUpperCase() || userState.user?.email?.[0]?.toUpperCase() || 'A';
+        const centreInitial = userState.centre?.name?.[0]?.toUpperCase() || userInitial;
+        const topbarAvatar = document.getElementById('topbarAvatar');
+        if (topbarAvatar) topbarAvatar.textContent = userInitial;
+        const sidebarAvatar = document.getElementById('sidebarAvatar');
+        if (sidebarAvatar) sidebarAvatar.textContent = centreInitial;
+        const sidebarCentreName = document.getElementById('sidebarCentreName');
+        if (sidebarCentreName) sidebarCentreName.textContent = userState.centre?.name || 'Your Centre';
+        await loadDashboardStats();
+        await loadCentreData();
+        await loadProfile();
+        renderMarketing();
+        renderMocks();
+        renderScoreTable();
+        renderBandChart();
+        renderGroups();
+        renderApplications();
+        renderUpcomingSessions();
+        await renderRecentActivity();
+      })();
+    });
+</script>
+</body>
+
+</html>

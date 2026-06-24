@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Practice Classroom</title>
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<style>
+:root {
+  --bg-primary: #36393f;
+  --bg-secondary: #2f3136;
+  --bg-tertiary: #202225;
+  --bg-hover: #34373c;
+  --text-primary: #dcddde;
+  --text-secondary: #96989d;
+  --text-muted: #72767d;
+  --accent-green: #3ba55d;
+  --accent-green-hover: #2d7d46;
+  --accent-red: #ed4245;
+  --accent-red-hover: #c03537;
+  --accent-blue: #5865f2;
+  --border: #40444b;
+  --channel-hover: #34373c;
+  --status-online: #3ba55d;
+  --status-speaking: #3ba55d;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg-tertiary); color: var(--text-primary); font-family: 'Inter', system-ui, -apple-system, sans-serif; height: 100vh; overflow: hidden; font-size: 14px; }
+#loading { position: fixed; inset: 0; background: var(--bg-tertiary); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; z-index: 1000; }
+.spinner { width: 44px; height: 44px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--accent-green); border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+.hidden { display: none !important; }
+
+/* ─── Layout ─── */
+#app { display: flex; height: 100vh; }
+/* ─── Main Stage ─── */
+#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg-primary); }
+#stage-header {
+  height: 48px; border-bottom: 1px solid rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; flex-shrink: 0;
+}
+#stage-header .left { display: flex; align-items: center; gap: 8px; }
+#stage-header .hash { color: var(--text-muted); }
+#stage-header h2 { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+#stage-header .meta { font-size: .78rem; color: var(--text-muted); }
+#stage-header .right { display: flex; align-items: center; gap: 12px; }
+#timer { font-size: .78rem; color: var(--text-muted); font-variant-numeric: tabular-nums; background: var(--bg-secondary); padding: 3px 10px; border-radius: 4px; }
+
+#stage-body {
+  flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-wrap: wrap; align-content: center; justify-content: center; gap: 16px;
+}
+
+/* ─── Video Cards (Discord Voice Channel Style) ─── */
+.video-card {
+  flex: 1 1 400px;
+  max-width: 100%;
+  max-height: calc(100vh - 220px);
+  aspect-ratio: 16/9;
+  background: var(--bg-tertiary);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid transparent;
+  transition: border-color .15s;
+}
+.video-card:hover { border-color: rgba(255,255,255,0.06); }
+.video-card.speaking { border-color: var(--accent-green); }
+.video-card.screen-share {
+  flex: 2 1 600px;
+  border-color: var(--accent-green);
+}
+.video-card video {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.video-card .avatar-fallback {
+  width: 100px; height: 100px; border-radius: 50%; background: var(--accent-blue); display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; color: #fff;
+}
+.video-card .overlay {
+  position: absolute; bottom: 0; left: 0; right: 0; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(transparent, rgba(0,0,0,0.7));
+}
+.video-card .overlay .name { font-size: .9rem; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 5px; }
+.video-card .overlay .badge {
+  background: var(--accent-red); color: #fff; font-size: .7rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;
+}
+.video-card .overlay .role-badge {
+  background: var(--accent-green); color: #fff; font-size: .7rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;
+}
+.video-card .status-icon {
+  position: absolute; top: 8px; left: 8px; width: 24px; height: 24px; border-radius: 50%; background: var(--bg-tertiary); display: flex; align-items: center; justify-content: center;
+}
+.video-card .status-icon svg { width: 14px; height: 14px; }
+.video-card .status-icon.muted { background: var(--accent-red); }
+
+/* ─── Chat Sidebar ─── */
+#right-sidebar {
+  width: 340px; background: var(--bg-secondary); border-left: 1px solid rgba(0,0,0,0.2); display: flex; flex-direction: column; flex-shrink: 0;
+}
+#participants-toggle {
+  padding: 14px 16px;
+  font-size: .9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+  user-select: none;
+  flex-shrink: 0;
+}
+#participants-toggle:hover { color: var(--text-primary); background: var(--bg-hover); }
+#participants-toggle .count {
+  font-size: .75rem;
+  background: var(--bg-tertiary);
+  padding: 2px 8px;
+  border-radius: 10px;
+  color: var(--text-secondary);
+}
+#participants-list {
+  flex-shrink: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .3s ease;
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+#participants-list.open { max-height: 250px; overflow-y: auto; }
+.participant {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 16px;
+  font-size: .88rem;
+  color: var(--text-primary);
+}
+.participant:hover { background: var(--bg-hover); }
+.participant .avatar {
+  width: 28px; height: 28px; border-radius: 50%; background: var(--accent-blue); display: flex; align-items: center; justify-content: center; font-size: .65rem; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.participant .name { flex: 1; }
+.participant .role-badge {
+  font-size: .65rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;
+  background: var(--accent-green); color: #fff;
+}
+.participant .invite-btn {
+  font-size: .7rem; padding: 3px 10px; border-radius: 4px; border: none;
+  background: var(--accent-blue); color: #fff; cursor: pointer; font-weight: 600;
+}
+.participant .invite-btn:hover { background: #4752c4; }
+
+#chat { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+#chat-messages { flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 12px; }
+.chat-msg { max-width: 100%; }
+.chat-msg.system { color: var(--text-muted); font-size: .78rem; text-align: center; margin: 4px 0; }
+.chat-msg .msg-header { display: flex; align-items: baseline; gap: 6px; margin-bottom: 3px; }
+.chat-msg .sender { font-size: .82rem; font-weight: 600; color: var(--text-primary); }
+.chat-msg .time { font-size: .68rem; color: var(--text-muted); }
+.chat-msg .text { font-size: .88rem; color: var(--text-primary); line-height: 1.45; }
+
+#chat-input-area {
+  padding: 0 16px 16px;
+}
+#chat-input {
+  background: var(--bg-primary); border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 8px;
+}
+#chat-input input {
+  flex: 1; background: transparent; border: none; color: var(--text-primary); font-size: .88rem; outline: none;
+}
+#chat-input input::placeholder { color: var(--text-muted); }
+#chat-input button {
+  background: transparent; border: none; color: var(--accent-green); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center;
+}
+#chat-input button:hover { color: #fff; }
+#chat-input button svg { width: 20px; height: 20px; }
+
+/* ─── Bottom Control Bar (Discord Style) ─── */
+#controls {
+  height: 68px; background: var(--bg-secondary); border-top: 1px solid rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; flex-shrink: 0;
+}
+#controls .left, #controls .right { display: flex; align-items: center; gap: 8px; }
+#controls .center { display: flex; align-items: center; gap: 8px; }
+.ctrl-btn {
+  width: 32px; height: 32px; border-radius: 4px; border: none; background: var(--bg-primary); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s;
+}
+.ctrl-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+.ctrl-btn.active { background: var(--accent-red); color: #fff; }
+.ctrl-btn.active:hover { background: var(--accent-red-hover); }
+.ctrl-btn.leave {
+  background: var(--accent-red); color: #fff; width: auto; padding: 0 18px; border-radius: 4px; font-size: .82rem; font-weight: 600; height: 32px;
+}
+.ctrl-btn.leave:hover { background: var(--accent-red-hover); }
+.ctrl-btn svg { width: 20px; height: 20px; }
+
+.user-bar {
+  display: flex; align-items: center; gap: 8px; padding: 0 4px;
+}
+.user-bar .avatar {
+  width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-green), #2d7d46); display: flex; align-items: center; justify-content: center; font-size: .75rem; font-weight: 700; color: #fff;
+}
+.user-bar .info { display: flex; flex-direction: column; }
+.user-bar .info .name { font-size: .82rem; font-weight: 600; color: var(--text-primary); }
+.user-bar .info .status { font-size: .72rem; color: var(--text-secondary); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg-tertiary); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--bg-hover); }
+
+/* ─── Invitation Card (slide-in from right) ─── */
+#invitation-card {
+  position: fixed;
+  right: -420px;
+  top: 80px;
+  width: 380px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  z-index: 100;
+  transition: right 0.4s ease;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+#invitation-card.visible { right: 20px; }
+#invitation-card h3 { margin: 0 0 8px; font-size: 1rem; color: var(--text-primary); }
+#invitation-card p { margin: 0 0 16px; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4; }
+.invite-actions { display: flex; gap: 10px; }
+.invite-btn-accept {
+  flex: 1; padding: 10px; border: none; border-radius: 8px;
+  background: var(--accent-green); color: #fff; font-weight: 600; cursor: pointer; font-size: 0.85rem;
+}
+.invite-btn-accept:hover { background: var(--accent-green-hover); }
+.invite-btn-deny {
+  flex: 1; padding: 10px; border: none; border-radius: 8px;
+  background: var(--bg-tertiary); color: var(--text-secondary); font-weight: 600; cursor: pointer; font-size: 0.85rem;
+}
+.invite-btn-deny:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+/* ─── Toast Notification ─── */
+#toast-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  z-index: 200;
+  max-width: 340px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  transform: translateX(400px);
+  transition: transform 0.4s ease;
+}
+#toast-notification.visible { transform: translateX(0); }
+#toast-notification p { margin: 0; font-size: 0.85rem; color: var(--text-primary); line-height: 1.4; }
+
+@media (max-width: 900px) {
+  #right-sidebar { display: none; }
+}
+
+/* AI Styles */
+.video-card.ai-card {
+  border: 2px solid rgba(139, 92, 246, 0.3);
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.1);
+  transition: all 0.3s ease;
+}
+.video-card.ai-card.thinking {
+  border-color: #8B5CF2;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+  animation: pulse-border 1.5s infinite;
+}
+.video-card.ai-card.speaking {
+  border-color: #10B981;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+}
+@keyframes pulse-border {
+  0% { box-shadow: 0 0 5px rgba(139, 92, 246, 0.2); }
+  50% { box-shadow: 0 0 25px rgba(139, 92, 246, 0.6); }
+  100% { box-shadow: 0 0 5px rgba(139, 92, 246, 0.2); }
+}
+.pulsing-wave {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: pulse-wave 1.2s infinite cubic-bezier(0.66, 0, 0, 1);
+}
+@keyframes pulse-wave {
+  to {
+    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+  }
+}
+.ctrl-btn#btn-call-ai.active {
+  background: #8B5CF2;
+  color: #fff;
+}
+.ctrl-btn#btn-call-ai.active:hover {
+  background: #7C3AED;
+}
+</style>
+</head>
+<body>
+<div id="loading">
+  <div class="spinner"></div>
+  <div style="font-size:0.9rem;color:var(--text-secondary);">Joining voice channel...</div>
+</div>
+
+<div id="app" class="hidden">
+  <!-- Main Stage -->
+  <div id="main">
+    <div id="stage-header">
+      <div class="left">
+        <span class="hash">#</span>
+        <h2 id="stage-title">live-class-chat</h2>
+        <span class="meta" id="stage-meta">IELTS Practice Live Room</span>
+      </div>
+      <div class="right">
+        <div class="meta" id="participant-count">1 member</div>
+        <div id="timer">00:00</div>
+      </div>
+    </div>
+    <div id="stage-body">
+      <!-- Local user card -->
+      <div class="video-card" id="local-video-card">
+        <video id="local-video" autoplay muted playsinline style="display:none;"></video>
+        <div class="avatar-fallback" id="local-avatar">You</div>
+        <div class="status-icon muted" id="local-mic-icon" style="display:none;">
+          <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+        </div>
+        <div class="overlay">
+          <span class="name"><span id="local-name">You</span></span>
+          <span class="role-badge" id="local-role">Host</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Controls -->
+    <div id="controls">
+      <div class="left">
+        <div class="user-bar">
+          <div class="avatar" id="ctrl-avatar">You</div>
+          <div class="info">
+            <span class="name" id="ctrl-name">You</span>
+            <span class="status" id="ctrl-status">In Voice Channel</span>
+          </div>
+        </div>
+      </div>
+      <div class="center">
+        <button class="ctrl-btn" id="btn-mic" onclick="toggleMic()" title="Mute">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        </button>
+        <button class="ctrl-btn" id="btn-video" onclick="toggleVideo()" title="Camera">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        </button>
+        <button class="ctrl-btn" id="btn-screen" onclick="toggleScreenShare()" title="Share Screen">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </button>
+        <button class="ctrl-btn" id="btn-call-ai" onclick="toggleAICall()" title="Call AI">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+        </button>
+      </div>
+      <div class="right">
+        <button class="ctrl-btn leave" onclick="leaveRoom()">Disconnect</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Sidebar: Participants + Chat -->
+  <div id="right-sidebar">
+    <!-- Participants Toggle -->
+    <div id="participants-toggle" onclick="toggleParticipants()">
+      <span>Participants</span>
+      <span class="count" id="participants-count">1</span>
+    </div>
+    <div id="participants-list">
+      <div class="participant">
+        <div class="avatar" style="background: linear-gradient(135deg, var(--accent-green), #2d7d46);">You</div>
+        <span class="name">You</span>
+        <span class="role-badge">Host</span>
+      </div>
+    </div>
+
+    <div id="chat">
+      <div id="chat-messages"></div>
+      <div id="chat-input-area">
+        <div id="chat-input">
+          <input type="text" id="msg-input" placeholder="Message #live-class-chat">
+          <button onclick="sendMessage()">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Invitation confirmation card -->
+<div id="invitation-card">
+  <h3>🎤 Teacher is inviting you</h3>
+  <p>Teacher wants you to join the stage and have a talk. Click <strong>Join</strong> to appear on stage.</p>
+  <div class="invite-actions">
+    <button class="invite-btn-accept" onclick="acceptStageInvite()">Join</button>
+    <button class="invite-btn-deny" onclick="declineStageInvite()">Deny</button>
+  </div>
+</div>
+
+<!-- Toast notification -->
+<div id="toast-notification">
+  <p></p>
+</div>
+
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+const roomId = urlParams.get('room') || 'default-room';
+const roomName = decodeURIComponent(urlParams.get('name') || 'Classroom');
+const isTeacher = urlParams.get('teacher') === 'true';
+const token = urlParams.get('token') || localStorage.getItem('teacher_jwt') || localStorage.getItem('jwt') || '';
+
+let socket = null;
+let localStream = null;
+let localCameraStream = null;
+let screenShareStream = null;
+let peers = new Map();
+let remoteParticipants = new Map();
+let remoteStreams = new Map();
+let stagedParticipants = new Set();
+let isMuted = false;
+let isVideoOff = false;
+let isScreenSharing = false;
+let classStartTime = Date.now();
+
+let aiActive = false;
+let isAiThinking = false;
+let isAiSpeaking = false;
+let isListeningToUser = false;
+let recognition = null;
+let currentUtterance = null;
+
+const config = {
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'stun:stun1.l.google.com:19302' }
+  ]
+};
+
+// Set room name in UI
+document.getElementById('stage-title').textContent = 'live-class-chat';
+document.getElementById('stage-meta').textContent = 'IELTS Practice · ' + roomName;
+
+async function init() {
+  try {
+    localCameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    localStream = localCameraStream;
+
+    if (!isTeacher) {
+      // Student: disable video initially so they don't distract themselves
+      localCameraStream.getVideoTracks().forEach(t => t.enabled = false);
+      isVideoOff = true;
+      document.getElementById('btn-video').classList.add('active');
+      document.getElementById('local-video-card').classList.add('hidden');
+    } else {
+      // Teacher: show camera as before
+      document.getElementById('local-video').srcObject = localCameraStream;
+      document.getElementById('local-video').style.display = '';
+      document.getElementById('local-avatar').style.display = 'none';
+    }
+  } catch (e) {
+    console.warn('Media access denied or unavailable:', e);
+    addSystemMessage('Camera/microphone access denied. You can still use chat.');
+  }
+
+  connectSocket();
+  startTimer();
+  document.getElementById('loading').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+}
+
+function connectSocket() {
+  socket = io('/', {
+    auth: { token },
+    transports: ['websocket', 'polling']
+  });
+
+  socket.on('connect', () => {
+    console.log('Socket connected');
+    socket.emit('join-room', {
+      roomId,
+      roomType: 'class',
+      userName: isTeacher ? 'Teacher' : 'Student',
+      isHost: isTeacher,
+      maxUsers: 50
+    });
+    addSystemMessage('Joined the classroom.');
+  });
+
+  socket.on('existing-participants', (participants) => {
+    participants.forEach(p => {
+      addParticipant(p);
+      if (p.socketId !== 'ai-coach') {
+        createPeerConnection(p.socketId, true);
+      } else {
+        aiActive = true;
+        const btn = document.getElementById('btn-call-ai');
+        if (btn) {
+          btn.classList.add('active');
+          btn.title = "Dismiss AI";
+        }
+      }
+    });
+  });
+
+  socket.on('staged-participants', (socketIds) => {
+    socketIds.forEach(id => stagedParticipants.add(id));
+  });
+
+  socket.on('invited-to-stage', ({ socketId, name }) => {
+    if (!isTeacher && socket.id === socketId) {
+      showInvitationCard();
+    } else if (isTeacher) {
+      addSystemMessage(`Invitation sent to ${name || 'a user'}.`);
+    }
+  });
+
+  socket.on('student-joined-stage', ({ socketId, name }) => {
+    addSystemMessage(`${name || 'A user'} joined the stage.`);
+    stageParticipant(socketId);
+  });
+
+  socket.on('user-joined', (participant) => {
+    addParticipant(participant);
+    if (participant.socketId !== 'ai-coach') {
+      createPeerConnection(participant.socketId, false);
+    } else {
+      aiActive = true;
+      const btn = document.getElementById('btn-call-ai');
+      if (btn) {
+        btn.classList.add('active');
+        btn.title = "Dismiss AI";
+      }
+    }
+  });
+
+  socket.on('user-left', ({ socketId }) => {
+    removeParticipant(socketId);
+    if (peers.has(socketId)) {
+      peers.get(socketId).close();
+      peers.delete(socketId);
+    }
+    if (socketId === 'ai-coach') {
+      aiActive = false;
+      const btn = document.getElementById('btn-call-ai');
+      if (btn) {
+        btn.classList.remove('active');
+        btn.title = "Call AI";
+      }
+      if (recognition) {
+        try { recognition.stop(); } catch(e) {}
+      }
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+      isAiSpeaking = false;
+      isAiThinking = false;
+      isListeningToUser = false;
+    }
+  });
+
+  socket.on('ai-thinking', ({ isThinking }) => {
+    isAiThinking = isThinking;
+    updateAICardState();
+  });
+
+  socket.on('ai-speak', ({ text }) => {
+    speakText(text);
+  });
+
+  socket.on('offer', async ({ senderId, offer }) => {
+    try {
+      console.log(`[WebRTC] Received offer from ${senderId}`);
+      const pc = createPeerConnection(senderId, false);
+      await pc.setRemoteDescription(new RTCSessionDescription(offer));
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+      socket.emit('answer', { targetId: senderId, answer });
+    } catch (err) {
+      console.error(`[WebRTC] Error handling offer from ${senderId}:`, err);
+    }
+  });
+
+  socket.on('answer', async ({ senderId, answer }) => {
+    try {
+      console.log(`[WebRTC] Received answer from ${senderId}`);
+      const pc = peers.get(senderId);
+      if (pc) await pc.setRemoteDescription(new RTCSessionDescription(answer));
+    } catch (err) {
+      console.error(`[WebRTC] Error handling answer from ${senderId}:`, err);
+    }
+  });
+
+  socket.on('ice-candidate', async ({ senderId, candidate }) => {
+    const pc = peers.get(senderId);
+    if (pc) await pc.addIceCandidate(new RTCIceCandidate(candidate));
+  });
+
+  socket.on('media-state-change', ({ socketId, isMuted, isVideoOn }) => {
+    updateParticipantState(socketId, isMuted, isVideoOn);
+  });
+
+  socket.on('new-message', (msg) => addChatMessage(msg));
+
+  socket.on('room-error', ({ message }) => {
+    addSystemMessage('Error: ' + message);
+  });
+
+  socket.on('disconnect', () => {
+    addSystemMessage('Disconnected from server.');
+  });
+}
+
+function createPeerConnection(socketId, isInitiator) {
+  if (peers.has(socketId)) return peers.get(socketId);
+
+  console.log(`[WebRTC] Creating PC for ${socketId}, initiator=${isInitiator}`);
+  const pc = new RTCPeerConnection(config);
+  peers.set(socketId, pc);
+
+  if (localStream) {
+    localStream.getTracks().forEach(track => {
+      console.log(`[WebRTC] Adding local ${track.kind} track to PC ${socketId}`);
+      pc.addTrack(track, localStream);
+    });
+  } else {
+    console.warn(`[WebRTC] No local stream when creating PC for ${socketId}`);
+  }
+
+  pc.onicecandidate = (e) => {
+    if (e.candidate) {
+      socket.emit('ice-candidate', { targetId: socketId, candidate: e.candidate });
+    }
+  };
+
+  pc.ontrack = (e) => {
+    console.log(`[WebRTC] ontrack fired for ${socketId}, stream=${e.streams[0]?.id}, tracks=${e.streams[0]?.getTracks().length}`);
+    const stream = e.streams[0];
+    remoteStreams.set(socketId, stream);
+    const existing = document.getElementById(`remote-${socketId}`);
+    if (existing) {
+      existing.querySelector('video').srcObject = stream;
+    } else {
+      const p = remoteParticipants.get(socketId);
+      // Only show on stage if host (teacher) or explicitly staged by teacher
+      if (p && p.isHost) {
+        addRemoteVideo(socketId, stream);
+      } else if (stagedParticipants.has(socketId)) {
+        addRemoteVideo(socketId, stream);
+      }
+    }
+  };
+
+  pc.onconnectionstatechange = () => {
+    console.log(`[WebRTC] Connection state for ${socketId}: ${pc.connectionState}`);
+  };
+
+  if (isInitiator) {
+    pc.createOffer().then(offer => pc.setLocalDescription(offer))
+      .then(() => socket.emit('offer', { targetId: socketId, offer: pc.localDescription }))
+      .catch(err => console.error(`[WebRTC] Offer error for ${socketId}:`, err));
+  }
+
+  return pc;
+}
+
+function addRemoteVideo(socketId, stream) {
+  console.log(`[WebRTC] Adding remote video card for ${socketId}`);
+  const grid = document.getElementById('stage-body');
+  const card = document.createElement('div');
+  card.className = 'video-card';
+  card.id = `remote-${socketId}`;
+  const p = remoteParticipants.get(socketId) || {};
+  const name = p.name || 'Participant';
+  card.innerHTML = `
+    <video autoplay playsinline style="display:none;"></video>
+    <div class="avatar-fallback" style="background:#5865f2;">${(name || 'U').charAt(0).toUpperCase()}</div>
+    <div class="status-icon muted" id="mic-${socketId}" style="display:none;">
+      <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+    </div>
+    <div class="overlay">
+      <span class="name">${name}</span>
+    </div>
+  `;
+  const video = card.querySelector('video');
+  video.srcObject = stream;
+  video.style.display = '';
+  video.play().catch(e => console.warn(`[WebRTC] Auto-play failed for ${socketId}:`, e));
+  card.querySelector('.avatar-fallback').style.display = 'none';
+  grid.appendChild(card);
+}
+
+function addParticipant(p) {
+  remoteParticipants.set(p.socketId || p.id, p);
+  renderParticipants();
+  renderAICard();
+}
+
+function removeParticipant(socketId) {
+  remoteParticipants.delete(socketId);
+  remoteStreams.delete(socketId);
+  stagedParticipants.delete(socketId);
+  const vid = document.getElementById(`remote-${socketId}`);
+  if (vid) vid.remove();
+  renderParticipants();
+  renderAICard();
+  updateParticipantCount();
+}
+
+function renderParticipants() {
+  const list = document.getElementById('participants-list');
+  while (list.children.length > 1) list.removeChild(list.lastChild);
+
+  remoteParticipants.forEach((p, id) => {
+    const div = document.createElement('div');
+    div.className = 'participant';
+    div.id = `p-${id}`;
+    const isStaged = stagedParticipants.has(id);
+    const inviteBtn = isTeacher && !p.isHost && !isStaged ? `<button class="invite-btn" onclick="inviteToStage('${id}')">Invite</button>` : '';
+    const stageBadge = isStaged ? '<span class="role-badge" style="background:#8B5CF2;">On Stage</span>' : '';
+    div.innerHTML = `
+      <div class="avatar">${(p.name || 'U').charAt(0).toUpperCase()}</div>
+      <span class="name">${p.name || 'User'}</span>
+      ${p.isHost ? '<span class="role-badge">Host</span>' : ''}
+      ${stageBadge}
+      ${inviteBtn}
+    `;
+    list.appendChild(div);
+  });
+
+  updateParticipantCount();
+}
+
+function updateParticipantCount() {
+  const count = remoteParticipants.size + 1;
+  document.getElementById('participants-count').textContent = count;
+  document.getElementById('participant-count').textContent = count + ' member' + (count !== 1 ? 's' : '');
+}
+
+function stageParticipant(socketId) {
+  stagedParticipants.add(socketId);
+  const stream = remoteStreams.get(socketId);
+  if (stream) {
+    const existing = document.getElementById(`remote-${socketId}`);
+    if (!existing) {
+      addRemoteVideo(socketId, stream);
+    }
+  }
+  renderParticipants();
+}
+
+function inviteToStage(socketId) {
+  if (!socket || !isTeacher) return;
+  socket.emit('invite-to-stage', { targetId: socketId, roomId });
+  addSystemMessage('Invitation sent to user.');
+  stageParticipant(socketId);
+}
+
+function toggleParticipants() {
+  document.getElementById('participants-list').classList.toggle('open');
+}
+
+function updateParticipantState(socketId, muted, videoOn) {
+  const micIcon = document.getElementById(`mic-${socketId}`);
+  if (micIcon) micIcon.style.display = muted ? 'flex' : 'none';
+}
+
+function toggleMic() {
+  if (!localCameraStream) return;
+  isMuted = !isMuted;
+  localCameraStream.getAudioTracks().forEach(t => t.enabled = !isMuted);
+  document.getElementById('btn-mic').classList.toggle('active', isMuted);
+  document.getElementById('local-mic-icon').style.display = isMuted ? 'flex' : 'none';
+  if (socket) socket.emit('media-state-change', { isMuted });
+}
+
+function toggleVideo() {
+  if (!localCameraStream) return;
+
+  const localCard = document.getElementById('local-video-card');
+
+  // Student opening camera for the first time (card is hidden)
+  if (!isTeacher && localCard.classList.contains('hidden')) {
+    localCameraStream.getVideoTracks().forEach(t => t.enabled = true);
+    isVideoOff = false;
+    localCard.classList.remove('hidden');
+    document.getElementById('local-video').srcObject = localCameraStream;
+    document.getElementById('local-video').style.display = '';
+    document.getElementById('local-avatar').style.display = 'none';
+    document.getElementById('btn-video').classList.remove('active');
+    if (socket) socket.emit('media-state-change', { isVideoOn: true });
+    showToast('Your camera will not be visible unless teacher invites you to the stage.');
+    return;
+  }
+
+  // Normal toggle
+  isVideoOff = !isVideoOff;
+  localCameraStream.getVideoTracks().forEach(t => t.enabled = !isVideoOff);
+  document.getElementById('btn-video').classList.toggle('active', isVideoOff);
+  const localVideo = document.getElementById('local-video');
+  const localAvatar = document.getElementById('local-avatar');
+  if (isVideoOff) {
+    localVideo.style.display = 'none';
+    localAvatar.style.display = 'flex';
+    if (!isTeacher) {
+      localCard.classList.add('hidden');
+    }
+  } else {
+    localVideo.style.display = '';
+    localAvatar.style.display = 'none';
+  }
+  if (socket) socket.emit('media-state-change', { isVideoOn: !isVideoOff });
+}
+
+/* --- Invitation & Toast helpers --- */
+function showInvitationCard() {
+  document.getElementById('invitation-card').classList.add('visible');
+}
+
+function hideInvitationCard() {
+  document.getElementById('invitation-card').classList.remove('visible');
+}
+
+function acceptStageInvite() {
+  hideInvitationCard();
+
+  // Ensure local camera card is visible if it's hidden
+  const localCard = document.getElementById('local-video-card');
+  if (localCard.classList.contains('hidden')) {
+    localCard.classList.remove('hidden');
+    localCameraStream.getVideoTracks().forEach(t => t.enabled = true);
+    document.getElementById('local-video').srcObject = localCameraStream;
+    document.getElementById('local-video').style.display = '';
+    document.getElementById('local-avatar').style.display = 'none';
+    isVideoOff = false;
+    document.getElementById('btn-video').classList.remove('active');
+    if (socket) socket.emit('media-state-change', { isVideoOn: true });
+  }
+
+  if (socket) socket.emit('accept-stage-invite', { roomId });
+  addSystemMessage('You joined the stage.');
+}
+
+function declineStageInvite() {
+  hideInvitationCard();
+  addSystemMessage('You declined the stage invitation.');
+}
+
+function showToast(message) {
+  const toast = document.getElementById('toast-notification');
+  toast.querySelector('p').textContent = message;
+  toast.classList.add('visible');
+  setTimeout(() => toast.classList.remove('visible'), 6000);
+}
+
+function addScreenShareCard(stream) {
+  const grid = document.getElementById('stage-body');
+  const existing = document.getElementById('screen-share-card');
+  if (existing) existing.remove();
+  const card = document.createElement('div');
+  card.className = 'video-card screen-share';
+  card.id = 'screen-share-card';
+  card.innerHTML = `
+    <video id="screen-share-video" autoplay muted playsinline style="width:100%;height:100%;object-fit:contain;"></video>
+    <div class="overlay">
+      <span class="name">Your Screen</span>
+      <span class="role-badge">SHARING</span>
+    </div>
+  `;
+  grid.appendChild(card);
+  document.getElementById('screen-share-video').srcObject = stream;
+}
+
+function removeScreenShareCard() {
+  const card = document.getElementById('screen-share-card');
+  if (card) card.remove();
+}
+
+async function toggleScreenShare() {
+  if (isScreenSharing) {
+    if (screenShareStream) {
+      screenShareStream.getTracks().forEach(t => t.stop());
+      screenShareStream = null;
+    }
+    removeScreenShareCard();
+    if (localCameraStream) {
+      const cameraTrack = localCameraStream.getVideoTracks()[0];
+      peers.forEach(pc => {
+        const sender = pc.getSenders().find(s => s.track && s.track.kind === 'video');
+        if (sender && cameraTrack) sender.replaceTrack(cameraTrack);
+      });
+      localStream = localCameraStream;
+    }
+    isScreenSharing = false;
+    document.getElementById('btn-screen').classList.remove('active');
+  } else {
+    try {
+      screenShareStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
+      const screenTrack = screenShareStream.getVideoTracks()[0];
+      peers.forEach(pc => {
+        const sender = pc.getSenders().find(s => s.track && s.track.kind === 'video');
+        if (sender && screenTrack) sender.replaceTrack(screenTrack);
+      });
+      if (localCameraStream) {
+        const audioTrack = localCameraStream.getAudioTracks()[0];
+        localStream = new MediaStream([screenTrack, audioTrack].filter(Boolean));
+      } else {
+        localStream = new MediaStream([screenTrack]);
+      }
+      addScreenShareCard(screenShareStream);
+      isScreenSharing = true;
+      document.getElementById('btn-screen').classList.add('active');
+      screenShareStream.getVideoTracks()[0].onended = () => toggleScreenShare();
+    } catch (e) {
+      console.warn('Screen share denied:', e);
+    }
+  }
+}
+
+function sendMessage() {
+  const input = document.getElementById('msg-input');
+  const text = input.value.trim();
+  if (!text || !socket) return;
+  socket.emit('send-message', { text, type: 'text' });
+  input.value = '';
+}
+
+document.getElementById('msg-input').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') sendMessage();
+});
+
+function addChatMessage(msg) {
+  const container = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  if (msg.isSystem) {
+    div.className = 'chat-msg system';
+    div.textContent = msg.text;
+  } else {
+    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    div.className = 'chat-msg';
+    div.innerHTML = `
+      <div class="msg-header">
+        <span class="sender">${msg.userName || 'User'}</span>
+        <span class="time">${time}</span>
+      </div>
+      <div class="text">${escapeHtml(msg.text)}</div>
+    `;
+  }
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function addSystemMessage(text) {
+  addChatMessage({ text, isSystem: true });
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function leaveRoom() {
+  if (socket) {
+    socket.emit('leave-room', { roomId });
+    socket.disconnect();
+  }
+  peers.forEach(pc => pc.close());
+  peers.clear();
+  if (localStream) {
+    localStream.getTracks().forEach(t => t.stop());
+  }
+  window.close();
+  setTimeout(() => { window.location.href = '/teacher/dashboard'; }, 100);
+}
+
+function startTimer() {
+  setInterval(() => {
+    const diff = Math.floor((Date.now() - classStartTime) / 1000);
+    const h = String(Math.floor(diff / 3600)).padStart(2, '0');
+    const m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+    const s = String(diff % 60).padStart(2, '0');
+    document.getElementById('timer').textContent = `${h}:${m}:${s}`;
+  }, 1000);
+}
+
+window.addEventListener('beforeunload', () => {
+  if (socket) socket.emit('leave-room', { roomId });
+});
+
+let selectedVoiceName = localStorage.getItem('ai_selected_voice_name') || '';
+
+function populateVoiceSelect() {
+  if (!('speechSynthesis' in window)) return;
+  const select = document.getElementById('voice-select');
+  if (!select) return;
+  
+  const voices = window.speechSynthesis.getVoices();
+  const englishVoices = voices.filter(v => v.lang.startsWith('en'));
+  
+  if (englishVoices.length === 0) {
+    select.innerHTML = '<option value="">Default System Voice</option>';
+    return;
+  }
+  
+  select.innerHTML = '';
+  
+  // Sort: Natural/Google voices first, then alphabetical
+  englishVoices.sort((a, b) => {
+    const aNat = a.name.includes('Natural') || a.name.includes('Google');
+    const bNat = b.name.includes('Natural') || b.name.includes('Google');
+    if (aNat && !bNat) return -1;
+    if (!aNat && bNat) return 1;
+    return a.name.localeCompare(b.name);
+  });
+  
+  englishVoices.forEach(voice => {
+    const option = document.createElement('option');
+    option.value = voice.name;
+    option.textContent = voice.name + (voice.localService ? ' (Local)' : ' (Online)');
+    if (selectedVoiceName === voice.name) {
+      option.selected = true;
+    }
+    select.appendChild(option);
+  });
+  
+  // Choose best voice if none is selected
+  if (!selectedVoiceName && englishVoices.length > 0) {
+    const bestVoice = englishVoices.find(v => v.name.includes('Natural') && (v.name.includes('Aria') || v.name.includes('Jenny') || v.name.includes('Guy'))) || 
+                      englishVoices.find(v => v.name.includes('Google') && v.lang.startsWith('en-US')) || 
+                      englishVoices.find(v => v.name.includes('Natural')) ||
+                      englishVoices.find(v => v.lang.startsWith('en-US')) ||
+                      englishVoices[0];
+    if (bestVoice) {
+      selectedVoiceName = bestVoice.name;
+      select.value = selectedVoiceName;
+      localStorage.setItem('ai_selected_voice_name', selectedVoiceName);
+    }
+  }
+}
+
+function changeAIVoice(voiceName) {
+  selectedVoiceName = voiceName;
+  localStorage.setItem('ai_selected_voice_name', voiceName);
+}
+
+// Listen for async voice loading
+if (typeof window !== 'undefined' && window.speechSynthesis) {
+  if (window.speechSynthesis.onvoiceschanged !== undefined) {
+    window.speechSynthesis.onvoiceschanged = () => {
+      populateVoiceSelect();
+    };
+  }
+}
+
+function renderAICard() {
+  const grid = document.getElementById('stage-body');
+  const existing = document.getElementById('remote-ai-coach');
+  
+  if (remoteParticipants.has('ai-coach')) {
+    if (existing) return;
+    
+    const card = document.createElement('div');
+    card.className = 'video-card ai-card';
+    card.id = 'remote-ai-coach';
+    card.innerHTML = `
+      <div class="avatar-fallback" style="background: linear-gradient(135deg, #8B5CF2, #5B21B6); display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; height: 100%;">
+        <span style="font-size: 3rem; margin-bottom: 8px;">🤖</span>
+        <span style="font-size: 0.95rem; opacity: 0.9; font-weight: 600;">Sarah (AI Coach)</span>
+      </div>
+      <div class="status-icon speaking-wave" id="speaking-ai-coach" style="display:none; position: absolute; top: 15px; right: 15px; background: rgba(16, 185, 129, 0.2); border-radius: 50%; padding: 8px; align-items: center; justify-content: center;">
+        <span class="pulsing-wave"></span>
+      </div>
+      <div class="overlay" style="display: flex; flex-direction: column; gap: 6px; background: linear-gradient(transparent, rgba(0,0,0,0.85)); padding: 12px; border-radius: 0 0 12px 12px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+          <span class="name">Sarah (AI Coach)</span>
+          <button id="btn-talk-to-ai" onclick="toggleTalkToAI()" style="background: #8B5CF2; border: none; color: #fff; padding: 6px 12px; border-radius: 4px; font-size: 0.78rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.2s;">
+            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="width:14px; height:14px;"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            Talk to AI
+          </button>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px; width: 100%;">
+          <span style="font-size: 0.75rem; color: #a3a3a3; white-space: nowrap;">Voice:</span>
+          <select id="voice-select" onchange="changeAIVoice(this.value)" style="flex: 1; min-width: 0; background: #2f3136; color: #dcddde; border: 1px solid #40444b; padding: 3px 6px; border-radius: 4px; font-size: 0.75rem; outline: none; cursor: pointer;">
+            <option value="">Loading voices...</option>
+          </select>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+    populateVoiceSelect();
+  } else {
+    if (existing) existing.remove();
+  }
+}
+
+function toggleAICall() {
+  if (!socket) return;
+  aiActive = !aiActive;
+  
+  socket.emit('toggle-ai', { roomId, active: aiActive });
+  
+  const btn = document.getElementById('btn-call-ai');
+  if (aiActive) {
+    btn.classList.add('active');
+    btn.title = "Dismiss AI";
+  } else {
+    btn.classList.remove('active');
+    btn.title = "Call AI";
+    
+    // Stop speaking and listening if active
+    if (recognition) {
+      try { recognition.stop(); } catch(e) {}
+      isListeningToUser = false;
+    }
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+      isAiSpeaking = false;
+    }
+  }
+}
+
+let silenceTimer = null;
+let accumulatedTranscript = '';
+
+function toggleTalkToAI() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    alert("Speech recognition is not supported in this browser. Please use Google Chrome.");
+    return;
+  }
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!recognition) {
+    recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US';
+
+    recognition.onstart = () => {
+      isListeningToUser = true;
+      accumulatedTranscript = '';
+      const btn = document.getElementById('btn-talk-to-ai');
+      if (btn) {
+        btn.innerHTML = `<span class="pulsing-wave" style="margin-right:4px;"></span> Listening...`;
+        btn.style.background = '#10B981';
+      }
+    };
+
+    recognition.onresult = (event) => {
+      let transcript = '';
+      for (let i = 0; i < event.results.length; ++i) {
+        transcript += event.results[i][0].transcript;
+      }
+      accumulatedTranscript = transcript;
+      console.log('🗣️ Current speech transcript:', accumulatedTranscript);
+
+      // Reset silence timer to wait for 2.0 seconds of silence
+      clearTimeout(silenceTimer);
+      silenceTimer = setTimeout(() => {
+        if (accumulatedTranscript.trim().length > 0) {
+          console.log('🗣️ Silence detected, sending to AI:', accumulatedTranscript);
+          socket.emit('send-ai-message', { text: accumulatedTranscript, roomId });
+          accumulatedTranscript = '';
+          recognition.stop();
+        }
+      }, 2000);
+    };
+
+    recognition.onerror = (event) => {
+      console.error('Speech recognition error:', event.error);
+      clearTimeout(silenceTimer);
+      resetTalkToAIButton();
+    };
+
+    recognition.onend = () => {
+      isListeningToUser = false;
+      clearTimeout(silenceTimer);
+      // If there is any leftover text, send it
+      if (accumulatedTranscript.trim().length > 0) {
+        console.log('🗣️ Speech recognition ended, sending remaining transcript:', accumulatedTranscript);
+        socket.emit('send-ai-message', { text: accumulatedTranscript, roomId });
+        accumulatedTranscript = '';
+      }
+      resetTalkToAIButton();
+    };
+  }
+
+  if (isListeningToUser) {
+    clearTimeout(silenceTimer);
+    try { recognition.stop(); } catch(e) {}
+  } else {
+    // If AI is speaking, stop it first
+    if (window.speechSynthesis && window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      isAiSpeaking = false;
+      updateAICardState();
+    }
+    recognition.start();
+  }
+}
+
+function resetTalkToAIButton() {
+  const btn = document.getElementById('btn-talk-to-ai');
+  if (btn) {
+    btn.innerHTML = `
+      <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="width:14px; height:14px;"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      Talk to AI
+    `;
+    btn.style.background = '#8B5CF2';
+  }
+}
+
+function speakText(text) {
+  if (!('speechSynthesis' in window)) {
+    console.warn("Speech synthesis not supported in this browser.");
+    return;
+  }
+
+  // Cancel any active speech
+  window.speechSynthesis.cancel();
+
+  // Clean markdown and special characters from text for a cleaner speaking output
+  const cleanText = text
+    .replace(/\*\*([^*]+)\*\*/g, '$1') // remove bold asterisks
+    .replace(/\*([^*]+)\*/g, '$1')     // remove italic asterisks
+    .replace(/#+\s+/g, '')             // remove headers
+    .replace(/-\s+/g, '')              // remove bullet points
+    .replace(/\d+\.\s+/g, '')          // remove numbered lists
+    .replace(/[`_]/g, '');             // remove backticks and underscores
+
+  // Create utterance. Keep a global reference to prevent garbage collection bugs in Chrome
+  const utterance = new SpeechSynthesisUtterance(cleanText);
+  window.activeUtterance = utterance; 
+
+  // Configure voices
+  const voices = window.speechSynthesis.getVoices();
+  let englishVoice = null;
+  if (selectedVoiceName) {
+    englishVoice = voices.find(v => v.name === selectedVoiceName);
+  }
+  if (!englishVoice) {
+    englishVoice = voices.find(v => v.lang.startsWith('en-US') && v.name.includes('Google')) || 
+                   voices.find(v => v.lang.startsWith('en-US')) || 
+                   voices.find(v => v.lang.startsWith('en')) || 
+                   voices[0];
+  }
+  if (englishVoice) {
+    utterance.voice = englishVoice;
+  }
+  
+  utterance.rate = 1.0;
+  utterance.pitch = 1.0;
+
+  utterance.onstart = () => {
+    isAiSpeaking = true;
+    updateAICardState();
+  };
+
+  utterance.onend = () => {
+    isAiSpeaking = false;
+    updateAICardState();
+    
+    // Auto-restart listening if the user clicked "Talk to AI" before
+    setTimeout(() => {
+      if (aiActive && !isListeningToUser && !isAiThinking) {
+        toggleTalkToAI();
+      }
+    }, 400);
+  };
+
+  utterance.onerror = (e) => {
+    console.error('Speech synthesis error:', e);
+    isAiSpeaking = false;
+    updateAICardState();
+  };
+
+  window.speechSynthesis.speak(utterance);
+}
+
+function updateAICardState() {
+  const card = document.getElementById('remote-ai-coach');
+  if (!card) return;
+
+  // Add/remove thinking class
+  if (isAiThinking) {
+    card.className = 'video-card ai-card thinking';
+  } else {
+    card.className = 'video-card ai-card';
+  }
+
+  // Add/remove speaking class
+  const wave = document.getElementById('speaking-ai-coach');
+  if (isAiSpeaking) {
+    card.classList.add('speaking');
+    if (wave) wave.style.display = 'flex';
+  } else {
+    card.classList.remove('speaking');
+    if (wave) wave.style.display = 'none';
+  }
+}
+
+init();
+</script>
+</body>
+</html>

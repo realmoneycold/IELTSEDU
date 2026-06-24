@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms & Conditions | IELTS PRACTICE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/petite-vue@0.4.1/dist/petite-vue.iife.js" defer init></script>
+    <style>
+        @import url('https://api.fontshare.com/v2/css?f[]=clash-grotesk@700,600,400&f[]=satoshi@700,500,400&display=swap');
+
+        :root {
+            --lavender-main: #8B5CF6;
+            --brand-orange: #FF6B35;
+            --bg-soft: #F9F5FF;
+            --dark: #111827;
+        }
+
+        body {
+            font-family: 'Satoshi', sans-serif;
+            background-color: var(--bg-soft);
+            color: var(--dark);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Clash Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .hero-illustration-bg {
+            background-image: radial-gradient(circle at center, rgba(139, 92, 246, 0.08) 0%, transparent 60%);
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .scroll-reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .transition-playful {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .card-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -12px rgba(139, 92, 246, 0.15);
+        }
+
+        .orange-text {
+            color: var(--brand-orange);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F9F5FF;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D4C5E2;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8B5CF6;
+        }
+
+        /* Accordion specific styles */
+        .accordion-content {
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            opacity: 0;
+        }
+        
+        .accordion-item.is-open .accordion-content {
+            opacity: 1;
+        }
+
+        .accordion-item.is-open {
+            border-color: rgba(139, 92, 246, 0.3);
+            background-color: #fff;
+            box-shadow: 0 25px 50px -12px rgba(139, 92, 246, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen relative flex flex-col">
+        <!-- Header (Persistent Navigation) -->
+        <!-- component: NavigationHeader -->
+        <div class="sticky top-0 z-50" v-scope="{ ...{'activeItem':'none','homeHref':'/','coursesHref':'/courses','examHref':'/exam-dates','centresHref':'/education-centres','contactHref':'/contact','signupHref':'/signup','loginHref':'/login'}, $emit() {} }">
+            <nav class="flex items-center justify-between px-8 md:px-16 py-6 bg-white/95 backdrop-blur-md border-b border-purple-100/50">
+                <div class="flex items-center gap-12">
+                    <a href="/" id="nav-logo-link" class="text-3xl font-black flex items-center uppercase tracking-tighter">
+                        <span class="text-black border-r-4 border-[#FF6B35] pr-3 mr-3">IELTS</span>
+                        <span class="text-black/60 text-lg tracking-[0.2em] font-bold">PRACTICE</span>
+                    </a>
+                    <div class="hidden lg:flex items-center gap-8 font-semibold text-gray-600">
+                        <a id="nav-home" :href="homeHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'home' }">Home</a>
+                        <a id="nav-courses" :href="coursesHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'courses' }">Courses</a>
+                        <a id="nav-exam" :href="examHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'exam' }">Exam & Mock dates</a>
+                        <a id="nav-centres" :href="centresHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'centres' }">Educational Centres</a>
+                        <a id="nav-contact" :href="contactHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'contact' }">Contact</a>
+                        <a id="nav-privacy" href="/privacypolicy" class="hover:text-black transition-colors text-[#FF6B35] font-bold">Privacy Policy</a>
+                    </div>
+                </div>
+                <div class="flex items-center gap-6">
+                    <a id="nav-signup" :href="signupHref" class="font-bold hover:text-[#FF6B35] transition-colors">Sign up</a>
+                    <a id="nav-login" :href="loginHref" class="bg-[#FF6B35] text-white px-8 py-3 rounded-2xl font-bold hover:bg-[#e85a2a] transition-all transform hover:scale-105">
+                        Login
+                    </a>
+                </div>
+            </nav>
+        </div>
+
+        <main class="flex-1">
+            <!-- Hero Section -->
+            <section class="pt-20 pb-16 px-6 md:px-16 relative overflow-hidden hero-illustration-bg">
+                <!-- Decorative blobs -->
+                <div class="absolute top-0 right-1/4 w-96 h-96 bg-purple-300/20 rounded-full blur-[80px] -z-10"></div>
+                <div class="absolute bottom-0 left-1/4 w-80 h-80 bg-orange-300/10 rounded-full blur-[60px] -z-10"></div>
+
+                <div class="max-w-4xl mx-auto text-center scroll-reveal">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-purple-100 text-purple-600 text-sm font-bold mb-8 shadow-sm">
+                        <iconify-icon icon="ph:shield-check-bold" class="text-lg"></iconify-icon>
+                        Legal Documentation
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight">
+                        Terms & <span class="orange-text">Conditions</span>
+                    </h1>
+                    <p class="text-xl text-gray-500 font-medium">
+                        Last updated: <span class="text-dark font-bold">October 24, 2024</span>
+                    </p>
+                    <p class="mt-6 text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed font-medium">
+                        Please read these terms carefully before using the IELTS PRACTICE platform. By accessing or using our services, you agree to be bound by these terms.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Terms Content (Accordion/Cards Layout) -->
+            <section class="px-6 md:px-16 pb-32">
+                <div class="max-w-4xl mx-auto">
+                    
+                    <!-- Intro Card -->
+                    <div class="bg-white rounded-[40px] p-8 md:p-12 mb-12 shadow-sm border border-gray-100 scroll-reveal">
+                        <p class="text-lg text-gray-600 font-medium leading-relaxed">
+                            These Terms and Conditions govern your access to and use of IELTS PRACTICE, including any content, functionality, and services offered on or through the Website. If you disagree with any part of these Terms, then you may not access the Website.
+                        </p>
+                    </div>
+
+                    <!-- Accordion Wrapper -->
+                    <div class="space-y-6" id="terms-accordion">
+                        
+                        <!-- Item 1 -->
+                        <div class="accordion-item bg-white/60 hover:bg-white rounded-[40px] p-8 card-lift transition-playful scroll-reveal border-2 border-transparent cursor-pointer" onclick="toggleAccordion(this)" style="transition-delay: 0.05s">
+                            <div class="flex justify-between items-center gap-4">
+                                <div class="flex items-center gap-4">
+                                    <span class="text-3xl font-black text-purple-200">01</span>
+                                    <h3 class="text-2xl md:text-3xl font-black text-dark">Disclaimer</h3>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-gray-50 text-gray-400 flex items-center justify-center shrink-0 transition-transform duration-300 icon-container group-hover:bg-purple-50 group-hover:text-purple-600">
+                                    <iconify-icon icon="ph:caret-down-bold" class="text-xl"></iconify-icon>
+                                </div>
+                            </div>
+                            <div class="accordion-content overflow-hidden max-h-0">
+                                <div class="pt-6 mt-2 border-t border-gray-100">
+                                    <p class="text-lg text-gray-500 font-medium leading-relaxed">
+                                        The information provided on the Website, including text, graphics, images, and other content, is for educational and informational purposes only and is not a substitute for professional advice. NEVER rely solely on the information on the Website for major academic decisions. Always seek the advice of qualified professionals with any questions you may have regarding your examination preparation and requirements.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 2 -->
+                        <div class="accordion-item bg-white/60 hover:bg-white rounded-[40px] p-8 card-lift transition-playful scroll-reveal border-2 border-transparent cursor-pointer" onclick="toggleAccordion(this)" style="transition-delay: 0.1s">
+                            <div class="flex justify-between items-center gap-4">
+                                <div class="flex items-center gap-4">
+                                    <span class="text-3xl font-black text-purple-200">02</span>
+                                    <h3 class="text-2xl md:text-3xl font-black text-dark">Use of the Website</h3>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-gray-50 text-gray-400 flex items-center justify-center shrink-0 transition-transform duration-300 icon-container">
+                                    <iconify-icon icon="ph:caret-down-bold" class="text-xl"></iconify-icon>
+                                </div>
+                            </div>
+                            <div class="accordion-content overflow-hidden max-h-0">
+                                <div class="pt-6 mt-2 border-t border-gray-100">
+                                    <p class="text-lg text-gray-500 font-medium leading-relaxed">
+                                        The Website is provided for your personal, non-commercial use only to assist with IELTS preparation. You may not use the Website for any purpose that is unlawful or prohibited by these Terms. Account sharing is strictly prohibited and may result in immediate suspension.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 3 -->
+                        <div class="accordion-item bg-white/60 hover:bg-white rounded-[40px] p-8 card-lift transition-playful scroll-reveal border-2 border-transparent cursor-pointer" onclick="toggleAccordion(this)" style="transition-delay: 0.15s">
+                            <div class="flex justify-between items-center gap-4">
+                                <div class="flex items-center gap-4">
+                                    <span class="text-3xl font-black text-purple-200">03</span>
+                                    <h3 class="text-2xl md:text-3xl font-black text-dark">Services and Products</h3>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-gray-50 text-gray-400 flex items-center justify-center shrink-0 transition-transform duration-300 icon-container">
+                                    <iconify-icon icon="ph:caret-down-bold" class="text-xl"></iconify-icon>
+                                </div>
+                            </div>
+                            <div class="accordion-content overflow-hidden max-h-0">
+                                <div class="pt-6 mt-2 border-t border-gray-100">
+                                    <p class="text-lg text-gray-500 font-medium leading-relaxed">
+                                        IELTS PRACTICE may connect you with various providers, tutors, or educational centers offering services and products. However, IELTS PRACTICE is not responsible for the ultimate quality, accuracy, or safety of any such third-party services. You are solely responsible for evaluating the qualifications of any provider before utilizing their services.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 4 -->
+                        <div class="accordion-item bg-white/60 hover:bg-white rounded-[40px] p-8 card-lift transition-playful scroll-reveal border-2 border-transparent cursor-pointer" onclick="toggleAccordion(this)" style="transition-delay: 0.2s">
+                            <div class="flex justify-between items-center gap-4">
+                                <div class="flex items-center gap-4">
+                                    <span class="text-3xl font-black text-purple-200">04</span>
+                                    <h3 class="text-2xl md:text-3xl font-black text-dark">Warranties & Disclaimers</h3>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-gray-50 text-gray-400 flex items-center justify-center shrink-0 transition-transform duration-300 icon-container">
+                                    <iconify-icon icon="ph:caret-down-bold" class="text-xl"></iconify-icon>
+                                </div>
+                            </div>
+                            <div class="accordion-content overflow-hidden max-h-0">
+                                <div class="pt-6 mt-2 border-t border-gray-100">
+                                    <p class="text-lg text-gray-500 font-medium leading-relaxed">
+                                        IELTS PRACTICE disclaims all warranties, express or implied, including but not limited to, implied warranties of merchantability, fitness for a particular purpose, and non-infringement. We do not guarantee specific band score outcomes. We do not warrant that the Website will be uninterrupted, completely secure, or error-free at all times.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 5 -->
+                        <div class="accordion-item bg-white/60 hover:bg-white rounded-[40px] p-8 card-lift transition-playful scroll-reveal border-2 border-transparent cursor-pointer" onclick="toggleAccordion(this)" style="transition-delay: 0.25s">
+                            <div class="flex justify-between items-center gap-4">
+                                <div class="flex items-center gap-4">
+                                    <span class="text-3xl font-black text-purple-200">05</span>
+                                    <h3 class="text-2xl md:text-3xl font-black text-dark">Limitation of Liability</h3>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-gray-50 text-gray-400 flex items-center justify-center shrink-0 transition-transform duration-300 icon-container">
+                                    <iconify-icon icon="ph:caret-down-bold" class="text-xl"></iconify-icon>
+                                </div>
+                            </div>
+                            <div class="accordion-content overflow-hidden max-h-0">
+                                <div class="pt-6 mt-2 border-t border-gray-100">
+                                    <p class="text-lg text-gray-500 font-medium leading-relaxed">
+                                        IELTS PRACTICE shall not be liable for any direct, indirect, incidental, consequential, or punitive damages arising out of or in any way connected with your use of the Website, study materials, or mock exams, even if advised of the possibility of such damages.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 6 -->
+                        <div class="accordion-item bg-white/60 hover:bg-white rounded-[40px] p-8 card-lift transition-playful scroll-reveal border-2 border-transparent cursor-pointer" onclick="toggleAccordion(this)" style="transition-delay: 0.3s">
+                            <div class="flex justify-between items-center gap-4">
+                                <div class="flex items-center gap-4">
+                                    <span class="text-3xl font-black text-purple-200">06</span>
+                                    <h3 class="text-2xl md:text-3xl font-black text-dark">Intellectual Property</h3>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-gray-50 text-gray-400 flex items-center justify-center shrink-0 transition-transform duration-300 icon-container">
+                                    <iconify-icon icon="ph:caret-down-bold" class="text-xl"></iconify-icon>
+                                </div>
+                            </div>
+                            <div class="accordion-content overflow-hidden max-h-0">
+                                <div class="pt-6 mt-2 border-t border-gray-100">
+                                    <p class="text-lg text-gray-500 font-medium leading-relaxed">
+                                        The Content on the Website, including practice tests, UI design, analytics algorithms, and branding, is protected by copyright, trademark, and other intellectual property laws. You may not modify, publish, transmit, reverse engineer, create derivative works from, or exploit in any way the Content without the prior written permission of IELTS PRACTICE.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 7 -->
+                        <div class="accordion-item bg-white/60 hover:bg-white rounded-[40px] p-8 card-lift transition-playful scroll-reveal border-2 border-transparent cursor-pointer" onclick="toggleAccordion(this)" style="transition-delay: 0.35s">
+                            <div class="flex justify-between items-center gap-4">
+                                <div class="flex items-center gap-4">
+                                    <span class="text-3xl font-black text-purple-200">07</span>
+                                    <h3 class="text-2xl md:text-3xl font-black text-dark">Termination</h3>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-gray-50 text-gray-400 flex items-center justify-center shrink-0 transition-transform duration-300 icon-container">
+                                    <iconify-icon icon="ph:caret-down-bold" class="text-xl"></iconify-icon>
+                                </div>
+                            </div>
+                            <div class="accordion-content overflow-hidden max-h-0">
+                                <div class="pt-6 mt-2 border-t border-gray-100">
+                                    <p class="text-lg text-gray-500 font-medium leading-relaxed">
+                                        IELTS PRACTICE may terminate or suspend your access to the Website and premium features for any reason, including violation of these terms, at any time, without prior notice. Upon termination, your right to use the platform will immediately cease.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 8 -->
+                        <div class="accordion-item bg-white/60 hover:bg-white rounded-[40px] p-8 card-lift transition-playful scroll-reveal border-2 border-transparent cursor-pointer" onclick="toggleAccordion(this)" style="transition-delay: 0.4s">
+                            <div class="flex justify-between items-center gap-4">
+                                <div class="flex items-center gap-4">
+                                    <span class="text-3xl font-black text-purple-200">08</span>
+                                    <h3 class="text-2xl md:text-3xl font-black text-dark">Governing Law</h3>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-gray-50 text-gray-400 flex items-center justify-center shrink-0 transition-transform duration-300 icon-container">
+                                    <iconify-icon icon="ph:caret-down-bold" class="text-xl"></iconify-icon>
+                                </div>
+                            </div>
+                            <div class="accordion-content overflow-hidden max-h-0">
+                                <div class="pt-6 mt-2 border-t border-gray-100">
+                                    <p class="text-lg text-gray-500 font-medium leading-relaxed">
+                                        These Terms shall be governed by and construed in accordance with international educational standard laws, without regard to its conflict of law provisions. Any disputes will be resolved in the primary jurisdiction where IELTS PRACTICE operates.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 9 -->
+                        <div class="accordion-item bg-white/60 hover:bg-white rounded-[40px] p-8 card-lift transition-playful scroll-reveal border-2 border-transparent cursor-pointer" onclick="toggleAccordion(this)" style="transition-delay: 0.45s">
+                            <div class="flex justify-between items-center gap-4">
+                                <div class="flex items-center gap-4">
+                                    <span class="text-3xl font-black text-purple-200">09</span>
+                                    <h3 class="text-2xl md:text-3xl font-black text-dark">Agreement & Changes</h3>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-gray-50 text-gray-400 flex items-center justify-center shrink-0 transition-transform duration-300 icon-container">
+                                    <iconify-icon icon="ph:caret-down-bold" class="text-xl"></iconify-icon>
+                                </div>
+                            </div>
+                            <div class="accordion-content overflow-hidden max-h-0">
+                                <div class="pt-6 mt-2 border-t border-gray-100">
+                                    <p class="text-lg text-gray-500 font-medium leading-relaxed mb-4">
+                                        These Terms constitute the entire agreement between you and IELTS PRACTICE regarding your use of the Website. We reserve the right, at our sole discretion, to modify or replace these Terms at any time.
+                                    </p>
+                                    <p class="text-lg text-gray-500 font-medium leading-relaxed">
+                                        If a revision is material, we will try to provide at least 30 days' notice prior to any new terms taking effect. By continuing to access or use our Service after those revisions become effective, you agree to be bound by the revised terms.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 10 -->
+                        <div class="accordion-item bg-purple-50 hover:bg-purple-100/50 rounded-[40px] p-8 card-lift transition-playful scroll-reveal border-2 border-purple-100 cursor-pointer" onclick="toggleAccordion(this)" style="transition-delay: 0.5s">
+                            <div class="flex justify-between items-center gap-4">
+                                <div class="flex items-center gap-4">
+                                    <span class="text-3xl font-black text-purple-300">10</span>
+                                    <h3 class="text-2xl md:text-3xl font-black text-purple-900">Contact Us</h3>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-white text-purple-600 flex items-center justify-center shrink-0 transition-transform duration-300 icon-container shadow-sm">
+                                    <iconify-icon icon="ph:caret-down-bold" class="text-xl"></iconify-icon>
+                                </div>
+                            </div>
+                            <div class="accordion-content overflow-hidden max-h-0">
+                                <div class="pt-6 mt-2 border-t border-purple-200/50">
+                                    <p class="text-lg text-purple-800 font-medium leading-relaxed">
+                                        If you have any questions about these Terms, please contact our legal and support team:
+                                    </p>
+                                    <div class="flex flex-col sm:flex-row gap-6 mt-6">
+                                        <div class="flex items-center gap-3 bg-white px-6 py-4 rounded-2xl shadow-sm">
+                                            <iconify-icon icon="ph:envelope-bold" class="text-2xl text-orange-500"></iconify-icon>
+                                            <span class="font-black text-dark">legal@ieltspractice.com</span>
+                                        </div>
+                                        <div class="flex items-center gap-3 bg-white px-6 py-4 rounded-2xl shadow-sm">
+                                            <iconify-icon icon="ph:phone-bold" class="text-2xl text-orange-500"></iconify-icon>
+                                            <span class="font-black text-dark">+998 88 532 4701</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="px-6 md:px-16 py-24 bg-white border-t border-purple-50 mt-auto">
+            <div class="max-w-[1360px] mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 items-start">
+                    <div class="lg:col-span-5">
+                        <div class="text-3xl font-black flex items-center uppercase tracking-tighter mb-8">
+                            <span class="text-black border-r-4 border-[#FF6B35] pr-3 mr-3">IELTS</span>
+                            <span class="text-black/60 text-lg tracking-[0.2em] font-bold">PRACTICE</span>
+                        </div>
+                        <p class="text-gray-400 text-lg font-medium max-w-sm mb-10 leading-relaxed">
+                            Empowering students worldwide to achieve their dreams through innovative, technology-driven IELTS preparation tools.
+                        </p>
+                        <div class="flex gap-4">
+                            <a id="soc-1" href="https://t.me/ieltspractice_net" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:telegram-logo-bold"></iconify-icon></a>
+                            <a id="soc-2" href="https://x.com/ieltspracticeUz" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:twitter-logo-bold"></iconify-icon></a>
+                            <a id="soc-3" href="https://www.instagram.com/ieltspractice_net?igsh=MWR3OGw3ZmxjcjF1Ng%3D%3D&utm_source=qr" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:instagram-logo-bold"></iconify-icon></a>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-3 grid grid-cols-2 gap-10">
+                        <div>
+                            <h6 class="font-black uppercase text-xs tracking-widest text-gray-400 mb-8">Quick Links</h6>
+                            <ul class="space-y-4 font-bold text-gray-700">
+                                <li><a id="foot-1" href="/" class="hover:text-purple-600 transition-colors">Home</a></li>
+                                <li><a id="foot-2" href="/courses" class="hover:text-purple-600 transition-colors">Courses</a></li>
+                                <li><a id="foot-3" href="/education-centres" class="hover:text-purple-600 transition-colors">Centers</a></li>
+                                <li><a id="foot-4" href="/dashboard" class="hover:text-purple-600 transition-colors">Mock Exams</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h6 class="font-black uppercase text-xs tracking-widest text-gray-400 mb-8">Support</h6>
+                            <ul class="space-y-4 font-bold text-gray-700">
+                                <li><a id="foot-5" href="#" class="hover:text-purple-600 transition-colors">Help Center</a></li>
+                                <li><a id="foot-6" href="#" class="hover:text-purple-600 transition-colors">FAQ</a></li>
+                                <li><a id="foot-7" href="/privacypolicy" class="hover:text-purple-600 transition-colors">Privacy</a></li>
+                                <li><a id="foot-8" href="/termsconditions" class="hover:text-purple-600 transition-colors">Terms</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-4 bg-[#F5F1FF] p-8 rounded-[40px]">
+                        <h6 class="font-black uppercase text-xs tracking-widest text-purple-600 mb-6">Contact Us</h6>
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-purple-600 shadow-sm"><iconify-icon icon="ph:envelope-bold"></iconify-icon></div>
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 uppercase">Email</p>
+                                    <p class="font-black">support@ieltsedu.net</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-orange-600 shadow-sm"><iconify-icon icon="ph:phone-bold"></iconify-icon></div>
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 uppercase">Phone</p>
+                                    <p class="font-black">+998 88 532 4701</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-24 pt-10 border-t border-purple-50 flex flex-col md:flex-row justify-between items-center gap-6 text-xs font-black text-gray-400 tracking-widest">
+                    <div>© 2026 IELTSPRACTICE LEARNING PLATFORM</div>
+                    <div class="flex gap-8">
+                        <span style="color: #6B7280;">Created by <a href="https://xalimov-ahrorbek-portfolio.netlify.app/" target="_blank" style="color: #374151; text-decoration: underline; font-weight: 700; transition: color 0.3s;">Xalimov Ahrorbek</a></span>
+                        <a id="copy-1" href="/privacypolicy" class="hover:text-purple-600 transition-colors">PRIVACY POLICY</a>
+                        <a id="copy-2" href="/termsconditions" class="hover:text-purple-600 transition-colors">TERMS OF SERVICE</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Intersection Observer for scroll reveal animations
+        const observerOptions = {
+            root: null,
+            threshold: 0.1,
+            rootMargin: '0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+
+        // Accordion Toggle Logic
+        function toggleAccordion(element) {
+            const content = element.querySelector('.accordion-content');
+            const icon = element.querySelector('.icon-container');
+            const isCurrentlyOpen = element.classList.contains('is-open');
+
+            // Optional: Close all other accordions for a cleaner experience
+            document.querySelectorAll('.accordion-item').forEach(item => {
+                if (item !== element) {
+                    const otherContent = item.querySelector('.accordion-content');
+                    const otherIcon = item.querySelector('.icon-container');
+                    
+                    item.classList.remove('is-open');
+                    otherContent.style.maxHeight = null;
+                    otherIcon.style.transform = 'rotate(0deg)';
+                }
+            });
+
+            // Toggle current accordion
+            if (isCurrentlyOpen) {
+                // Close it
+                element.classList.remove('is-open');
+                content.style.maxHeight = null;
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                // Open it
+                element.classList.add('is-open');
+                content.style.maxHeight = content.scrollHeight + "px";
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Open the first accordion by default for better UX
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstAccordion = document.querySelector('.accordion-item');
+            if (firstAccordion) {
+                // Slight delay to allow DOM to calculate scrollHeight properly
+                setTimeout(() => {
+                    toggleAccordion(firstAccordion);
+                }, 100);
+            }
+        });
+    </script>
+</body>
+</html>

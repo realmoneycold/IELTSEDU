@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Education Centre Dashboard - IELTSPRACTICE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="../assets/education-auth-guard.js" defer></script>
+  <style>
+    :root {
+      --navy-deep:   #0f172a;
+      --navy-mid:     #1e293b;
+      --navy-light:    #334155;
+      --navy-pale:    #475569;
+      
+      --blue-core:     #2563eb;
+      --blue-mid:      #3b82f6;
+      --blue-light:    #60a5fa;
+      --blue-pale:     #dbeafe;
+      --blue-glow:     rgba(37, 99, 235, 0.08);
+      --blue-border:   rgba(37, 99, 235, 0.2);
+      
+      --slate:        #64748b;
+      --slate-light:  #94a3b8;
+      --slate-pale:   #e2e8f0;
+      
+      --text-primary:   #0f172a;
+      --text-secondary: #475569;
+      --text-tertiary: #94a3b8;
+      
+      --success:       #059669;
+      --success-bg:    rgba(5, 150, 105, 0.06);
+      --success-border: rgba(5, 150, 105, 0.2);
+      
+      --bg-primary:   #ffffff;
+      --bg-secondary: #f8fafc;
+      --bg-tertiary:  #f1f5f9;
+      
+      --shadow-sm:     0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+      --shadow:        0 4px 16px rgba(0,0,0,.08);
+      --shadow-lg:     0 12px 40px rgba(0,0,0,.12);
+      
+      --transition:    all .18s cubic-bezier(.4,0,.2,1);
+      --radius:        8px;
+      --radius-lg:     12px;
+      
+      --serif: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html,body{height:100%;}
+    body{
+      font-family:var(--serif);
+      background:var(--bg-secondary);
+      color:var(--text-primary);
+      display:flex;flex-direction:column;
+      font-size:14px;line-height:1.5;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    ::-webkit-scrollbar{width:6px;height:6px;}
+    ::-webkit-scrollbar-track{background:transparent;}
+    ::-webkit-scrollbar-thumb{background:var(--slate-light);border-radius:3px;}
+    ::-webkit-scrollbar-thumb:hover{background:var(--slate);}
+
+    .dashboard-header {
+      background:var(--bg-primary);
+      border-bottom:1px solid var(--border);
+      padding:20px 32px;
+      display:flex;align-items:center;justify-content:space-between;
+      box-shadow:var(--shadow-sm);
+    }
+
+    .header-left {
+      display:flex;align-items:center;gap:16px;
+    }
+
+    .centre-info {
+      display:flex;flex-direction:column;gap:4px;
+    }
+
+    .centre-name {
+      font-size:18px;font-weight:700;
+      color:var(--text-primary);
+    }
+
+    .centre-location {
+      font-size:13px;color:var(--text-secondary);
+    }
+
+    .user-info {
+      display:flex;align-items:center;gap:12px;
+      padding:8px 16px;
+      background:var(--bg-tertiary);
+      border-radius:var(--radius);
+    }
+
+    .user-avatar {
+      width:36px;height:36px;
+      border-radius:50%;
+      background:var(--blue-core);
+      color:white;
+      display:flex;align-items:center;justify-content:center;
+      font-weight:600;font-size:14px;
+    }
+
+    .user-details {
+      display:flex;flex-direction:column;gap:2px;
+    }
+
+    .user-name {
+      font-size:14px;font-weight:600;
+      color:var(--text-primary);
+    }
+
+    .user-role {
+      font-size:12px;color:var(--text-secondary);
+    }
+
+    .dashboard-content {
+      flex:1;
+      padding:32px;
+      display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));
+      gap:24px;
+      max-width:1200px;margin:0 auto;
+      width:100%;
+    }
+
+    .welcome-card {
+      background:var(--bg-primary);
+      border-radius:var(--radius-lg);
+      padding:32px;
+      box-shadow:var(--shadow);
+      border:1px solid var(--border);
+      text-align:center;
+    }
+
+    .welcome-icon {
+      width:64px;height:64px;
+      background:var(--blue-pale);
+      border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      margin:0 auto 24px;
+      font-size:28px;
+    }
+
+    .welcome-title {
+      font-size:24px;font-weight:700;
+      color:var(--text-primary);
+      margin-bottom:8px;
+    }
+
+    .welcome-message {
+      font-size:16px;color:var(--text-secondary);
+      line-height:1.6;
+    }
+
+    .stats-grid {
+      display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));
+      gap:20px;
+    }
+
+    .stat-card {
+      background:var(--bg-primary);
+      border-radius:var(--radius);
+      padding:24px;
+      box-shadow:var(--shadow);
+      border:1px solid var(--border);
+    }
+
+    .stat-label {
+      font-size:12px;color:var(--text-secondary);
+      text-transform:uppercase;letter-spacing:0.05em;
+      margin-bottom:8px;
+    }
+
+    .stat-value {
+      font-size:28px;font-weight:700;
+      color:var(--text-primary);
+      margin-bottom:4px;
+    }
+
+    .stat-change {
+      font-size:13px;color:var(--success);
+    }
+
+    .quick-actions {
+      background:var(--bg-primary);
+      border-radius:var(--radius-lg);
+      padding:32px;
+      box-shadow:var(--shadow);
+      border:1px solid var(--border);
+    }
+
+    .actions-title {
+      font-size:18px;font-weight:600;
+      color:var(--text-primary);
+      margin-bottom:20px;
+    }
+
+    .actions-grid {
+      display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+      gap:16px;
+    }
+
+    .action-btn {
+      padding:16px 24px;
+      background:var(--bg-tertiary);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      color:var(--text-primary);
+      text-decoration:none;
+      display:flex;align-items:center;gap:8px;
+      font-size:14px;font-weight:500;
+      transition:var(--transition);
+    }
+
+    .action-btn:hover {
+      background:var(--blue-pale);
+      border-color:var(--blue-mid);
+      transform:translateY(-2px);
+      box-shadow:var(--shadow);
+    }
+
+    .logout-btn {
+      background:var(--error-bg);
+      border-color:var(--error-border);
+      color:var(--error);
+    }
+
+    .logout-btn:hover {
+      background:var(--error);
+      color:white;
+    }
+
+    /* Toast Notifications */
+    .toast {
+      position:fixed;top:20px;right:20px;z-index:10000;
+      min-width:300px;max-width:400px;
+      padding:16px;
+      border-radius:var(--radius);
+      display:flex;align-items:center;gap:12px;
+      font-size:14px;font-weight:500;
+      box-shadow:var(--shadow-lg);
+      transform:translateX(100%);opacity:0;
+      transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .toast.show {
+      transform:translateX(0);opacity:1;
+    }
+
+    .toast.success {
+      background:var(--success-bg);
+      border:1px solid var(--success-border);
+      color:var(--success);
+    }
+
+    .toast-close {
+      background:none;border:none;
+      cursor:pointer;font-size:18px;
+      opacity:0.6;transition:opacity 0.2s;
+      padding:0;margin-left:8px;
+    }
+
+    .toast-close:hover {
+      opacity:1;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-content {
+        padding:20px;
+        grid-template-columns:1fr;
+      }
+      
+      .stats-grid {
+        grid-template-columns:1fr;
+      }
+      
+      .actions-grid {
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="dashboard-header">
+    <div class="header-left">
+      <div class="centre-info">
+        <div class="centre-name" id="centreName">Loading...</div>
+        <div class="centre-location" id="centreLocation">Loading...</div>
+      </div>
+    </div>
+    
+    <div class="user-info">
+      <div class="user-avatar" id="userAvatar">U</div>
+      <div class="user-details">
+        <div class="user-name" id="userName">Loading...</div>
+        <div class="user-role" id="userRole">Centre Administrator</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard-content">
+    <!-- Welcome Card -->
+    <div class="welcome-card">
+      <div class="welcome-icon">🎓</div>
+      <h1 class="welcome-title">Welcome to Your Centre Portal</h1>
+      <p class="welcome-message">
+        Manage your education centre efficiently with our comprehensive dashboard tools.
+      </p>
+    </div>
+
+    <!-- Statistics -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Staff</div>
+        <div class="stat-value" id="totalUsers">—</div>
+        <div class="stat-change">at your centre</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Active Staff</div>
+        <div class="stat-value" id="activeUsers">—</div>
+        <div class="stat-change">logged in recently</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">Inactive Staff</div>
+        <div class="stat-value" id="inactiveUsers">—</div>
+        <div class="stat-change">need attention</div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <h2 class="actions-title">Quick Actions</h2>
+      <div class="actions-grid">
+        <a href="#" class="action-btn">
+          <span>👥</span>
+          <span>Manage Students</span>
+        </a>
+        
+        <a href="#" class="action-btn">
+          <span>📚</span>
+          <span>Course Management</span>
+        </a>
+        
+        <a href="#" class="action-btn">
+          <span>📊</span>
+          <span>Reports & Analytics</span>
+        </a>
+        
+        <a href="#" class="action-btn">
+          <span>⚙️</span>
+          <span>Centre Settings</span>
+        </a>
+        
+        <a href="#" class="action-btn logout-btn" onclick="handleLogout(event)">
+          <span>🚪</span>
+          <span>Sign Out</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      const AUTH_TOKEN = localStorage.getItem('education_token');
+      function authHeaders() {
+        return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AUTH_TOKEN}` };
+      }
+
+      // Check authentication and load user data
+      async function checkAuth() {
+        const token = localStorage.getItem('education_token');
+        const userData = localStorage.getItem('education_user');
+        const centreData = localStorage.getItem('education_centre');
+
+        if (!token || !userData || !centreData) {
+          window.location.href = '/education-login.html';
+          return;
+        }
+
+        try {
+          const user = JSON.parse(userData);
+          const centre = JSON.parse(centreData);
+
+          // Update UI with user and centre data
+          document.getElementById('centreName').textContent = centre.name || 'Education Centre';
+          document.getElementById('centreLocation').textContent = centre.location || '';
+          document.getElementById('userName').textContent = user.fullName || user.email || 'User';
+          document.getElementById('userRole').textContent = (user.role || 'CENTRE_ADMIN').replace('_', ' ');
+
+          // Update avatar with first letter of name
+          const avatar = document.getElementById('userAvatar');
+          avatar.textContent = (user.fullName || user.email || 'U').charAt(0).toUpperCase();
+
+          // Fetch real stats
+          await loadDashboardStats();
+
+          // Show welcome toast
+          showToast(`Welcome back, ${user.fullName || user.email}!`, 'success');
+
+        } catch (error) {
+          console.error('Failed to parse user data:', error);
+          window.location.href = '/education-login.html';
+        }
+      }
+
+      async function loadDashboardStats() {
+        // Stats remain as — until real production data is available
+        try {
+          const response = await fetch('/api/education/dashboard', { headers: authHeaders() });
+          if (!response.ok) throw new Error('Failed to load stats');
+          const result = await response.json();
+          // Intentionally not populating stats to avoid showing test data
+          console.log('Dashboard stats available but hidden until production');
+        } catch (e) {
+          console.error('loadDashboardStats error:', e);
+        }
+      }
+
+      function showToast(message, type = 'info') {
+        const existingToast = document.querySelector('.toast');
+        if (existingToast) existingToast.remove();
+
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+
+        const icon = type === 'success'
+          ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>'
+          : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+
+        toast.innerHTML = `
+          <div>${icon}</div>
+          <div>${message}</div>
+          <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+        `;
+
+        document.body.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 10);
+
+        setTimeout(() => {
+          if (toast.parentElement) {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+          }
+        }, 5000);
+      }
+
+      function handleLogout(event) {
+        event.preventDefault();
+
+        if (confirm('Are you sure you want to sign out?')) {
+          localStorage.removeItem('education_token');
+          localStorage.removeItem('education_user');
+          localStorage.removeItem('education_centre');
+          localStorage.removeItem('centre_remember');
+          localStorage.removeItem('centre_email');
+
+          showToast('You have been successfully signed out.', 'success');
+
+          setTimeout(() => {
+            window.location.href = '/education-login.html';
+          }, 1000);
+        }
+      }
+
+      // Initialize dashboard
+      checkAuth();
+    })();
+  </script>
+</body>
+</html>

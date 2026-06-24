@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Centre Portal Login — IELTSPRACTICE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://api.fontshare.com/v2/css?f[]=clash-grotesk@700,600,400&f[]=satoshi@700,500,400&display=swap');
+
+        :root {
+            --lavender-main: #8B5CF6;
+            --brand-orange: #FF6B35;
+            --bg-soft: #F9F5FF;
+            --dark: #111827;
+        }
+
+        body {
+            font-family: 'Satoshi', sans-serif;
+            background-color: var(--bg-soft);
+            color: var(--dark);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .clash-font {
+            font-family: 'Clash Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        /* Animations from new design */
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .float-animation-delayed {
+            animation: float 6s ease-in-out infinite;
+            animation-delay: 3s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .transition-playful {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .card-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(139, 92, 246, 0.2);
+        }
+
+        .btn-bounce:hover {
+            transform: scale(1.05);
+        }
+
+        /* Staggered entry animations from old design adapted to new vibe */
+        .animate-fade-up {
+            opacity: 0;
+            animation: fadeUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .delay-100 {
+            animation-delay: 0.1s;
+        }
+
+        .delay-200 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-300 {
+            animation-delay: 0.3s;
+        }
+
+        .delay-400 {
+            animation-delay: 0.4s;
+        }
+
+        .delay-500 {
+            animation-delay: 0.5s;
+        }
+
+        .delay-600 {
+            animation-delay: 0.6s;
+        }
+
+        /* Input styling */
+        .input-field {
+            background-color: #F3F4F6;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            background-color: #ffffff;
+            border-color: var(--lavender-main);
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.1);
+        }
+
+        .input-field.error {
+            border-color: #EF4444;
+            background-color: #FEF2F2;
+        }
+
+        .input-field.error:focus {
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.1);
+        }
+
+        .input-field.success {
+            border-color: #10B981;
+        }
+
+        /* Custom Checkbox */
+        .custom-check {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #D1D5DB;
+            border-radius: 6px;
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .custom-check:checked {
+            background: var(--brand-orange);
+            border-color: var(--brand-orange);
+        }
+
+        .custom-check:checked::after {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: 2px solid #fff;
+            border-top: none;
+            border-left: none;
+            transform: rotate(45deg);
+        }
+
+        /* Alert dismiss animation */
+        .alert-dismissing {
+            animation: slideUpOut 0.3s cubic-bezier(0.4, 0, 1, 1) forwards !important;
+        }
+
+        @keyframes slideDownIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes slideUpOut {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+        }
+
+        .spinner-spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Badges from home page */
+        .purple-badge {
+            background-color: #F5F1FF;
+            color: #8B5CF6;
+        }
+
+        .orange-badge {
+            background-color: #FFF8F5;
+            color: #FF6B35;
+        }
+
+        .yellow-badge {
+            background-color: #FFFBEB;
+            color: #D97706;
+        }
+
+        /* Decorative BG */
+        .bg-pattern {
+            background-image: radial-gradient(#D4C5E2 1px, transparent 1px);
+            background-size: 32px 32px;
+            opacity: 0.4;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="min-h-screen flex w-full relative overflow-hidden">
+
+        <!-- Mobile Background Blob -->
+        <div
+            class="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-[#8B5CF6] opacity-10 blur-[80px] lg:hidden pointer-events-none">
+        </div>
+        <div
+            class="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] rounded-full bg-[#FF6B35] opacity-10 blur-[80px] lg:hidden pointer-events-none">
+        </div>
+
+        <!-- ════════════════════════════════════
+         LEFT PANEL — Brand & Visuals (Hidden on Mobile)
+    ════════════════════════════════════ -->
+        <div class="hidden lg:flex lg:w-1/2 bg-[#F5F1FF] relative flex-col justify-between p-16 overflow-hidden">
+            <!-- Decorative elements -->
+            <div class="absolute inset-0 bg-pattern"></div>
+            <div
+                class="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-white opacity-40 blur-[100px] pointer-events-none">
+            </div>
+            <div
+                class="absolute bottom-[10%] right-[-20%] w-[500px] h-[500px] rounded-full bg-[#8B5CF6] opacity-10 blur-[80px] pointer-events-none">
+            </div>
+
+            <!-- Header / Logo -->
+            <div class="relative z-10 animate-fade-up">
+                <div class="text-3xl font-black flex items-center uppercase tracking-tighter">
+                    <span class="text-black border-r-4 border-[#FF6B35] pr-3 mr-3">IELTS</span>
+                    <span class="text-black/60 text-lg tracking-[0.2em] font-bold">PRACTICE</span>
+                </div>
+                <div
+                    class="mt-2 inline-block px-3 py-1 rounded-lg purple-badge text-[10px] font-black uppercase tracking-widest">
+                    Education Network
+                </div>
+            </div>
+
+            <!-- Main Messaging & Floating Elements -->
+            <div class="relative z-10 flex-1 flex flex-col justify-center my-12">
+                <h1 class="text-6xl xl:text-7xl font-black mb-6 leading-[1.05] text-dark animate-fade-up delay-100">
+                    Empowering <br>
+                    <span class="text-[#FF6B35]">Educators</span>
+                </h1>
+                <p class="text-xl text-gray-500 max-w-md font-medium leading-relaxed animate-fade-up delay-200">
+                    Manage your students, track performance, and deliver world-class IELTS preparation from one powerful
+                    dashboard.
+                </p>
+
+                <!-- Floating Decorative Cards -->
+                <div class="mt-16 relative h-[240px] w-full max-w-lg">
+                    <!-- Card 1 -->
+                    <div
+                        class="absolute top-0 left-0 bg-white p-6 rounded-[32px] shadow-xl shadow-purple-100/50 w-[240px] float-animation animate-fade-up delay-300">
+                        <div
+                            class="inline-block px-3 py-1.5 rounded-xl bg-[#F5F1FF] text-[#8B5CF6] text-xs font-black uppercase mb-3">
+                            Network
+                        </div>
+                        <div class="text-gray-400 font-bold text-xs mb-1 uppercase tracking-wider">Partner Centres</div>
+                        <div class="text-4xl font-black">1,200+</div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div
+                        class="absolute bottom-0 right-10 bg-white p-6 rounded-[32px] shadow-xl shadow-orange-100/50 w-[240px] float-animation-delayed animate-fade-up delay-400 z-10">
+                        <div
+                            class="inline-block px-3 py-1.5 rounded-xl bg-[#FFF8F5] text-[#FF6B35] text-xs font-black uppercase mb-3">
+                            Scale
+                        </div>
+                        <div class="text-gray-400 font-bold text-xs mb-1 uppercase tracking-wider">Active Students</div>
+                        <div class="text-4xl font-black">94k+</div>
+                    </div>
+
+                    <!-- Small Avatar group floating -->
+                    <div
+                        class="absolute top-1/2 left-[45%] bg-white p-3 rounded-full shadow-lg flex -space-x-3 float-animation animate-fade-up delay-500">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+                            class="w-10 h-10 rounded-full border-2 border-white bg-blue-100" alt="Teacher">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka"
+                            class="w-10 h-10 rounded-full border-2 border-white bg-pink-100" alt="Teacher">
+                        <div
+                            class="w-10 h-10 rounded-full border-2 border-white bg-[#FF6B35] flex items-center justify-center text-white text-xs font-black">
+                            +</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer / Trust -->
+            <div
+                class="relative z-10 animate-fade-up delay-600 flex items-center gap-4 text-gray-400 text-sm font-bold">
+                <iconify-icon icon="ph:shield-check-fill" class="text-2xl text-[#10B981]"></iconify-icon>
+                <span>Secure Education Gateway &middot; SOC 2 Type II Certified</span>
+            </div>
+        </div>
+
+        <!-- ════════════════════════════════════
+         RIGHT PANEL — Login Form Container
+    ════════════════════════════════════ -->
+        <div class="w-full lg:w-1/2 flex flex-col justify-center items-center p-6 md:p-12 lg:p-20 relative z-10">
+
+            <!-- Mobile Logo -->
+            <div class="lg:hidden mb-10 text-center animate-fade-up">
+                <div class="text-3xl font-black flex items-center justify-center uppercase tracking-tighter">
+                    <span class="text-black border-r-4 border-[#FF6B35] pr-3 mr-3">IELTS</span>
+                    <span class="text-black/60 text-lg tracking-[0.2em] font-bold">PRACTICE</span>
+                </div>
+                <div
+                    class="mt-2 inline-block px-3 py-1 rounded-lg purple-badge text-[10px] font-black uppercase tracking-widest">
+                    Centre Portal
+                </div>
+            </div>
+
+            <!-- Form Card -->
+            <div
+                class="bg-white w-full max-w-[480px] rounded-[48px] p-8 sm:p-12 shadow-2xl shadow-purple-100/60 border border-gray-100 relative">
+
+                <!-- Header -->
+                <div class="mb-10 text-center animate-fade-up delay-100">
+                    <h2 class="text-4xl font-black mb-3 text-dark">Welcome back</h2>
+                    <p class="text-gray-500 font-medium text-lg">Sign in to manage your centre</p>
+                </div>
+
+                <!-- Error Alert Box -->
+                <div id="errorAlert" class="hidden mb-8 rounded-3xl overflow-hidden bg-red-50 border border-red-100 p-5"
+                    style="animation: slideDownIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;">
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="w-10 h-10 rounded-2xl bg-white flex items-center justify-center text-red-500 shrink-0 shadow-sm">
+                            <iconify-icon icon="ph:warning-circle-bold" class="text-xl"></iconify-icon>
+                        </div>
+                        <div class="flex-1 pt-1">
+                            <h4 class="text-red-700 font-black text-lg leading-tight" id="errorTitle">Invalid
+                                Credentials</h4>
+                            <p class="text-red-600/80 font-medium text-sm mt-1" id="errorMessage">The email or password
+                                you entered is incorrect. Please try again.</p>
+                        </div>
+                        <button type="button" onclick="dismissAlert()"
+                            class="w-8 h-8 rounded-full hover:bg-red-100 text-red-400 hover:text-red-600 transition-colors flex items-center justify-center">
+                            <iconify-icon icon="ph:x-bold"></iconify-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <form id="loginForm" novalidate autocomplete="on">
+
+                    <!-- Email field -->
+                    <div class="mb-6 animate-fade-up delay-300">
+                        <label for="email" class="block font-bold text-gray-700 text-sm mb-2 ml-1">
+                            Email Address
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <iconify-icon icon="ph:envelope-simple-bold" class="text-xl text-gray-400"
+                                    id="emailIcon"></iconify-icon>
+                            </div>
+                            <input id="email" name="email" type="email" inputmode="email" autocomplete="email"
+                                placeholder="manager@centre.com"
+                                class="input-field w-full pl-12 pr-4 py-4 rounded-2xl text-base font-medium text-gray-800" />
+                        </div>
+                        <p class="hidden text-red-500 text-sm font-bold mt-2 ml-1 flex items-center gap-1.5"
+                            id="emailError">
+                            <iconify-icon icon="ph:info-bold"></iconify-icon>
+                            <span id="emailErrorText">Please enter a valid email address.</span>
+                        </p>
+                    </div>
+
+                    <!-- Password field -->
+                    <div class="mb-8 animate-fade-up delay-400">
+                        <div class="flex items-center justify-between mb-2 ml-1 mr-1">
+                            <label for="password" class="block font-bold text-gray-700 text-sm">
+                                Password
+                            </label>
+                            <a href="/forgot-password"
+                                class="text-sm font-black text-[#8B5CF6] hover:text-[#7C3AED] transition-colors">
+                                Forgot Password?
+                            </a>
+                        </div>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <iconify-icon icon="ph:lock-key-bold" class="text-xl text-gray-400"></iconify-icon>
+                            </div>
+                            <input id="password" name="password" type="password" autocomplete="current-password"
+                                placeholder="Enter your password"
+                                class="input-field w-full pl-12 pr-12 py-4 rounded-2xl text-base font-medium text-gray-800" />
+                            <button type="button" id="togglePassword" onclick="togglePasswordVisibility()"
+                                class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                                aria-label="Toggle password visibility">
+                                <iconify-icon id="eyeOpen" icon="ph:eye-bold" class="text-xl"></iconify-icon>
+                                <iconify-icon id="eyeClosed" icon="ph:eye-closed-bold"
+                                    class="text-xl hidden"></iconify-icon>
+                            </button>
+                        </div>
+                        <p class="hidden text-red-500 text-sm font-bold mt-2 ml-1 flex items-center gap-1.5"
+                            id="passwordError">
+                            <iconify-icon icon="ph:info-bold"></iconify-icon>
+                            Password is required.
+                        </p>
+                    </div>
+
+                    <!-- Remember me -->
+                    <div class="flex items-center gap-3 mb-10 animate-fade-up delay-500 ml-1">
+                        <input type="checkbox" id="rememberMe" class="custom-check" aria-label="Remember me" />
+                        <label for="rememberMe" class="text-base font-medium text-gray-600 cursor-pointer select-none">
+                            Remember this device for 30 days
+                        </label>
+                    </div>
+
+                    <!-- Submit button -->
+                    <button type="submit" id="submitBtn"
+                        class="w-full bg-[#FF6B35] text-white py-5 rounded-2xl font-black text-xl hover:bg-[#e85a2a] transition-playful btn-bounce shadow-xl shadow-orange-200 flex items-center justify-center gap-3 animate-fade-up delay-600">
+                        <span id="btnText">Sign In to Dashboard</span>
+                        <iconify-icon id="btnIcon" icon="ph:arrow-right-bold"></iconify-icon>
+                        <iconify-icon id="btnSpinner" icon="ph:spinner-gap-bold"
+                            class="hidden spinner-spin text-2xl"></iconify-icon>
+                    </button>
+
+                </form>
+            </div>
+
+            <!-- Mobile footer text -->
+            <p class="lg:hidden text-center mt-10 text-sm font-bold text-gray-400 animate-fade-up delay-600">
+                IELTSPRACTICE &copy; 2026<br>
+                Secure Education Gateway
+            </p>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+     JAVASCRIPT (Retained & Adapted)
+══════════════════════════════════════════ -->
+    <script>
+        'use strict';
+
+        /* ─── Restore "Remember Me" state ─── */
+        (function restoreRemember() {
+            const saved = localStorage.getItem('centre_remember');
+            const emailSaved = localStorage.getItem('centre_email');
+            if (saved === 'true') {
+                document.getElementById('rememberMe').checked = true;
+                if (emailSaved) document.getElementById('email').value = emailSaved;
+            }
+        })();
+
+        /* ─── Toggle password visibility ─── */
+        function togglePasswordVisibility() {
+            const input = document.getElementById('password');
+            const eyeOpen = document.getElementById('eyeOpen');
+            const eyeClose = document.getElementById('eyeClosed');
+            const isHidden = input.type === 'password';
+
+            input.type = isHidden ? 'text' : 'password';
+
+            if (isHidden) {
+                eyeOpen.classList.add('hidden');
+                eyeClose.classList.remove('hidden');
+            } else {
+                eyeOpen.classList.remove('hidden');
+                eyeClose.classList.add('hidden');
+            }
+        }
+
+        /* ─── Show / dismiss alert ─── */
+        function showAlert(title, message) {
+            const alert = document.getElementById('errorAlert');
+            document.getElementById('errorTitle').textContent = title;
+            document.getElementById('errorMessage').textContent = message;
+
+            alert.classList.remove('hidden');
+            alert.classList.remove('alert-dismissing');
+            // Force reflow then animate in
+            void alert.offsetWidth;
+            alert.style.animation = 'none';
+            void alert.offsetWidth;
+            alert.style.animation = 'slideDownIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards';
+        }
+
+        function dismissAlert() {
+            const alert = document.getElementById('errorAlert');
+            alert.classList.add('alert-dismissing');
+            alert.addEventListener('animationend', () => {
+                alert.classList.add('hidden');
+                alert.classList.remove('alert-dismissing');
+            }, { once: true });
+        }
+
+        /* ─── Field validation ─── */
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+        }
+
+        function setFieldError(fieldId, errorId, show, message) {
+            const field = document.getElementById(fieldId);
+            const error = document.getElementById(errorId);
+            if (show) {
+                field.classList.add('error');
+                field.classList.remove('success');
+                error.classList.remove('hidden');
+                if (message && errorId === 'emailError') {
+                    document.getElementById('emailErrorText').textContent = message;
+                }
+            } else {
+                field.classList.remove('error');
+                error.classList.add('hidden');
+                if (document.getElementById(fieldId).value.trim()) {
+                    field.classList.add('success');
+                }
+            }
+        }
+
+        /* Live validation */
+        document.getElementById('email').addEventListener('blur', function () {
+            const val = this.value.trim();
+            if (val && !validateEmail(val)) {
+                setFieldError('email', 'emailError', true, 'Please enter a valid email address.');
+            } else if (val) {
+                setFieldError('email', 'emailError', false);
+            }
+        });
+
+        document.getElementById('email').addEventListener('input', function () {
+            if (this.classList.contains('error') && validateEmail(this.value.trim())) {
+                setFieldError('email', 'emailError', false);
+            }
+            // Hide global alert on new input
+            const alert = document.getElementById('errorAlert');
+            if (!alert.classList.contains('hidden')) dismissAlert();
+        });
+
+        document.getElementById('password').addEventListener('input', function () {
+            if (this.classList.contains('error') && this.value.length > 0) {
+                setFieldError('password', 'passwordError', false);
+            }
+            const alert = document.getElementById('errorAlert');
+            if (!alert.classList.contains('hidden')) dismissAlert();
+        });
+
+        /* ─── Loading state helpers ─── */
+        function setLoading(isLoading) {
+            const btn = document.getElementById('submitBtn');
+            const icon = document.getElementById('btnIcon');
+            const spinner = document.getElementById('btnSpinner');
+            const text = document.getElementById('btnText');
+
+            btn.disabled = isLoading;
+
+            if (isLoading) {
+                btn.classList.add('opacity-80', 'cursor-not-allowed', 'transform-none');
+                btn.classList.remove('btn-bounce');
+                icon.classList.add('hidden');
+                spinner.classList.remove('hidden');
+                text.textContent = 'Authenticating...';
+            } else {
+                btn.classList.remove('opacity-80', 'cursor-not-allowed', 'transform-none');
+                btn.classList.add('btn-bounce');
+                icon.classList.remove('hidden');
+                spinner.classList.add('hidden');
+                text.textContent = 'Sign In to Dashboard';
+            }
+        }
+
+        /* ─── Form submit + Mock API call ─── */
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('rememberMe').checked;
+
+            // Client-side validation
+            let hasErrors = false;
+
+            if (!email) {
+                setFieldError('email', 'emailError', true, 'Email address is required.');
+                hasErrors = true;
+            } else if (!validateEmail(email)) {
+                setFieldError('email', 'emailError', true, 'Please enter a valid email address.');
+                hasErrors = true;
+            } else {
+                setFieldError('email', 'emailError', false);
+            }
+
+            if (!password) {
+                setFieldError('password', 'passwordError', true);
+                hasErrors = true;
+            } else {
+                setFieldError('password', 'passwordError', false);
+            }
+
+            if (hasErrors) return;
+
+            // Handle Remember Me
+            if (remember) {
+                localStorage.setItem('centre_remember', 'true');
+                localStorage.setItem('centre_email', email);
+            } else {
+                localStorage.removeItem('centre_email');
+            }
+
+            setLoading(true);
+
+            try {
+                const response = await fetch('/api/auth/education/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email,
+                        password
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        showAlert(
+                            'Invalid Credentials',
+                            data.error || 'The email or password you entered is incorrect. Please try again.'
+                        );
+                        setFieldError('email', 'emailError', true, ' ');
+                        setFieldError('password', 'passwordError', false);
+                        document.getElementById('emailError').querySelector('span').textContent = '';
+                    } else if (response.status === 403) {
+                        showAlert('Access Denied', data.error || 'Your account does not have centre access.');
+                    } else if (response.status === 429) {
+                        showAlert('Too Many Attempts', data.error || 'You have been temporarily locked out. Please try again in 10 minutes.');
+                    } else {
+                        showAlert('Something went wrong', data.error || 'An unexpected error occurred. Please try again.');
+                    }
+                    setLoading(false);
+                    return;
+                }
+
+                // Success
+                if (data.success && data.data) {
+                    localStorage.setItem('education_token', data.data.token);
+                    localStorage.setItem('education_user', JSON.stringify(data.data.user));
+                    localStorage.setItem('education_centre', JSON.stringify(data.data.centre));
+                    
+                    const btn = document.getElementById('submitBtn');
+                    btn.style.backgroundColor = '#10B981'; // Green success from new design
+                    btn.style.boxShadow = '0 10px 25px -5px rgba(16, 185, 129, 0.4)';
+                    document.getElementById('btnText').textContent = 'Welcome back!';
+                    document.getElementById('btnSpinner').classList.add('hidden');
+                    document.getElementById('btnIcon').setAttribute('icon', 'ph:check-circle-bold');
+                    document.getElementById('btnIcon').classList.remove('hidden');
+
+                    setTimeout(() => {
+                        window.location.href = '/education-centre.html';
+                    }, 800);
+                }
+            } catch (networkError) {
+                showAlert('Connection Error', 'Unable to reach server. Please check your internet connection and try again.');
+                setLoading(false);
+            }
+        });
+
+        /* ─── Keyboard shortcut: Enter triggers submit ─── */
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && document.activeElement !== document.getElementById('submitBtn')) {
+                const active = document.activeElement;
+                if (active.id === 'email' || active.id === 'password') {
+                    document.getElementById('loginForm').dispatchEvent(new Event('submit', { cancelable: true }));
+                }
+            }
+        });
+
+    </script>
+</body>
+
+</html>

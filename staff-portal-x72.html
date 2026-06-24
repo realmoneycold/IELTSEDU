@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+    window.addEventListener('error', function(event) {
+      console.error('Page error:', event.error);
+      document.body.innerHTML = `
+        <div style="padding: 40px; text-align: center; font-family: Arial;">
+          <h1>❌ Something went wrong</h1>
+          <p>The page encountered an error.</p>
+          <button onclick="location.reload()" style="padding: 10px 20px; background: #8B5CF6; color: white; border: none; border-radius: 8px; cursor: pointer;">Refresh Page</button>
+        </div>
+      `;
+    });
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Portal | IELTS Practice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://api.fontshare.com/v2/css?f[]=clash-grotesk@700,600,400&f[]=satoshi@700,500,400&display=swap');
+
+        :root {
+            --lavender-main: #8B5CF6;
+            --brand-orange: #FF6B35;
+            --bg-soft: #F9F5FF;
+            --dark: #111827;
+        }
+
+        body {
+            font-family: 'Satoshi', sans-serif;
+            background-color: var(--bg-soft);
+            color: var(--dark);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Clash Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .float-animation-delayed {
+            animation: float 6s ease-in-out infinite;
+            animation-delay: -3s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .btn-bounce {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .btn-bounce:hover {
+            transform: scale(1.03);
+        }
+        .btn-bounce:active {
+            transform: scale(0.98);
+        }
+
+        .orange-text {
+            color: var(--brand-orange);
+        }
+
+        .purple-badge { background-color: #F5F1FF; color: #8B5CF6; }
+        .orange-badge  { background-color: #FFF8F5; color: #FF6B35; }
+
+        /* Custom Checkbox */
+        .checkbox-container input:checked ~ .checkmark {
+            background-color: var(--brand-orange);
+            border-color: var(--brand-orange);
+        }
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        .checkbox-container input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        /* Toasts */
+        .toast {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            min-width: 320px;
+            max-width: 420px;
+            padding: 16px 20px;
+            border-radius: 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            font-family: 'Satoshi', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            box-shadow: 0 20px 40px -10px rgba(139, 92, 246, 0.15);
+            z-index: 10000;
+            transform: translateX(120%) scale(0.9);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .toast.show {
+            transform: translateX(0) scale(1);
+            opacity: 1;
+        }
+        .toast-error {
+            background: #FFF5F5;
+            border: 2px solid #FEE2E2;
+            color: #DC2626;
+        }
+        .toast-success {
+            background: #F0FDF4;
+            border: 2px solid #DCFCE7;
+            color: #16A34A;
+        }
+        .toast-info {
+            background: #F5F1FF;
+            border: 2px solid #EAE5FF;
+            color: #8B5CF6;
+        }
+        .toast-icon {
+            flex-shrink: 0;
+            font-size: 24px;
+            margin-top: -2px;
+        }
+        .toast-message {
+            flex: 1;
+            line-height: 1.4;
+        }
+        .toast-close {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            font-size: 20px;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+            padding: 0;
+        }
+        .toast-close:hover { opacity: 1; }
+
+        /* Button Loading State */
+        .btn-loading {
+            position: relative;
+            color: transparent !important;
+            pointer-events: none;
+        }
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            transform: translate(-50%, -50%);
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+        /* Subtle background patterns */
+        .bg-pattern {
+            background-image: radial-gradient(#8B5CF6 1px, transparent 1px);
+            background-size: 32px 32px;
+            opacity: 0.05;
+        }
+    </style>
+</head>
+<body class="min-h-screen relative flex items-center justify-center p-6 lg:p-12">
+
+    <!-- Background Blobs -->
+    <div class="fixed top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-purple-300/30 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-orange-300/20 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed inset-0 bg-pattern z-0 pointer-events-none"></div>
+
+    <!-- Redirect Overlay -->
+    <div id="redirectOverlay" class="fixed inset-0 bg-white/90 backdrop-blur-sm z-50 hidden flex-col items-center justify-center gap-6 transition-opacity duration-300 opacity-0">
+        <div class="relative w-20 h-20">
+            <div class="absolute inset-0 border-4 border-purple-100 rounded-full"></div>
+            <div class="absolute inset-0 border-4 border-[#FF6B35] rounded-full border-t-transparent animate-spin"></div>
+        </div>
+        <p class="font-['Clash_Grotesk'] text-2xl font-bold tracking-wide text-gray-800 animate-pulse">Preparing Dashboard...</p>
+    </div>
+
+    <div class="max-w-[1360px] w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center relative z-10">
+        
+        <!-- Left: Visual & Branding -->
+        <div class="lg:col-span-6 flex flex-col justify-center order-2 lg:order-1">
+            <div class="text-3xl font-black flex items-center uppercase tracking-tighter mb-12">
+                <span class="text-black border-r-4 border-[#FF6B35] pr-3 mr-3">IELTS</span>
+                <span class="text-black/60 text-lg tracking-[0.2em] font-bold">PRACTICE</span>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight text-dark">
+                Empower Your <br>
+                <span class="orange-text">Teaching</span> Hub
+            </h1>
+            <p class="text-xl text-gray-500 mb-12 max-w-lg font-medium leading-relaxed">
+                Access the staff portal to manage students, review mock exams, and access smart analytics tools.
+            </p>
+
+            <!-- Floating Stats (Adapting the old design's visual elements) -->
+            <div class="relative h-[240px] hidden md:block">
+                <!-- Stat Card 1 -->
+                <div class="absolute top-0 left-0 bg-white p-5 rounded-3xl shadow-xl shadow-purple-100/50 flex items-center gap-4 float-animation border border-purple-50">
+                    <div class="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center text-[#8B5CF6]">
+                        <iconify-icon icon="ph:users-bold" class="text-2xl"></iconify-icon>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Active Students</p>
+                        <div class="flex items-end gap-2">
+                            <span class="font-['Clash_Grotesk'] text-2xl font-bold">4,821</span>
+                            <span class="text-xs font-bold text-green-500 mb-1">+8%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stat Card 2 -->
+                <div class="absolute top-20 right-10 bg-white p-5 rounded-3xl shadow-xl shadow-orange-100/50 flex items-center gap-4 float-animation-delayed border border-orange-50">
+                    <div class="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center text-[#FF6B35]">
+                        <iconify-icon icon="ph:exam-bold" class="text-2xl"></iconify-icon>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Tests Today</p>
+                        <div class="flex items-end gap-2">
+                            <span class="font-['Clash_Grotesk'] text-2xl font-bold">312</span>
+                            <span class="text-xs font-bold text-orange-500 mb-1">Live</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Decorative Element -->
+                <div class="absolute bottom-0 left-20 w-16 h-16 bg-yellow-400 rounded-3xl rotate-12 float-animation flex items-center justify-center shadow-lg">
+                    <iconify-icon icon="ph:star-fill" class="text-3xl text-white"></iconify-icon>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Form -->
+        <div class="lg:col-span-6 order-1 lg:order-2">
+            <div class="bg-white p-8 md:p-14 rounded-[48px] shadow-2xl shadow-purple-200/40 relative overflow-hidden">
+                <!-- Decorative corner blob -->
+                <div class="absolute -top-20 -right-20 w-64 h-64 bg-purple-50 rounded-full blur-[40px] pointer-events-none"></div>
+
+                <div class="relative z-10">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full purple-badge text-xs font-black uppercase mb-8">
+                        <span class="w-2 h-2 rounded-full bg-[#8B5CF6] animate-pulse"></span>
+                        Secure Staff Access
+                    </div>
+
+                    <h2 class="text-3xl md:text-4xl font-black mb-3 text-dark">
+                        Welcome Back
+                    </h2>
+                    <p class="text-gray-500 font-medium mb-10">
+                        Please sign in with your authorized credentials.
+                    </p>
+
+                    <form id="staffLoginForm" autocomplete="off" novalidate class="space-y-6">
+                        
+                        <!-- Email -->
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2" for="email">Email Address</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-[#8B5CF6] transition-colors">
+                                    <iconify-icon icon="ph:envelope-simple-bold" class="text-xl"></iconify-icon>
+                                </div>
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    name="email" 
+                                    placeholder="staff@ieltspractice.com" 
+                                    autocomplete="off" 
+                                    spellcheck="false" 
+                                    required
+                                    class="w-full bg-[#F9F5FF] border-2 border-transparent focus:border-[#8B5CF6] focus:bg-white rounded-2xl py-4 pl-14 pr-6 text-dark font-medium placeholder-gray-400 outline-none transition-all"
+                                />
+                            </div>
+                        </div>
+
+                        <!-- Password -->
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2" for="password">Password</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-[#8B5CF6] transition-colors">
+                                    <iconify-icon icon="ph:lock-key-bold" class="text-xl"></iconify-icon>
+                                </div>
+                                <input 
+                                    type="password" 
+                                    id="password" 
+                                    name="password" 
+                                    placeholder="••••••••••••••••" 
+                                    autocomplete="new-password" 
+                                    required
+                                    class="w-full bg-[#F9F5FF] border-2 border-transparent focus:border-[#8B5CF6] focus:bg-white rounded-2xl py-4 pl-14 pr-6 text-dark font-medium placeholder-gray-400 outline-none transition-all"
+                                />
+                            </div>
+                        </div>
+
+                        <!-- Options -->
+                        <div class="flex items-center justify-between pt-2">
+                            <label class="checkbox-container flex items-center gap-3 cursor-pointer group">
+                                <div class="relative flex items-center justify-center">
+                                    <input type="checkbox" id="rememberMe" name="rememberMe" class="absolute opacity-0 w-0 h-0">
+                                    <div class="checkmark w-5 h-5 bg-white border-2 border-gray-300 rounded-lg group-hover:border-[#FF6B35] transition-colors relative"></div>
+                                </div>
+                                <span class="text-sm font-bold text-gray-600 select-none group-hover:text-dark transition-colors">Remember me</span>
+                            </label>
+                            
+                            <a href="#" id="forgot-link" class="text-sm font-bold text-[#8B5CF6] hover:text-[#7C3AED] transition-colors">
+                                Forgot Password?
+                            </a>
+                        </div>
+
+                        <!-- Alert Box (Hidden by default, used as fallback if needed, but Toast is primary) -->
+                        <div id="alertBox" class="hidden" role="alert" aria-live="polite"></div>
+
+                        <!-- Submit -->
+                        <div class="pt-4">
+                            <button type="submit" id="submitBtn" class="w-full bg-[#FF6B35] text-white py-5 rounded-2xl font-black text-lg btn-bounce shadow-xl shadow-orange-200 flex items-center justify-center relative overflow-hidden">
+                                <span id="btnText" class="relative z-10">Sign In to Dashboard</span>
+                                <!-- Shimmer effect -->
+                                <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                            </button>
+                        </div>
+
+                    </form>
+
+                    <!-- Footer Info -->
+                    <div class="mt-10 pt-8 border-t border-gray-100 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Role:</span>
+                            <span class="px-3 py-1 rounded-lg bg-gray-100 text-gray-600 text-xs font-black uppercase tracking-widest">Admin</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest">
+                            <iconify-icon icon="ph:shield-check-bold" class="text-[#10b981] text-base"></iconify-icon>
+                            TLS Encrypted
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        (function () {
+        try {
+            const form = document.getElementById('staffLoginForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const overlay = document.getElementById('redirectOverlay');
+
+            function setLoading(on) {
+                submitBtn.disabled = on;
+                if(on) {
+                    submitBtn.classList.add('btn-loading');
+                    btnText.textContent = 'Verifying...';
+                } else {
+                    submitBtn.classList.remove('btn-loading');
+                    btnText.textContent = 'Sign In to Dashboard';
+                }
+            }
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+                const rememberMe = document.getElementById('rememberMe').checked;
+
+                if (!email || !password) {
+                    showToast('Both fields are required.', 'error');
+                    return;
+                }
+
+                setLoading(true);
+
+                try {
+                    const res = await fetch('/api/auth/admin/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password, rememberMe })
+                    });
+
+                    const data = await res.json().catch(() => ({}));
+
+                    // Support both response shapes: { token } and { data: { token } }
+                    const payload = data.data || data;
+                    const token = payload.token || data.token || null;
+                    const role  = payload.admin?.role || payload.role || data.role || null;
+                    const user  = payload.admin || payload.user || data.user || null;
+
+                    if (res.ok && data.success && token) {
+                        const normalizedRole = (role || '').toUpperCase();
+
+                        // Only ADMIN and CEO can use this portal
+                        if (!['ADMIN', 'CEO'].includes(normalizedRole)) {
+                            showToast('Access denied. Only Admin / CEO can use this portal.', 'error');
+                            setLoading(false);
+                            return;
+                        }
+
+                        // Store token under the key auth-guard reads
+                        localStorage.setItem('authToken', token);
+                        localStorage.setItem('role', normalizedRole);
+                        if (user) localStorage.setItem('user', JSON.stringify(user));
+
+                        showToast('Access granted. Redirecting...', 'success');
+
+                        // Show overlay
+                        overlay.classList.remove('hidden');
+                        setTimeout(() => overlay.classList.remove('opacity-0'), 50);
+
+                        // Route by role
+                        const destination = normalizedRole === 'CEO'
+                            ? '/portalceo.html'
+                            : '/new-premium-admin.html';
+
+                        setTimeout(() => { window.location.href = destination; }, 1500);
+
+                    } else {
+                        let errorMessage = data.message || 'Invalid credentials. Please try again.';
+
+                        if (data.code === 'RATE_LIMIT_EXCEEDED') {
+                            const retryAfter = data.retryAfter || 120;
+                            const minutes = Math.ceil(retryAfter / 60);
+                            const seconds = retryAfter % 60;
+                            errorMessage = `Too many attempts. Wait ${minutes}m ${seconds > 0 ? seconds + 's' : ''} before trying again.`;
+                            startCountdown(retryAfter);
+                        } else if (data.code === 'ACCOUNT_INACTIVE') {
+                            errorMessage = 'Account inactive. Contact administrator.';
+                        } else if (data.code === 'SERVER_ERROR') {
+                            errorMessage = 'Server error. Try again later.';
+                        }
+
+                        showToast(errorMessage, 'error');
+                        setLoading(false);
+                    }
+                } catch (err) {
+                    console.error('Login error:', err);
+                    showToast('Network error. Check connection.', 'error');
+                    setLoading(false);
+                }
+            });
+
+            // Modernized Toast notification system
+            function showToast(message, type = 'info') {
+                const existingToast = document.querySelector('.toast');
+                if (existingToast) existingToast.remove();
+
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type}`;
+                
+                let iconName = 'ph:info-bold';
+                if(type === 'error') iconName = 'ph:warning-circle-bold';
+                if(type === 'success') iconName = 'ph:check-circle-bold';
+
+                toast.innerHTML = `
+                    <div class="toast-icon"><iconify-icon icon="${iconName}"></iconify-icon></div>
+                    <div class="toast-message">${message}</div>
+                    <button class="toast-close" onclick="this.parentElement.classList.remove('show'); setTimeout(()=>this.parentElement.remove(), 500);"><iconify-icon icon="ph:x-bold"></iconify-icon></button>
+                `;
+                
+                document.body.appendChild(toast);
+                
+                // Trigger animation
+                setTimeout(() => toast.classList.add('show'), 10);
+                
+                // Auto remove
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.classList.remove('show');
+                        setTimeout(() => toast.remove(), 500);
+                    }
+                }, 5000);
+            }
+
+            // Countdown timer for rate limit
+            let countdownInterval;
+            function startCountdown(seconds) {
+                if (countdownInterval) clearInterval(countdownInterval);
+                
+                let remainingSeconds = seconds;
+                
+                submitBtn.disabled = true;
+                submitBtn.classList.remove('btn-bounce'); // Disable bounce while disabled
+                submitBtn.style.opacity = '0.7';
+                
+                const updateCountdown = () => {
+                    if (remainingSeconds <= 0) {
+                        clearInterval(countdownInterval);
+                        submitBtn.disabled = false;
+                        submitBtn.classList.add('btn-bounce');
+                        submitBtn.style.opacity = '1';
+                        btnText.textContent = 'Sign In to Dashboard';
+                        showToast('You can now try logging in again.', 'info');
+                        return;
+                    }
+                    
+                    const minutes = Math.floor(remainingSeconds / 60);
+                    const secs = remainingSeconds % 60;
+                    const timeString = minutes > 0 
+                        ? `${minutes}:${secs.toString().padStart(2, '0')}`
+                        : `${secs}s`;
+                    
+                    btnText.textContent = `Try again in ${timeString}`;
+                    remainingSeconds--;
+                };
+                
+                updateCountdown();
+                countdownInterval = setInterval(updateCountdown, 1000);
+            }
+        } catch (error) {
+            console.error('Staff portal initialization error:', error);
+        }
+    })();
+</script>
+</body>
+</html>

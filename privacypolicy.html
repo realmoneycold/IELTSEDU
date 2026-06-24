@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | IELTS Practice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://api.fontshare.com/v2/css?f[]=clash-grotesk@700,600,400&f[]=satoshi@700,500,400&display=swap');
+
+        :root {
+            --lavender-main: #8B5CF6;
+            --brand-orange: #FF6B35;
+            --bg-soft: #F9F5FF;
+            --dark: #111827;
+        }
+
+        body {
+            font-family: 'Satoshi', sans-serif;
+            background-color: var(--bg-soft);
+            color: var(--dark);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Clash Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .hero-illustration-bg {
+            background-image: radial-gradient(circle at center, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .scroll-reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .transition-playful {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .btn-bounce:hover {
+            transform: scale(1.05);
+        }
+
+        .orange-text {
+            color: var(--brand-orange);
+        }
+
+        .purple-badge { background-color: #F5F1FF; color: #8B5CF6; }
+        .orange-badge  { background-color: #FFF8F5; color: #FF6B35; }
+        .yellow-badge  { background-color: #FFFBEB; color: #D97706; }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F9F5FF;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D4C5E2;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8B5CF6;
+        }
+
+        /* Smooth scrolling for anchor links */
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 100px;
+        }
+    </style>
+    <style>sd-component { display: block; }</style>
+    <script src="https://cdn.jsdelivr.net/npm/petite-vue@0.4.1/dist/petite-vue.iife.js" defer init></script>
+</head>
+<body>
+    <div class="min-h-screen flex flex-col relative">
+        <!-- Header (Persistent Navigation) -->
+        <!-- component: NavigationHeader (5600dfca-4b47-45ca-8a94-e5a9370f7684) -->
+        <div v-scope="{ ...{'activeItem':'','homeHref':'/','examHref':'/exam-dates','centresHref':'/education-centres','contactHref':'/contact','signupHref':'/signup','loginHref':'/login'}, $emit() {} }">
+        <nav class="flex items-center justify-between px-8 md:px-16 py-8 bg-white shadow-sm relative z-50">
+            <div class="flex items-center gap-12">
+                <a href="/" id="nav-logo-link" class="text-3xl font-black flex items-center uppercase tracking-tighter">
+                    <span class="text-black border-r-4 border-[#FF6B35] pr-3 mr-3">IELTS</span>
+                    <span class="text-black/60 text-lg tracking-[0.2em] font-bold">PRACTICE</span>
+                </a>
+                <div class="hidden lg:flex items-center gap-8 font-semibold text-gray-600">
+                    <a :href="homeHref" id="nav-home-link" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'home' }">Home</a>
+                    <a :href="examHref" id="nav-exam-link" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'exam' }">Exam & Mock dates</a>
+                    <a :href="centresHref" id="nav-centres-link" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'centres' }">Educational Centres</a>
+                    <a :href="contactHref" id="nav-contact-link" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'contact' }">Contact</a>
+                    <a href="/termsconditions" id="nav-terms-link" class="hover:text-black transition-colors text-[#FF6B35] font-bold">Terms of Service</a>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <a :href="signupHref" id="nav-signup-link" class="font-bold hover:text-[#FF6B35] transition-colors">Sign up</a>
+                <a :href="loginHref" id="nav-login-btn" class="bg-[#FF6B35] text-white px-8 py-3 rounded-2xl font-bold hover:bg-[#e85a2a] transition-all transform hover:scale-105">
+                    Login
+                </a>
+            </div>
+        </nav>
+        </div>
+        <!-- /component: NavigationHeader -->
+
+        <!-- Main Content -->
+        <main class="flex-grow relative">
+            <!-- Hero Section -->
+            <section class="px-6 md:px-16 pt-16 pb-32 lg:pt-24 lg:pb-40 relative overflow-hidden">
+                <!-- Decorative Blurs -->
+                <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-purple-200 rounded-full blur-[120px] opacity-50 -z-10"></div>
+                <div class="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-orange-200 rounded-full blur-[100px] opacity-30 -z-10"></div>
+
+                <div class="max-w-[800px] mx-auto text-center scroll-reveal">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-xl purple-badge text-xs font-black uppercase mb-8 tracking-widest">
+                        <iconify-icon icon="ph:shield-check-bold" class="text-lg"></iconify-icon>
+                        Legal & Compliance
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight text-dark">
+                        Privacy <span class="orange-text">Policy</span>
+                    </h1>
+                    <p class="text-xl text-gray-500 font-medium">
+                        We respect the privacy of our users. This policy describes how we collect, use, and protect your information when you use our platform.
+                    </p>
+                    <p class="mt-8 text-sm font-bold text-gray-400">
+                        Last Updated: October 24, 2023
+                    </p>
+                </div>
+            </section>
+
+            <!-- Content Section with Sidebar -->
+            <section class="px-6 md:px-16 pb-24 lg:pb-32 -mt-20">
+                <div class="max-w-[1360px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                    
+                    <!-- Sticky Table of Contents (Desktop Only) -->
+                    <aside class="hidden lg:block lg:col-span-3 sticky top-32">
+                        <div class="bg-white rounded-[32px] p-8 shadow-xl shadow-purple-100/50">
+                            <h4 class="font-black uppercase text-sm tracking-widest text-gray-400 mb-6">Table of Contents</h4>
+                            <ul class="space-y-4" id="toc">
+                                <li><a id="toc-1" href="#sec-1" class="toc-link block text-gray-500 hover:text-[#8B5CF6] font-bold transition-colors text-sm">1. Information We Collect</a></li>
+                                <li><a id="toc-2" href="#sec-2" class="toc-link block text-gray-500 hover:text-[#8B5CF6] font-bold transition-colors text-sm">2. How We Collect Information</a></li>
+                                <li><a id="toc-3" href="#sec-3" class="toc-link block text-gray-500 hover:text-[#8B5CF6] font-bold transition-colors text-sm">3. How We Use Your Info</a></li>
+                                <li><a id="toc-4" href="#sec-4" class="toc-link block text-gray-500 hover:text-[#8B5CF6] font-bold transition-colors text-sm">4. Legal Basis for Processing</a></li>
+                                <li><a id="toc-5" href="#sec-5" class="toc-link block text-gray-500 hover:text-[#8B5CF6] font-bold transition-colors text-sm">5. Your Data Rights</a></li>
+                                <li><a id="toc-6" href="#sec-6" class="toc-link block text-gray-500 hover:text-[#8B5CF6] font-bold transition-colors text-sm">6. Data Retention</a></li>
+                                <li><a id="toc-7" href="#sec-7" class="toc-link block text-gray-500 hover:text-[#8B5CF6] font-bold transition-colors text-sm">7. Cookies & Tracking</a></li>
+                                <li><a id="toc-8" href="#sec-8" class="toc-link block text-gray-500 hover:text-[#8B5CF6] font-bold transition-colors text-sm">8. Security</a></li>
+                                <li><a id="toc-9" href="#sec-9" class="toc-link block text-gray-500 hover:text-[#8B5CF6] font-bold transition-colors text-sm">9. Children's Privacy</a></li>
+                                <li><a id="toc-10" href="#sec-10" class="toc-link block text-gray-500 hover:text-[#8B5CF6] font-bold transition-colors text-sm">10. Contact Us</a></li>
+                            </ul>
+                        </div>
+                    </aside>
+
+                    <!-- Main Policy Document -->
+                    <div class="lg:col-span-9 bg-white rounded-[48px] p-8 md:p-12 lg:p-16 shadow-2xl shadow-purple-100/50">
+                        
+                        <!-- Introduction -->
+                        <div class="prose max-w-none text-gray-600 font-medium text-lg leading-relaxed mb-12 scroll-reveal">
+                            <p>
+                                IELTS PRACTICE ("we", "us", or "our"), respects the privacy of our users. This Privacy Policy describes the types of information we collect and how we use it when you access or use our website, mobile application (if applicable), and related educational services (collectively, the "Service").
+                            </p>
+                        </div>
+
+                        <!-- Section 1 -->
+                        <div id="sec-1" class="mb-16 scroll-reveal policy-section">
+                            <h2 class="text-3xl font-black mb-8 text-dark flex items-center gap-4">
+                                <span class="w-12 h-12 rounded-[16px] bg-purple-50 text-[#8B5CF6] flex items-center justify-center shrink-0">1</span>
+                                Information We Collect
+                            </h2>
+                            <p class="text-gray-600 font-medium text-lg mb-6">
+                                We collect several types of information, depending on how you interact with the Service:
+                            </p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="bg-[#F9F5FF] p-6 rounded-[24px] border border-purple-100">
+                                    <h4 class="font-black text-purple-700 mb-4 flex items-center gap-2">
+                                        <iconify-icon icon="ph:user-circle-bold" class="text-xl"></iconify-icon>
+                                        Personal Information
+                                    </h4>
+                                    <p class="text-sm text-gray-500 mb-4 font-medium">Information that can be used to identify you directly:</p>
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start gap-3 text-gray-700 font-medium">
+                                            <iconify-icon icon="ph:check-circle-fill" class="text-purple-500 text-xl shrink-0 mt-0.5"></iconify-icon>
+                                            Name and Email address
+                                        </li>
+                                        <li class="flex items-start gap-3 text-gray-700 font-medium">
+                                            <iconify-icon icon="ph:check-circle-fill" class="text-purple-500 text-xl shrink-0 mt-0.5"></iconify-icon>
+                                            Phone number
+                                        </li>
+                                        <li class="flex items-start gap-3 text-gray-700 font-medium">
+                                            <iconify-icon icon="ph:check-circle-fill" class="text-purple-500 text-xl shrink-0 mt-0.5"></iconify-icon>
+                                            Billing and Shipping address
+                                        </li>
+                                        <li class="flex items-start gap-3 text-gray-700 font-medium">
+                                            <iconify-icon icon="ph:check-circle-fill" class="text-purple-500 text-xl shrink-0 mt-0.5"></iconify-icon>
+                                            Health information (only for special accommodations, with explicit consent)
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="bg-[#FFF8F5] p-6 rounded-[24px] border border-orange-100">
+                                    <h4 class="font-black text-orange-700 mb-4 flex items-center gap-2">
+                                        <iconify-icon icon="ph:devices-bold" class="text-xl"></iconify-icon>
+                                        Non-Personal Information
+                                    </h4>
+                                    <p class="text-sm text-gray-500 mb-4 font-medium">Information that cannot identify you directly:</p>
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start gap-3 text-gray-700 font-medium">
+                                            <iconify-icon icon="ph:check-circle-fill" class="text-orange-500 text-xl shrink-0 mt-0.5"></iconify-icon>
+                                            Device info (IP address, browser type, OS)
+                                        </li>
+                                        <li class="flex items-start gap-3 text-gray-700 font-medium">
+                                            <iconify-icon icon="ph:check-circle-fill" class="text-orange-500 text-xl shrink-0 mt-0.5"></iconify-icon>
+                                            Usage data (pages viewed, time spent, mock test interactions)
+                                        </li>
+                                        <li class="flex items-start gap-3 text-gray-700 font-medium">
+                                            <iconify-icon icon="ph:check-circle-fill" class="text-orange-500 text-xl shrink-0 mt-0.5"></iconify-icon>
+                                            Demographic info (age, gender, location)
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 2 -->
+                        <div id="sec-2" class="mb-16 scroll-reveal policy-section">
+                            <h2 class="text-3xl font-black mb-8 text-dark flex items-center gap-4">
+                                <span class="w-12 h-12 rounded-[16px] bg-purple-50 text-[#8B5CF6] flex items-center justify-center shrink-0">2</span>
+                                How We Collect Information
+                            </h2>
+                            <p class="text-gray-600 font-medium text-lg mb-6">
+                                We collect information through various methods when you use the Service:
+                            </p>
+                            
+                            <div class="space-y-4">
+                                <div class="flex gap-4 items-start">
+                                    <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center shrink-0 text-gray-400"><iconify-icon icon="ph:pencil-simple-bold"></iconify-icon></div>
+                                    <div>
+                                        <h5 class="font-black text-lg">Directly from you</h5>
+                                        <p class="text-gray-500 font-medium">You provide personal information when creating an account, purchasing courses, taking mock exams, or contacting support.</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-4 items-start">
+                                    <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center shrink-0 text-gray-400"><iconify-icon icon="ph:robot-bold"></iconify-icon></div>
+                                    <div>
+                                        <h5 class="font-black text-lg">Automatically</h5>
+                                        <p class="text-gray-500 font-medium">We collect non-personal information through cookies and tracking technologies to understand how you interact with our platform.</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-4 items-start">
+                                    <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center shrink-0 text-gray-400"><iconify-icon icon="ph:share-network-bold"></iconify-icon></div>
+                                    <div>
+                                        <h5 class="font-black text-lg">Third-Party Sources</h5>
+                                        <p class="text-gray-500 font-medium">We may collect information from partners like public databases or social platforms (e.g., if you use Google/Facebook login), only with your consent.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 3 -->
+                        <div id="sec-3" class="mb-16 scroll-reveal policy-section">
+                            <h2 class="text-3xl font-black mb-8 text-dark flex items-center gap-4">
+                                <span class="w-12 h-12 rounded-[16px] bg-purple-50 text-[#8B5CF6] flex items-center justify-center shrink-0">3</span>
+                                How We Use Your Information
+                            </h2>
+                            <p class="text-gray-600 font-medium text-lg mb-6">
+                                The core purpose of collecting your data is to provide and improve our educational services. Specifically, we use it to:
+                            </p>
+                            <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <li class="bg-gray-50 rounded-xl p-4 flex items-center gap-3 font-bold text-gray-700">
+                                    <iconify-icon icon="ph:credit-card-bold" class="text-[#FF6B35] text-xl"></iconify-icon>
+                                    Process orders and transactions
+                                </li>
+                                <li class="bg-gray-50 rounded-xl p-4 flex items-center gap-3 font-bold text-gray-700">
+                                    <iconify-icon icon="ph:magic-wand-bold" class="text-[#8B5CF6] text-xl"></iconify-icon>
+                                    Personalize your learning experience
+                                </li>
+                                <li class="bg-gray-50 rounded-xl p-4 flex items-center gap-3 font-bold text-gray-700">
+                                    <iconify-icon icon="ph:envelope-simple-bold" class="text-[#FF6B35] text-xl"></iconify-icon>
+                                    Send marketing communications (with consent)
+                                </li>
+                                <li class="bg-gray-50 rounded-xl p-4 flex items-center gap-3 font-bold text-gray-700">
+                                    <iconify-icon icon="ph:chat-circle-dots-bold" class="text-[#8B5CF6] text-xl"></iconify-icon>
+                                    Respond to inquiries and support requests
+                                </li>
+                                <li class="bg-gray-50 rounded-xl p-4 flex items-center gap-3 font-bold text-gray-700">
+                                    <iconify-icon icon="ph:trend-up-bold" class="text-[#FF6B35] text-xl"></iconify-icon>
+                                    Improve our Service and algorithms
+                                </li>
+                                <li class="bg-gray-50 rounded-xl p-4 flex items-center gap-3 font-bold text-gray-700">
+                                    <iconify-icon icon="ph:scales-bold" class="text-[#8B5CF6] text-xl"></iconify-icon>
+                                    Comply with legal obligations
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Section 4 -->
+                        <div id="sec-4" class="mb-16 scroll-reveal policy-section">
+                            <h2 class="text-3xl font-black mb-8 text-dark flex items-center gap-4">
+                                <span class="w-12 h-12 rounded-[16px] bg-purple-50 text-[#8B5CF6] flex items-center justify-center shrink-0">4</span>
+                                Legal Basis for Processing
+                            </h2>
+                            <p class="text-gray-600 font-medium text-lg mb-6">
+                                We process your information securely based on the following legal grounds:
+                            </p>
+                            <div class="border-l-4 border-[#8B5CF6] pl-6 space-y-6 py-2">
+                                <div>
+                                    <span class="inline-block px-3 py-1 rounded-lg bg-purple-50 text-purple-700 text-xs font-black uppercase mb-2">Consent</span>
+                                    <p class="text-gray-500 font-medium">Obtained explicitly before processing data for marketing or sensitive health accommodations for exams.</p>
+                                </div>
+                                <div>
+                                    <span class="inline-block px-3 py-1 rounded-lg bg-purple-50 text-purple-700 text-xs font-black uppercase mb-2">Contract</span>
+                                    <p class="text-gray-500 font-medium">Processing necessary to fulfill our obligations to you, such as delivering course materials or scoring mock tests.</p>
+                                </div>
+                                <div>
+                                    <span class="inline-block px-3 py-1 rounded-lg bg-purple-50 text-purple-700 text-xs font-black uppercase mb-2">Legitimate Interest</span>
+                                    <p class="text-gray-500 font-medium">For improving the Service or preventing fraud, always balanced against your privacy rights.</p>
+                                </div>
+                                <div>
+                                    <span class="inline-block px-3 py-1 rounded-lg bg-purple-50 text-purple-700 text-xs font-black uppercase mb-2">Legal Obligation</span>
+                                    <p class="text-gray-500 font-medium">When required to comply with regulatory requirements or official exam body mandates.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 5 -->
+                        <div id="sec-5" class="mb-16 scroll-reveal policy-section">
+                            <h2 class="text-3xl font-black mb-8 text-dark flex items-center gap-4">
+                                <span class="w-12 h-12 rounded-[16px] bg-purple-50 text-[#8B5CF6] flex items-center justify-center shrink-0">5</span>
+                                Your Data Rights
+                            </h2>
+                            <p class="text-gray-600 font-medium text-lg mb-6">
+                                Under applicable data privacy laws, you hold the following rights regarding your personal data:
+                            </p>
+                            <div class="flex flex-wrap gap-3 mb-6">
+                                <span class="px-4 py-2 border border-gray-200 rounded-full font-bold text-sm text-gray-600 flex items-center gap-2"><iconify-icon icon="ph:eye-bold" class="text-[#8B5CF6]"></iconify-icon> Right to Access</span>
+                                <span class="px-4 py-2 border border-gray-200 rounded-full font-bold text-sm text-gray-600 flex items-center gap-2"><iconify-icon icon="ph:pencil-simple-line-bold" class="text-[#FF6B35]"></iconify-icon> Right to Rectification</span>
+                                <span class="px-4 py-2 border border-gray-200 rounded-full font-bold text-sm text-gray-600 flex items-center gap-2"><iconify-icon icon="ph:trash-bold" class="text-[#8B5CF6]"></iconify-icon> Right to Erasure</span>
+                                <span class="px-4 py-2 border border-gray-200 rounded-full font-bold text-sm text-gray-600 flex items-center gap-2"><iconify-icon icon="ph:hand-palm-bold" class="text-[#FF6B35]"></iconify-icon> Right to Restrict</span>
+                                <span class="px-4 py-2 border border-gray-200 rounded-full font-bold text-sm text-gray-600 flex items-center gap-2"><iconify-icon icon="ph:export-bold" class="text-[#8B5CF6]"></iconify-icon> Data Portability</span>
+                                <span class="px-4 py-2 border border-gray-200 rounded-full font-bold text-sm text-gray-600 flex items-center gap-2"><iconify-icon icon="ph:x-circle-bold" class="text-[#FF6B35]"></iconify-icon> Right to Object</span>
+                            </div>
+                            <div class="bg-yellow-50 p-6 rounded-2xl flex items-start gap-4">
+                                <iconify-icon icon="ph:info-bold" class="text-yellow-600 text-2xl shrink-0 mt-1"></iconify-icon>
+                                <p class="text-yellow-800 font-medium">
+                                    To exercise any of these rights, please contact our Data Protection Officer using the information provided in Section 10. We will respond to your request within 30 days.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Minor Sections Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+                            <!-- Section 6 -->
+                            <div id="sec-6" class="scroll-reveal policy-section">
+                                <h3 class="text-2xl font-black mb-4 flex items-center gap-3">
+                                    <span class="text-[#8B5CF6]">6.</span> Data Retention
+                                </h3>
+                                <p class="text-gray-500 font-medium leading-relaxed">
+                                    We retain personal info only as long as necessary to fulfill collected purposes and comply with legal obligations. Afterward, it is securely deleted or anonymized.
+                                </p>
+                            </div>
+                            
+                            <!-- Section 7 -->
+                            <div id="sec-7" class="scroll-reveal policy-section">
+                                <h3 class="text-2xl font-black mb-4 flex items-center gap-3">
+                                    <span class="text-[#8B5CF6]">7.</span> Cookies & Tracking
+                                </h3>
+                                <p class="text-gray-500 font-medium leading-relaxed">
+                                    We use cookies to track preferences and activity. You can disable them in browser settings, though it may limit functionality of certain mock exam features.
+                                </p>
+                            </div>
+
+                            <!-- Section 8 -->
+                            <div id="sec-8" class="scroll-reveal policy-section">
+                                <h3 class="text-2xl font-black mb-4 flex items-center gap-3">
+                                    <span class="text-[#FF6B35]">8.</span> Security
+                                </h3>
+                                <p class="text-gray-500 font-medium leading-relaxed">
+                                    We use industry-standard encryption to protect your data. However, no internet transmission is 100% secure; we cannot guarantee absolute security.
+                                </p>
+                            </div>
+
+                            <!-- Section 9 -->
+                            <div id="sec-9" class="scroll-reveal policy-section">
+                                <h3 class="text-2xl font-black mb-4 flex items-center gap-3">
+                                    <span class="text-[#FF6B35]">9.</span> Children's Privacy
+                                </h3>
+                                <p class="text-gray-500 font-medium leading-relaxed">
+                                    Our Service is not directed to children under 13. If a parent believes we collected data from a child under 13, contact us to have it deleted immediately.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Section 10 -->
+                        <div id="sec-10" class="mb-16 bg-[#F9F5FF] p-8 md:p-10 rounded-[32px] scroll-reveal policy-section">
+                            <h2 class="text-3xl font-black mb-6 text-dark flex items-center gap-4">
+                                <span class="w-12 h-12 rounded-[16px] bg-white text-[#8B5CF6] flex items-center justify-center shrink-0 shadow-sm">10</span>
+                                Contact Us
+                            </h2>
+                            <p class="text-gray-600 font-medium text-lg mb-8">
+                                If you have any questions, concerns, or requests regarding this Privacy Policy, please reach out to our team:
+                            </p>
+                            <div class="flex flex-col sm:flex-row gap-6">
+                                <a id="policy-contact-email" href="mailto:privacy@ieltspractice.com" class="bg-white p-6 rounded-2xl shadow-sm flex items-center gap-4 flex-1 hover:shadow-md transition-shadow">
+                                    <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl"><iconify-icon icon="ph:envelope-duotone"></iconify-icon></div>
+                                    <div>
+                                        <p class="text-xs font-black uppercase text-gray-400">Email Support</p>
+                                        <p class="font-bold text-gray-800">privacy@ieltspractice.com</p>
+                                    </div>
+                                </a>
+                                <div class="bg-white p-6 rounded-2xl shadow-sm flex items-center gap-4 flex-1">
+                                    <div class="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center text-2xl"><iconify-icon icon="ph:phone-duotone"></iconify-icon></div>
+                                    <div>
+                                        <p class="text-xs font-black uppercase text-gray-400">Phone Inquiry</p>
+                                        <p class="font-bold text-gray-800">+998 88 532 4701</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 11 -->
+                        <div id="sec-11" class="scroll-reveal policy-section text-center py-8 border-t border-gray-100">
+                            <p class="text-gray-500 font-medium">
+                                <strong class="text-gray-800">11. Changes to this policy:</strong> We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on the Service. You are advised to review this periodically.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="px-6 md:px-16 py-24 bg-white border-t border-purple-50 relative z-10">
+            <div class="max-w-[1360px] mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 items-start">
+                    <div class="lg:col-span-5">
+                        <div class="text-3xl font-black flex items-center uppercase tracking-tighter mb-8">
+                            <span class="text-black border-r-4 border-[#FF6B35] pr-3 mr-3">IELTS</span>
+                            <span class="text-black/60 text-lg tracking-[0.2em] font-bold">PRACTICE</span>
+                        </div>
+                        <p class="text-gray-400 text-lg font-medium max-w-sm mb-10 leading-relaxed">
+                            Empowering students worldwide to achieve their dreams through innovative, technology-driven IELTS preparation tools.
+                        </p>
+                        <div class="flex gap-4">
+                            <a id="soc-1" href="https://t.me/ieltspractice_net" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:telegram-logo-bold"></iconify-icon></a>
+                            <a id="soc-2" href="https://x.com/ieltspracticeUz" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:twitter-logo-bold"></iconify-icon></a>
+                            <a id="soc-3" href="https://www.instagram.com/ieltspractice_net?igshid=MWR3OGw3ZmxjcjF1Ng%3D%3D&utm_source=qr" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:instagram-logo-bold"></iconify-icon></a>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-3 grid grid-cols-2 gap-10">
+                        <div>
+                            <h6 class="font-black uppercase text-xs tracking-widest text-gray-400 mb-8">Quick Links</h6>
+                            <div class="hidden lg:flex items-center gap-8 font-semibold text-gray-600">
+                                <a id="nav-home-link" href="/" class="hover:text-black transition-colors">Home</a>
+                                <a id="nav-courses-link" href="/courses" class="hover:text-black transition-colors">Courses</a>
+                                <a id="nav-exam-link" href="/exam-dates" class="hover:text-black transition-colors">Exam &amp; Mock dates</a>
+                            </div>
+                            <ul class="space-y-4 font-bold text-gray-700">
+                                <li><a id="foot-3" href="/education-centres" class="hover:text-purple-600 transition-colors">Centers</a></li>
+                                <li><a id="foot-4" href="/dashboard" class="hover:text-purple-600 transition-colors">Mock Exams</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h6 class="font-black uppercase text-xs tracking-widest text-gray-400 mb-8">Support</h6>
+                            <ul class="space-y-4 font-bold text-gray-700">
+                                <li><a id="foot-5" href="#" class="hover:text-purple-600 transition-colors">Help Center</a></li>
+                                <li><a id="foot-6" href="#" class="hover:text-purple-600 transition-colors">FAQ</a></li>
+                                <li><a id="foot-7" href="/privacypolicy" class="text-purple-600 transition-colors">Privacy</a></li>
+                                <li><a id="foot-8" href="/termsconditions" class="hover:text-purple-600 transition-colors">Terms</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-4 bg-[#F5F1FF] p-8 rounded-[40px]">
+                        <h6 class="font-black uppercase text-xs tracking-widest text-purple-600 mb-6">Contact Us</h6>
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-purple-600 shadow-sm"><iconify-icon icon="ph:envelope-bold"></iconify-icon></div>
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 uppercase">Email</p>
+                                    <p class="font-black">support@ieltsedu.net</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-orange-600 shadow-sm"><iconify-icon icon="ph:phone-bold"></iconify-icon></div>
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 uppercase">Phone</p>
+                                    <p class="font-black">+998 88 532 4701</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-24 pt-10 border-t border-purple-50 flex flex-col md:flex-row justify-between items-center gap-6 text-xs font-black text-gray-400 tracking-widest">
+                    <div> 2026 IELTSPRACTICE LEARNING PLATFORM</div>
+                    <div class="flex gap-8">
+                        <span style="color: #6B7280;">Created by <a href="https://xalimov-ahrorbek-portfolio.netlify.app/" target="_blank" style="color: #374151; text-decoration: underline; font-weight: 700; transition: color 0.3s;">Xalimov Ahrorbek</a></span>
+                        <a id="copy-1" href="/privacypolicy" class="text-purple-600 transition-colors">PRIVACY POLICY</a>
+                        <a id="copy-2" href="/termsconditions" class="hover:text-purple-600 transition-colors">TERMS OF SERVICE</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Intersection Observer for scroll reveal animations
+        const observerOptions = {
+            root: null,
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+
+        // Active link highlighting for Table of Contents
+        const sections = document.querySelectorAll('.policy-section');
+        const navLinks = document.querySelectorAll('.toc-link');
+
+        const tocObserverOptions = {
+            rootMargin: '-20% 0px -75% 0px',
+            threshold: 0
+        };
+
+        const tocObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    navLinks.forEach(link => {
+                        link.classList.remove('text-[#8B5CF6]');
+                        link.classList.add('text-gray-500');
+                        if (link.getAttribute('href') === `#${id}`) {
+                            link.classList.remove('text-gray-500');
+                            link.classList.add('text-[#8B5CF6]');
+                        }
+                    });
+                }
+            });
+        }, tocObserverOptions);
+
+        sections.forEach(section => {
+            if(section.id) tocObserver.observe(section);
+        });
+    </script>
+</body>
+</html>

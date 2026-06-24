@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="./js/page-transitions.js?v=2"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Practice | Available Courses</title>
+    <link rel="icon" type="image/png" href="./favicon/image.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./css/logo.css">
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/petite-vue@0.4.1/dist/petite-vue.iife.js" defer init></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    
+    <style>
+        @import url('https://api.fontshare.com/v2/css?f[]=clash-grotesk@700,600,400&f[]=satoshi@700,500,400&display=swap');
+
+        :root {
+            --lavender-main: #8B5CF6;
+            --brand-orange: #FF6B35;
+            --bg-soft: #F9F5FF;
+            --dark: #111827;
+        }
+
+        body {
+            font-family: 'Satoshi', sans-serif;
+            background-color: var(--bg-soft);
+            color: var(--dark);
+            margin: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, h5, h6, .font-display {
+            font-family: 'Clash Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .scroll-reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .transition-playful {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .card-lift:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 25px 50px -12px rgba(139, 92, 246, 0.15);
+        }
+
+        .btn-bounce:hover {
+            transform: scale(1.05);
+        }
+
+        /* Custom scrollbar for list */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #E5E7EB;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #8B5CF6;
+        }
+
+        /* Dynamic Grid for Reflow */
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Map Panel Transitions */
+        #mapPanelWrapper {
+            width: 0;
+            opacity: 0;
+            margin-left: 0;
+            display: none;
+            transition: opacity 0.4s ease-out;
+        }
+        #mapPanelWrapper.is-open {
+            width: 450px;
+            opacity: 1;
+            margin-left: 1.5rem;
+            display: block;
+        }
+        @media (max-width: 1024px) {
+            #mapPanelWrapper.is-open {
+                position: fixed;
+                top: 0;
+                right: 0;
+                height: 100vh;
+                width: 100vw !important;
+                margin-left: 0;
+                z-index: 2000;
+                border-radius: 0;
+            }
+        }
+
+        /* Filter Custom Inputs */
+        .custom-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239CA3AF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-position: right 1rem center;
+            background-repeat: no-repeat;
+            background-size: 1.25em 1.25em;
+        }
+
+        /* Map Marker Overrides */
+        .map-marker {
+            background: white;
+            border: 2px solid white;
+            border-radius: 14px;
+            padding: 6px 12px;
+            font-family: 'Satoshi', sans-serif;
+            font-weight: 800;
+            font-size: 14px;
+            color: #111827;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+            text-align: center;
+            white-space: nowrap;
+            transform-origin: center bottom;
+        }
+        .map-marker:hover {
+            transform: scale(1.1) translateY(-4px);
+            border-color: #FF6B35;
+            color: #FF6B35;
+        }
+        .map-marker.pm-active {
+            background: #FF6B35;
+            color: white;
+            border-color: #FF6B35;
+            transform: scale(1.15) translateY(-4px);
+            z-index: 1000 !important;
+            box-shadow: 0 12px 24px rgba(255, 107, 53, 0.4);
+        }
+        .map-marker.pm-active::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px 6px 0;
+            border-style: solid;
+            border-color: #FF6B35 transparent transparent transparent;
+        }
+
+        /* Leaflet Popup */
+        .leaflet-popup-content-wrapper {
+            border-radius: 24px !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+            box-shadow: 0 24px 48px -12px rgba(139, 92, 246, 0.25) !important;
+            border: 2px solid #F5F1FF;
+        }
+        .leaflet-popup-content {
+            margin: 0 !important;
+            width: 260px !important;
+        }
+        .leaflet-popup-tip-container {
+            display: none !important;
+        }
+        .leaflet-popup-close-button {
+            top: 12px !important;
+            right: 12px !important;
+            color: white !important;
+            font-size: 20px !important;
+            width: 28px !important;
+            height: 28px !important;
+            background: rgba(0,0,0,0.2) !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header (Persistent) -->
+    <div v-scope="{ activeItem:'courses',homeHref:'/',examHref:'/exam-dates',centresHref:'/education-centres',coursesHref:'/courses',contactHref:'/contact',signupHref:'/signup',loginHref:'/login',mobileMenuOpen:false }">
+        <nav class="flex items-center justify-between px-4 md:px-8 lg:px-16 py-4 md:py-8 bg-white shadow-[0_4px_20px_rgb(0,0,0,0.03)] relative z-[100]">
+            <div class="flex items-center gap-12">
+                <a id="nav-logo" href="/" class="ielts-logo-horizontal">
+                    <div class="logo-text">
+                        <span class="logo-ielts">IELTS</span>
+                        <div class="logo-divider"></div>
+                        <span class="logo-practice">PRACTICE</span>
+                    </div>
+                </a>
+                <div class="hidden lg:flex items-center gap-8 font-semibold text-gray-600">
+                    <a id="nav-home" :href="homeHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'home' }">Home</a>
+                    <a id="nav-courses" :href="coursesHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'courses' }">Courses</a>
+                    <a id="nav-exam" :href="examHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'exam' }">Exam & Mock dates</a>
+                    <a id="nav-centres" :href="centresHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'centres' }">Educational Centres</a>
+                    <a id="nav-contact" :href="contactHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'contact' }">Contact</a>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 md:gap-6">
+                <a id="nav-signup" :href="signupHref" class="font-bold hover:text-[#FF6B35] transition-colors hidden sm:inline">Sign up</a>
+                <a id="nav-login" :href="loginHref" class="bg-[#FF6B35] text-white px-5 md:px-8 py-2.5 md:py-3 rounded-2xl font-bold hover:bg-[#e85a2a] transition-all transform hover:scale-105 text-sm md:text-base">
+                    Login
+                </a>
+                <button @click="mobileMenuOpen = !mobileMenuOpen" class="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-50 transition-colors text-gray-700">
+                    <iconify-icon icon="ph:list-bold" class="text-2xl" v-show="!mobileMenuOpen"></iconify-icon>
+                    <iconify-icon icon="ph:x-bold" class="text-2xl" v-show="mobileMenuOpen"></iconify-icon>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div v-show="mobileMenuOpen" class="lg:hidden fixed inset-0 top-[72px] z-[90] bg-white/95 backdrop-blur-xl border-t border-purple-50 p-6 space-y-2 animate-[fadeIn_0.2s_ease-out]">
+            <a :href="homeHref" @click="mobileMenuOpen = false" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg hover:bg-purple-50 transition-colors" :class="{ 'text-[#FF6B35] bg-purple-50/50': activeItem === 'home', 'text-gray-700': activeItem !== 'home' }">
+                <iconify-icon icon="ph:house-bold" class="text-xl"></iconify-icon> Home
+            </a>
+            <a :href="coursesHref" @click="mobileMenuOpen = false" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg hover:bg-purple-50 transition-colors" :class="{ 'text-[#FF6B35] bg-purple-50/50': activeItem === 'courses', 'text-gray-700': activeItem !== 'courses' }">
+                <iconify-icon icon="ph:graduation-cap-bold" class="text-xl"></iconify-icon> Courses
+            </a>
+            <a :href="examHref" @click="mobileMenuOpen = false" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg hover:bg-purple-50 transition-colors" :class="{ 'text-[#FF6B35] bg-purple-50/50': activeItem === 'exam', 'text-gray-700': activeItem !== 'exam' }">
+                <iconify-icon icon="ph:calendar-bold" class="text-xl"></iconify-icon> Exam & Mock dates
+            </a>
+            <a :href="centresHref" @click="mobileMenuOpen = false" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg hover:bg-purple-50 transition-colors" :class="{ 'text-[#FF6B35] bg-purple-50/50': activeItem === 'centres', 'text-gray-700': activeItem !== 'centres' }">
+                <iconify-icon icon="ph:buildings-bold" class="text-xl"></iconify-icon> Educational Centres
+            </a>
+            <a :href="contactHref" @click="mobileMenuOpen = false" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg hover:bg-purple-50 transition-colors" :class="{ 'text-[#FF6B35] bg-purple-50/50': activeItem === 'contact', 'text-gray-700': activeItem !== 'contact' }">
+                <iconify-icon icon="ph:envelope-bold" class="text-xl"></iconify-icon> Contact
+            </a>
+            <div class="pt-4 border-t border-purple-50 space-y-2">
+                <a :href="signupHref" @click="mobileMenuOpen = false" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg text-gray-700 hover:bg-purple-50 transition-colors">
+                    <iconify-icon icon="ph:user-plus-bold" class="text-xl"></iconify-icon> Sign up
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Strip -->
+    <section class="px-4 md:px-8 lg:px-16 pt-6 pb-6 shrink-0 relative z-10">
+        <div class="max-w-[1440px] mx-auto bg-gray-900 rounded-[32px] p-6 md:p-8 md:px-10 flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative shadow-[0_20px_40px_-10px_rgba(139,92,246,0.3)]">
+            <!-- Glows -->
+            <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-[#8B5CF6] rounded-full mix-blend-screen filter blur-[100px] opacity-50"></div>
+            <div class="absolute right-0 top-0 w-64 h-64 bg-[#FF6B35] rounded-full mix-blend-screen filter blur-[80px] opacity-30"></div>
+            
+            <div class="relative z-10 flex-1">
+                <h1 class="text-white text-3xl md:text-5xl font-black mb-2 flex items-center gap-4">
+                    Explore Courses 
+                </h1>
+                <p class="text-gray-400 font-medium text-lg max-w-xl">Find and enroll in offline IELTS preparation courses led by certified experts in your city.</p>
+            </div>
+            
+            <div class="relative z-10 flex items-center gap-4 sm:gap-6 shrink-0 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 custom-scrollbar">
+                <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl px-5 py-3 flex items-center gap-4 shrink-0">
+                    <div class="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center text-orange-400 text-xl">
+                        <iconify-icon icon="ph:student-fill"></iconify-icon>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-black text-white leading-none">124</div>
+                        <div class="text-[10px] text-gray-400 uppercase tracking-widest font-bold mt-1">Active Courses</div>
+                    </div>
+                </div>
+                
+                <!-- Map Toggle Button -->
+                <button id="toggleMapBtn" onclick="toggleMap()" class="bg-white text-gray-900 px-6 py-4 rounded-2xl font-bold flex items-center gap-2 hover:bg-purple-50 transition-colors shrink-0 shadow-lg">
+                    <iconify-icon icon="ph:map-trifold-fill" class="text-purple-600 text-xl"></iconify-icon>
+                    <span id="toggleMapText">Show Map</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Layout -->
+    <section class="px-4 md:px-8 lg:px-16 pb-20 flex-1 flex flex-col items-center">
+        <div class="max-w-[1440px] w-full flex flex-col lg:flex-row items-start relative z-0">
+            
+            <!-- Left Sidebar: Filters -->
+            <aside class="w-full lg:w-[320px] shrink-0 bg-white rounded-[32px] border-2 border-purple-50 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-6 lg:mb-0 lg:mr-6 scroll-reveal active">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-black text-gray-900">Filters</h2>
+                    <button onclick="resetFilters()" class="text-xs font-bold text-purple-600 hover:text-orange-500 transition-colors">Reset All</button>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Search -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Search</label>
+                        <div class="relative">
+                            <iconify-icon icon="ph:magnifying-glass-bold" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></iconify-icon>
+                            <input type="text" id="filterSearch" placeholder="Course or Centre name..." oninput="applyFilters()"
+                                   class="w-full bg-gray-50 border-2 border-transparent focus:border-purple-200 focus:bg-white rounded-2xl py-3 pl-10 pr-4 font-bold text-gray-700 outline-none transition-all placeholder:font-medium placeholder:text-gray-400">
+                        </div>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="space-y-4 border-t border-gray-100 pt-6">
+                        <h3 class="text-sm font-black text-gray-900">Location</h3>
+                        <div>
+                            <select id="filterCountry" class="custom-select w-full bg-gray-50 border-2 border-transparent focus:border-purple-200 rounded-2xl py-3 px-4 font-bold text-gray-700 outline-none transition-all">
+                                <option value="">All Countries</option>
+                                <option value="Uzbekistan" selected>Uzbekistan</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select id="filterRegion" class="custom-select w-full bg-gray-50 border-2 border-transparent focus:border-purple-200 rounded-2xl py-3 px-4 font-bold text-gray-700 outline-none transition-all">
+                                <option value="">All Regions</option>
+                                <option value="Tashkent">Tashkent</option>
+                                <option value="Samarkand">Samarkand</option>
+                                <option value="Fergana">Fergana</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select id="filterCity" class="custom-select w-full bg-gray-50 border-2 border-transparent focus:border-purple-200 rounded-2xl py-3 px-4 font-bold text-gray-700 outline-none transition-all">
+                                <option value="">All Cities/Districts</option>
+                                <option value="Yunusabad">Yunusabad</option>
+                                <option value="Mirzo Ulugbek">Mirzo Ulugbek</option>
+                                <option value="Chilonzor">Chilonzor</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="border-t border-gray-100 pt-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-sm font-black text-gray-900">Monthly Price Range</h3>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="relative flex-1">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold">Min</span>
+                                <input type="number" id="filterPriceMin" placeholder="0" oninput="applyFilters()"
+                                       class="w-full bg-gray-50 border-2 border-transparent focus:border-purple-200 rounded-xl py-2 pl-10 pr-3 font-bold text-gray-700 text-sm outline-none transition-all">
+                            </div>
+                            <span class="text-gray-300">-</span>
+                            <div class="relative flex-1">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold">Max</span>
+                                <input type="number" id="filterPriceMax" placeholder="1000k" oninput="applyFilters()"
+                                       class="w-full bg-gray-50 border-2 border-transparent focus:border-purple-200 rounded-xl py-2 pl-10 pr-3 font-bold text-gray-700 text-sm outline-none transition-all">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Center & Right Content Wrapper -->
+            <div class="flex-1 flex w-full relative">
+                
+                <!-- Cards Grid -->
+                <div class="flex-1 min-w-0 transition-all duration-500">
+                    <div class="flex justify-between items-center mb-6 px-2">
+                        <div class="text-sm font-bold text-gray-500 uppercase tracking-widest">
+                            Showing <span id="resultCount" class="text-purple-600 font-black">0</span> courses
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-gray-400 uppercase">Sort by:</span>
+                            <select class="bg-transparent font-black text-gray-900 outline-none cursor-pointer hover:text-purple-600">
+                                <option>Newest First</option>
+                                <option>Price: Low to High</option>
+                                <option>Price: High to Low</option>
+                                <option>Availability</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Grid Container -->
+                    <div id="coursesGrid" class="course-grid">
+                        <!-- Cards injected via JS -->
+                    </div>
+                    
+                    <!-- Empty State -->
+                    <div id="emptyState" class="hidden flex-col items-center justify-center py-20 text-center">
+                        <div class="w-24 h-24 bg-purple-50 rounded-full flex items-center justify-center text-purple-200 text-5xl mb-6">
+                            <iconify-icon icon="ph:magnifying-glass-duotone"></iconify-icon>
+                        </div>
+                        <h3 class="text-2xl font-black text-gray-900 mb-2">No courses found</h3>
+                        <p class="text-gray-500 font-medium max-w-md">We couldn't find any courses matching your exact filters. Try adjusting your search criteria.</p>
+                        <button onclick="resetFilters()" class="mt-6 bg-white border-2 border-purple-100 text-purple-600 px-6 py-3 rounded-xl font-bold hover:bg-purple-50 transition-colors">
+                            Clear Filters
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Sidebar: Map Panel -->
+                <div id="mapPanelWrapper" class="shrink-0 overflow-hidden rounded-[32px] border-2 border-purple-50 shadow-inner bg-gray-200 relative z-50">
+                    <!-- Mobile Close Header -->
+                    <div class="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/50 to-transparent z-[500] flex justify-end lg:hidden">
+                        <button onclick="toggleMap()" class="w-10 h-10 bg-white/20 backdrop-blur-md border border-white/30 rounded-full flex items-center justify-center text-white hover:bg-white/40 transition-colors">
+                            <iconify-icon icon="ph:x-bold" class="text-xl"></iconify-icon>
+                        </button>
+                    </div>
+                    
+                    <div class="w-full h-full min-h-[600px] relative">
+                        <div id="map" class="absolute inset-0"></div>
+                        
+                        <!-- Desktop Close Button Floating inside map -->
+                        <button id="closeMapBtnBtn" onclick="toggleMap()" class="hidden lg:flex absolute top-6 left-6 z-[400] bg-white text-gray-900 px-4 py-2 rounded-xl font-bold shadow-lg items-center gap-2 hover:text-orange-500 transition-colors">
+                            <iconify-icon icon="ph:caret-right-bold"></iconify-icon> Close Map
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="px-6 md:px-16 py-24 bg-white border-t border-purple-50 mt-auto">
+        <div class="max-w-[1360px] mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 items-start">
+                <div class="lg:col-span-5">
+                    <div class="ielts-logo-horizontal mb-8">
+                        <div class="logo-text">
+                            <span class="logo-ielts">IELTS</span>
+                            <div class="logo-divider"></div>
+                            <span class="logo-practice">PRACTICE</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-lg font-medium max-w-sm mb-10 leading-relaxed">
+                        Empowering students worldwide to achieve their dreams through innovative, technology-driven IELTS preparation tools.
+                    </p>
+                    <div class="flex gap-4">
+                        <a id="soc-1" href="https://t.me/ieltspractice_net" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:telegram-logo-bold"></iconify-icon></a>
+                        <a id="soc-2" href="https://x.com/ieltspracticeUz" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:twitter-logo-bold"></iconify-icon></a>
+                        <a id="soc-3" href="https://www.instagram.com/ieltspractice_net?igsh=MWR3OGw3ZmxjcjF1Ng%3D%3D&utm_source=qr" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:instagram-logo-bold"></iconify-icon></a>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-3 grid grid-cols-2 gap-10">
+                    <div>
+                        <h6 class="font-black uppercase text-xs tracking-widest text-gray-400 mb-8">Quick Links</h6>
+                        <ul class="space-y-4 font-bold text-gray-700">
+                            <li><a id="foot-1" href="/" class="hover:text-purple-600 transition-colors">Home</a></li>
+                            <li><a id="foot-2" href="/courses" class="hover:text-purple-600 transition-colors">Courses</a></li>
+                            <li><a id="foot-3" href="/education-centres" class="hover:text-purple-600 transition-colors">Centers</a></li>
+                            <li><a id="foot-4" href="/dashboard" class="hover:text-purple-600 transition-colors">Mock Exams</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h6 class="font-black uppercase text-xs tracking-widest text-gray-400 mb-8">Support</h6>
+                        <ul class="space-y-4 font-bold text-gray-700">
+                            <li><a id="foot-5" href="#" class="hover:text-purple-600 transition-colors">Help Center</a></li>
+                            <li><a id="foot-6" href="#" class="hover:text-purple-600 transition-colors">FAQ</a></li>
+                            <li><a id="foot-7" href="/privacypolicy" class="hover:text-purple-600 transition-colors">Privacy</a></li>
+                            <li><a id="foot-8" href="/termsconditions" class="hover:text-purple-600 transition-colors">Terms</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-4 bg-[#F5F1FF] p-8 rounded-[40px]">
+                    <h6 class="font-black uppercase text-xs tracking-widest text-purple-600 mb-6">Contact Us</h6>
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-purple-600 shadow-sm"><iconify-icon icon="ph:envelope-bold"></iconify-icon></div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase">Email</p>
+                                <p class="font-black">support@ieltsedu.net</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-orange-600 shadow-sm"><iconify-icon icon="ph:phone-bold"></iconify-icon></div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase">Phone</p>
+                                <p class="font-black">+998 (88) 532 4701</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-24 pt-10 border-t border-purple-50 flex flex-col md:flex-row justify-between items-center gap-6 text-xs font-black text-gray-400 tracking-widest">
+                <div>© 2026 IELTSPRACTICE LEARNING PLATFORM</div>
+                <div class="flex gap-8">
+                        <span style="color: #6B7280;">Created by <a href="https://xalimov-ahrorbek-portfolio.netlify.app/" target="_blank" style="color: #374151; text-decoration: underline; font-weight: 700; transition: color 0.3s;">Xalimov Ahrorbek</a></span>
+                    <a id="copy-1" href="/privacypolicy" class="hover:text-purple-600 transition-colors">PRIVACY POLICY</a>
+                    <a id="copy-2" href="/termsconditions" class="hover:text-purple-600 transition-colors">TERMS OF SERVICE</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Data Source (loaded dynamically from API)
+        let courses = [];
+
+        // State
+        let isMapOpen = false;
+        let mapInstance = null;
+        let leafMarkers = {};
+        let activeCardId = null;
+
+        // DOM Elements
+        const mapPanel = document.getElementById('mapPanelWrapper');
+        const toggleBtnText = document.getElementById('toggleMapText');
+        const gridContainer = document.getElementById('coursesGrid');
+        const emptyState = document.getElementById('emptyState');
+        const resultCount = document.getElementById('resultCount');
+
+        // Toggle Map
+        function toggleMap() {
+            isMapOpen = !isMapOpen;
+            
+            if (isMapOpen) {
+                mapPanel.style.display = 'block';
+                setTimeout(() => {
+                    mapPanel.classList.add('is-open');
+                    toggleBtnText.textContent = "Hide Map";
+                    if(mapInstance) mapInstance.invalidateSize();
+                }, 10);
+            } else {
+                mapPanel.classList.remove('is-open');
+                toggleBtnText.textContent = "Show Map";
+                setTimeout(() => {
+                    if (!isMapOpen) mapPanel.style.display = 'none';
+                }, 400);
+            }
+        }
+
+        // Load courses from public API
+        async function loadCourses() {
+            try {
+                const res = await fetch('/api/v1/public/centres/groups');
+                if (!res.ok) throw new Error('Failed to load courses');
+                const json = await res.json();
+                const groups = json.data || [];
+
+                courses = groups.map(g => {
+                    const start = g.startDate ? new Date(g.startDate) : null;
+                    const end = g.endDate ? new Date(g.endDate) : null;
+                    let duration = 'Flexible';
+                    if (start && end) {
+                        const diffMonths = Math.max(1, Math.round((end - start) / (1000 * 60 * 60 * 24 * 30)));
+                        duration = diffMonths + ' Month' + (diffMonths > 1 ? 's' : '');
+                    }
+                    const enrolled = g._count?.applications || 0;
+                    const isFull = enrolled >= g.capacity;
+
+                    return {
+                        id: g.id,
+                        name: g.name,
+                        centre: g.centre?.name || '—',
+                        teacher: g.teacherName || g.teacher?.full_name || '—',
+                        price: g.price || 0,
+                        duration: duration,
+                        days: g.schedule || '—',
+                        time: '—',
+                        enrolled: enrolled,
+                        capacity: g.capacity || 15,
+                        lat: g.latitude || g.centre?.latitude || 41.3111,
+                        lng: g.longitude || g.centre?.longitude || 69.2797,
+                        region: g.centre?.city || 'Tashkent',
+                        city: g.centre?.city || '—',
+                        location: g.location || '',
+                        mapUrl: g.mapUrl || '',
+                        description: g.description || '',
+                        badge: isFull ? 'Full' : (g.status === 'OPEN' ? 'Available' : 'Closed'),
+                        badgeColor: isFull ? 'bg-red-50 text-red-600' : (g.status === 'OPEN' ? 'bg-green-50 text-green-600' : 'bg-gray-50 text-gray-600')
+                    };
+                });
+
+                // Update hero count
+                const countEl = document.querySelector('.text-2xl.font-black.text-white.leading-none');
+                if (countEl) countEl.textContent = courses.length;
+
+                renderCards(courses);
+                if (mapInstance) {
+                    createMarkers();
+                }
+            } catch (e) {
+                console.error('Failed to load courses:', e);
+                courses = [];
+                renderCards(courses);
+            }
+        }
+
+        // Render Cards
+        function renderCards(list) {
+            resultCount.textContent = list.length;
+            
+            if (list.length === 0) {
+                gridContainer.innerHTML = '';
+                gridContainer.style.display = 'none';
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            emptyState.classList.remove('flex');
+            gridContainer.style.display = 'grid';
+
+            gridContainer.innerHTML = list.map((c, i) => {
+                const percent = Math.round((c.enrolled / c.capacity) * 100);
+                const isFull = c.enrolled >= c.capacity;
+                const btnClass = isFull 
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed" 
+                    : "bg-gray-900 text-white hover:bg-[#FF6B35] btn-bounce";
+                const btnText = isFull ? "Fully Booked" : "Apply Now";
+
+                return `
+                <div id="card-${c.id}" class="bg-white border-2 border-gray-100 rounded-[32px] p-6 transition-playful card-lift relative flex flex-col group hover:border-purple-200 cursor-pointer ${activeCardId === c.id ? 'ring-4 ring-purple-500/20 border-purple-400' : ''}" 
+                     style="animation: fadeUp 0.5s ease forwards ${i * 0.05}s; opacity: 0;"
+                     onclick="panToCourse(${c.id})">
+                    
+                    <!-- Header -->
+                    <div class="flex justify-between items-start mb-5">
+                        <span class="px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest ${c.badgeColor}">${c.badge}</span>
+                        <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-purple-50 group-hover:text-purple-600 transition-colors">
+                            <iconify-icon icon="ph:arrow-up-right-bold" class="text-lg"></iconify-icon>
+                        </div>
+                    </div>
+
+                    <!-- Title -->
+                    <h3 class="text-2xl font-black text-gray-900 mb-5 leading-tight">${c.name}</h3>
+
+                    <!-- Details List -->
+                    <div class="space-y-4 mb-6 flex-1">
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
+                                <iconify-icon icon="ph:buildings-fill"></iconify-icon>
+                            </div>
+                            <div>
+                                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Education Centre</div>
+                                <div class="font-bold text-sm text-gray-700">${c.centre}</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-purple-50 text-purple-500 flex items-center justify-center shrink-0">
+                                <iconify-icon icon="ph:chalkboard-teacher-fill"></iconify-icon>
+                            </div>
+                            <div>
+                                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Instructor</div>
+                                <div class="font-bold text-sm text-gray-700">${c.teacher}</div>
+                            </div>
+                        </div>
+                        ${c.location ? `
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
+                                <iconify-icon icon="ph:map-pin-fill"></iconify-icon>
+                            </div>
+                            <div>
+                                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Location</div>
+                                <div class="font-bold text-sm text-gray-700">${c.location}</div>
+                            </div>
+                        </div>` : ''}
+                        ${c.mapUrl ? `
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center shrink-0">
+                                <iconify-icon icon="ph:map-trifold-fill"></iconify-icon>
+                            </div>
+                            <div>
+                                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Map</div>
+                                <a href="${c.mapUrl}" target="_blank" class="font-bold text-sm text-purple-600 hover:underline">View on Google Maps</a>
+                            </div>
+                        </div>` : ''}
+                        ${c.description ? `
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-gray-100 text-gray-500 flex items-center justify-center shrink-0">
+                                <iconify-icon icon="ph:phone-fill"></iconify-icon>
+                            </div>
+                            <div>
+                                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Contact</div>
+                                <div class="font-bold text-sm text-gray-700 whitespace-pre-wrap">${c.description.replace(/\n/g, '<br>')}</div>
+                            </div>
+                        </div>` : ''}
+                    </div>
+
+                    <!-- Schedule Box -->
+                    <div class="bg-gray-50 rounded-2xl p-4 mb-6 border border-gray-100">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-gray-500 flex items-center gap-1.5">
+                                <iconify-icon icon="ph:calendar-blank-fill" class="text-gray-400"></iconify-icon> ${c.duration}
+                            </span>
+                            <span class="text-xs font-bold text-gray-500 flex items-center gap-1.5">
+                                <iconify-icon icon="ph:clock-fill" class="text-gray-400"></iconify-icon> ${c.time}
+                            </span>
+                        </div>
+                        <div class="text-sm font-black text-gray-800">${c.days}</div>
+                    </div>
+
+                    <!-- Footer Price & Capacity -->
+                    <div class="flex items-end justify-between mb-6">
+                        <div>
+                            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Monthly Fee</div>
+                            <div class="text-2xl font-black text-purple-600 leading-none">${c.price ? (c.price/1000) + 'k' : 'Contact'} <span class="text-[10px] text-gray-400">UZS</span></div>
+                        </div>
+                        <div class="text-right w-24">
+                            <div class="text-xs font-bold ${isFull ? 'text-red-500' : 'text-gray-600'} mb-1.5">
+                                ${c.enrolled}/${c.capacity} <span class="text-gray-400 font-medium text-[10px]">Seats</span>
+                            </div>
+                            <div class="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                                <div class="h-full ${isFull ? 'bg-red-500' : 'bg-green-500'} rounded-full" style="width: ${percent}%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action -->
+                    <button id="btn-${c.id}" class="w-full py-4 rounded-2xl font-bold transition-all duration-300 ${btnClass}" ${isFull ? '' : `onclick="openApplyModal(${c.id}, '${c.name.replace(/'/g, "\\'")}')"`}>
+                        ${btnText}
+                    </button>
+                </div>
+                `;
+            }).join('');
+        }
+
+        // Filter Logic
+        function applyFilters() {
+            const search = document.getElementById('filterSearch').value.toLowerCase();
+            const region = document.getElementById('filterRegion').value;
+            const city = document.getElementById('filterCity').value;
+            const pMin = parseInt(document.getElementById('filterPriceMin').value) || 0;
+            const pMax = parseInt(document.getElementById('filterPriceMax').value) || 99999999;
+
+            const filtered = courses.filter(c => {
+                const matchSearch = c.name.toLowerCase().includes(search) || c.centre.toLowerCase().includes(search);
+                const matchRegion = region === "" || c.region === region;
+                const matchCity = city === "" || c.city === city;
+                const matchPrice = (c.price/1000) >= pMin && (c.price/1000) <= pMax;
+
+                return matchSearch && matchRegion && matchCity && matchPrice;
+            });
+
+            renderCards(filtered);
+            updateMapMarkers(filtered);
+        }
+
+        function resetFilters() {
+            document.getElementById('filterSearch').value = '';
+            document.getElementById('filterRegion').value = '';
+            document.getElementById('filterCity').value = '';
+            document.getElementById('filterPriceMin').value = '';
+            document.getElementById('filterPriceMax').value = '';
+            applyFilters();
+        }
+
+        // Map Logic
+        function initMap() {
+            if (typeof L === 'undefined') return;
+            
+            mapInstance = L.map('map', {
+                center: [41.3111, 69.2797], // Tashkent default
+                zoom: 12,
+                zoomControl: false,
+                attributionControl: false
+            });
+            L.control.zoom({ position: 'bottomright' }).addTo(mapInstance);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                maxZoom: 19
+            }).addTo(mapInstance);
+
+            createMarkers();
+        }
+
+        function createMarkers() {
+            Object.values(leafMarkers).forEach(({ marker }) => mapInstance.removeLayer(marker));
+            leafMarkers = {};
+            courses.forEach(c => {
+                const el = document.createElement('div');
+                el.className = 'map-marker';
+                el.innerHTML = c.price ? `${c.price/1000}k` : 'New';
+                el.onclick = () => highlightCard(c.id);
+
+                const icon = L.divIcon({
+                    html: el,
+                    className: '',
+                    iconSize: [50, 32],
+                    iconAnchor: [25, 32],
+                    popupAnchor: [0, -36]
+                });
+
+                const marker = L.marker([c.lat, c.lng], { icon }).addTo(mapInstance);
+
+                const popupHtml = `
+                    <div class="font-['Satoshi'] w-[260px]">
+                        <div class="p-5 bg-white">
+                            <span class="text-[9px] font-black uppercase tracking-widest text-orange-500 mb-2 block">${c.centre}</span>
+                            <h3 class="font-black text-gray-900 text-base mb-3 leading-tight">${c.name}</h3>
+                            <div class="flex items-center gap-2 text-xs text-gray-500 font-bold mb-4">
+                                <iconify-icon icon="ph:clock-fill" class="text-purple-500 text-sm"></iconify-icon>
+                                ${c.time}
+                            </div>
+                            <button class="w-full bg-gray-900 text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-orange-500 transition-colors" onclick="highlightCard(${c.id})">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                `;
+                marker.bindPopup(popupHtml);
+                leafMarkers[c.id] = { marker, el };
+            });
+        }
+
+        function updateMapMarkers(list) {
+            if(!mapInstance) return;
+            const validIds = new Set(list.map(c => c.id));
+            Object.keys(leafMarkers).forEach(id => {
+                const numId = parseInt(id);
+                if(validIds.has(numId)) {
+                    leafMarkers[id].el.style.display = '';
+                } else {
+                    leafMarkers[id].el.style.display = 'none';
+                    leafMarkers[id].marker.closePopup();
+                }
+            });
+        }
+
+        function panToCourse(id) {
+            activeCardId = id;
+            applyFilters(); // Re-render to show active ring
+
+            const c = courses.find(x => x.id === id);
+            if(!c) return;
+            
+            // Ensure map is open
+            if(!isMapOpen && window.innerWidth >= 1024) toggleMap();
+
+            if(mapInstance) {
+                setTimeout(() => {
+                    mapInstance.flyTo([c.lat, c.lng], 14, { duration: 1 });
+                    setTimeout(() => {
+                        if(leafMarkers[id]) leafMarkers[id].marker.openPopup();
+                    }, 1000);
+                }, 300);
+            }
+        }
+
+        function highlightCard(id) {
+            activeCardId = id;
+            applyFilters();
+            const card = document.getElementById(`card-${id}`);
+            if(card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCourses();
+            initMap();
+
+            // Intersection Observer for sidebar
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('active');
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+        });
+        // Application Modal
+        let currentApplyGroupId = null;
+
+        function openApplyModal(groupId, groupName) {
+            currentApplyGroupId = groupId;
+            document.getElementById('applyGroupName').textContent = groupName;
+            document.getElementById('applyModal').classList.remove('hidden');
+            document.getElementById('applyModal').classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeApplyModal() {
+            document.getElementById('applyModal').classList.add('hidden');
+            document.getElementById('applyModal').classList.remove('flex');
+            document.body.style.overflow = '';
+            currentApplyGroupId = null;
+            // Reset form
+            document.getElementById('applyForm').reset();
+            document.getElementById('applySuccess').classList.add('hidden');
+            document.getElementById('applyFormFields').classList.remove('hidden');
+        }
+
+        async function submitApplication(e) {
+            e.preventDefault();
+            if (!currentApplyGroupId) return;
+
+            const firstName = document.getElementById('applyFirstName').value.trim();
+            const lastName = document.getElementById('applyLastName').value.trim();
+            const phone = document.getElementById('applyPhone').value.trim();
+            const previousScore = document.getElementById('applyScore').value.trim();
+
+            if (!firstName || !lastName || !phone) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/v1/public/centres/groups/${currentApplyGroupId}/apply`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ firstName, lastName, phone, previousScore: previousScore || null })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    document.getElementById('applyFormFields').classList.add('hidden');
+                    document.getElementById('applySuccess').classList.remove('hidden');
+                } else {
+                    alert(data.error || 'Failed to submit application. Please try again.');
+                }
+            } catch (err) {
+                console.error('Apply error:', err);
+                alert('Something went wrong. Please try again later.');
+            }
+        }
+
+        document.addEventListener('click', (e) => {
+            if (e.target === document.getElementById('applyModal')) closeApplyModal();
+        });
+    </script>
+
+    <!-- Apply Modal -->
+    <div id="applyModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div class="bg-white rounded-[32px] p-8 w-full max-w-md mx-4 shadow-2xl relative">
+            <button onclick="closeApplyModal()" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:bg-gray-200 transition-colors">
+                <iconify-icon icon="ph:x-bold" class="text-lg"></iconify-icon>
+            </button>
+
+            <div id="applyFormFields">
+                <div class="mb-6">
+                    <div class="text-[10px] font-black uppercase tracking-widest text-orange-500 mb-2">Application</div>
+                    <h3 class="text-2xl font-black text-gray-900 leading-tight" id="applyGroupName">Group Name</h3>
+                </div>
+
+                <form id="applyForm" onsubmit="submitApplication(event)">
+                    <div class="space-y-4 mb-6">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 block">First Name <span class="text-red-400">*</span></label>
+                            <input type="text" id="applyFirstName" required class="w-full p-3.5 rounded-2xl border-2 border-gray-100 text-sm font-bold text-gray-800 focus:border-purple-400 focus:outline-none transition-colors" placeholder="John" />
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 block">Last Name <span class="text-red-400">*</span></label>
+                            <input type="text" id="applyLastName" required class="w-full p-3.5 rounded-2xl border-2 border-gray-100 text-sm font-bold text-gray-800 focus:border-purple-400 focus:outline-none transition-colors" placeholder="Doe" />
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 block">Phone Number <span class="text-red-400">*</span></label>
+                            <input type="tel" id="applyPhone" required class="w-full p-3.5 rounded-2xl border-2 border-gray-100 text-sm font-bold text-gray-800 focus:border-purple-400 focus:outline-none transition-colors" placeholder="+998 90 123 45 67" />
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 block">Previous IELTS Score <span class="text-gray-300 font-normal">(optional)</span></label>
+                            <input type="number" id="applyScore" step="0.5" min="0" max="9" class="w-full p-3.5 rounded-2xl border-2 border-gray-100 text-sm font-bold text-gray-800 focus:border-purple-400 focus:outline-none transition-colors" placeholder="e.g. 6.5" />
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-4 rounded-2xl bg-gray-900 text-white font-bold text-sm hover:bg-[#FF6B35] transition-all duration-300 btn-bounce">
+                        Apply Now
+                    </button>
+                </form>
+            </div>
+
+            <div id="applySuccess" class="hidden text-center py-8">
+                <div class="w-16 h-16 rounded-full bg-green-50 text-green-500 flex items-center justify-center mx-auto mb-4">
+                    <iconify-icon icon="ph:check-bold" class="text-3xl"></iconify-icon>
+                </div>
+                <h3 class="text-xl font-black text-gray-900 mb-2">We will get in touch soon!</h3>
+                <p class="text-sm text-gray-500 font-medium mb-6">Your application has been submitted successfully.</p>
+                <button onclick="closeApplyModal()" class="w-full py-3 rounded-2xl bg-gray-100 text-gray-800 font-bold text-sm hover:bg-gray-200 transition-colors">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

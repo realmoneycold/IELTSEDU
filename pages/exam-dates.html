@@ -1,0 +1,827 @@
+y 0<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Practice | Exam & Mock Dates</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/petite-vue@0.4.1/dist/petite-vue.iife.js" defer init></script>
+    
+    <style>
+        @import url('https://api.fontshare.com/v2/css?f[]=clash-grotesk@700,600,400&f[]=satoshi@700,500,400&display=swap');
+
+        :root {
+            --lavender-main: #8B5CF6;
+            --brand-orange: #FF6B35;
+            --bg-soft: #F9F5FF;
+            --dark: #111827;
+        }
+
+        body {
+            font-family: 'Satoshi', sans-serif;
+            background-color: var(--bg-soft);
+            color: var(--dark);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6, .font-display {
+            font-family: 'Clash Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .scroll-reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .transition-playful {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .card-lift:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px -10px rgba(139, 92, 246, 0.15);
+        }
+
+        .btn-bounce:hover {
+            transform: scale(1.05);
+        }
+
+        .orange-text {
+            color: var(--brand-orange);
+        }
+
+        .purple-badge { background-color: #F5F1FF; color: #8B5CF6; }
+        .orange-badge  { background-color: #FFF8F5; color: #FF6B35; }
+        .yellow-badge  { background-color: #FFFBEB; color: #D97706; }
+        .blue-badge    { background-color: #EFF6FF; color: #3B82F6; }
+        .gray-badge    { background-color: #F3F4F6; color: #4B5563; }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F9F5FF;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D4C5E2;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8B5CF6;
+        }
+
+        /* Custom Range Slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #8B5CF6;
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 2px 6px rgba(139, 92, 246, 0.4);
+            border: 2px solid white;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: #E5E7EB;
+            border-radius: 10px;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen flex flex-col relative">
+        
+        <!-- Header (Persistent Navigation) -->
+        <!-- component: NavigationHeader (5600dfca-4b47-45ca-8a94-e5a9370f7684) -->
+        <div v-scope="{ activeItem:'exam',homeHref:'/',coursesHref:'/courses',examHref:'/exam-dates',centresHref:'/education-centres',contactHref:'/contact',signupHref:'/signup',loginHref:'/login',mobileMenuOpen:false }">
+        <nav class="flex items-center justify-between px-4 md:px-8 lg:px-16 py-4 md:py-8 bg-white shadow-sm relative z-40">
+            <div class="flex items-center gap-12">
+                <a href="/" class="text-3xl font-black flex items-center uppercase tracking-tighter">
+                    <span class="text-black border-r-4 border-[#FF6B35] pr-3 mr-3">IELTS</span>
+                    <span class="text-black/60 text-lg tracking-[0.2em] font-bold">PRACTICE</span>
+                </a>
+                <div class="hidden lg:flex items-center gap-8 font-semibold text-gray-600">
+                    <a :href="homeHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'home' }">Home</a>
+                    <a :href="coursesHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'courses' }">Courses</a>
+                    <a :href="examHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'exam' }">Exam &amp; Mock dates</a>
+                    <a :href="centresHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'centres' }">Educational Centres</a>
+                    <a :href="contactHref" class="hover:text-black transition-colors" :class="{ 'text-[#FF6B35] font-bold': activeItem === 'contact' }">Contact</a>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 md:gap-6">
+                <a :href="signupHref" class="font-bold hover:text-[#FF6B35] transition-colors hidden sm:inline">Sign up</a>
+                <a :href="loginHref" class="bg-[#FF6B35] text-white px-5 md:px-8 py-2.5 md:py-3 rounded-2xl font-bold hover:bg-[#e85a2a] transition-all transform hover:scale-105 text-sm md:text-base">
+                    Login
+                </a>
+                <button @click="mobileMenuOpen = !mobileMenuOpen" class="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-50 transition-colors text-gray-700">
+                    <iconify-icon icon="ph:list-bold" class="text-2xl" v-show="!mobileMenuOpen"></iconify-icon>
+                    <iconify-icon icon="ph:x-bold" class="text-2xl" v-show="mobileMenuOpen"></iconify-icon>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div v-show="mobileMenuOpen" class="lg:hidden fixed inset-0 top-[72px] z-[90] bg-white/95 backdrop-blur-xl border-t border-purple-50 p-6 space-y-2 animate-[fadeIn_0.2s_ease-out]">
+            <a :href="homeHref" @click="mobileMenuOpen = false" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg hover:bg-purple-50 transition-colors" :class="{ 'text-[#FF6B35] bg-purple-50/50': activeItem === 'home', 'text-gray-700': activeItem !== 'home' }">
+                <iconify-icon icon="ph:house-bold" class="text-xl"></iconify-icon> Home
+            </a>
+            <a :href="coursesHref" @click="mobileMenuOpen = false" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg hover:bg-purple-50 transition-colors" :class="{ 'text-[#FF6B35] bg-purple-50/50': activeItem === 'courses', 'text-gray-700': activeItem !== 'courses' }">
+                <iconify-icon icon="ph:graduation-cap-bold" class="text-xl"></iconify-icon> Courses
+            </a>
+            <a :href="examHref" @click="mobileMenuOpen = false" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg hover:bg-purple-50 transition-colors" :class="{ 'text-[#FF6B35] bg-purple-50/50': activeItem === 'exam', 'text-gray-700': activeItem !== 'exam' }">
+                <iconify-icon icon="ph:calendar-bold" class="text-xl"></iconify-icon> Exam &amp; Mock dates
+            </a>
+            <a :href="centresHref" @click="mobileMenuOpen = false" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg hover:bg-purple-50 transition-colors" :class="{ 'text-[#FF6B35] bg-purple-50/50': activeItem === 'centres', 'text-gray-700': activeItem !== 'centres' }">
+                <iconify-icon icon="ph:buildings-bold" class="text-xl"></iconify-icon> Educational Centres
+            </a>
+            <a :href="contactHref" @click="mobileMenuOpen = false" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg hover:bg-purple-50 transition-colors" :class="{ 'text-[#FF6B35] bg-purple-50/50': activeItem === 'contact', 'text-gray-700': activeItem !== 'contact' }">
+                <iconify-icon icon="ph:envelope-bold" class="text-xl"></iconify-icon> Contact
+            </a>
+            <div class="pt-4 border-t border-purple-50 space-y-2">
+                <a :href="signupHref" @click="mobileMenuOpen = false" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg text-gray-700 hover:bg-purple-50 transition-colors">
+                    <iconify-icon icon="ph:user-plus-bold" class="text-xl"></iconify-icon> Sign up
+                </a>
+            </div>
+        </div>
+        </div>
+        <!-- /component: NavigationHeader (5600dfca-4b47-45ca-8a94-e5a9370f7684) -->
+
+        <main class="flex-1 w-full">
+            <!-- Hero Section -->
+            <section class="px-4 md:px-8 lg:px-16 pt-6 pb-12 overflow-hidden">
+                <div class="max-w-[1360px] mx-auto bg-gray-900 rounded-[40px] p-8 md:p-16 relative shadow-2xl overflow-hidden">
+                    <!-- Decorative Gradients -->
+                    <div class="absolute -top-20 -right-20 w-[400px] h-[400px] bg-[#8B5CF6] rounded-full mix-blend-screen filter blur-[100px] opacity-60 float-animation"></div>
+                    <div class="absolute -bottom-20 -left-20 w-[300px] h-[300px] bg-[#FF6B35] rounded-full mix-blend-screen filter blur-[100px] opacity-40 float-animation" style="animation-delay: -3s;"></div>
+                    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDUiLz4KPC9zdmc+')] opacity-20"></div>
+                    
+                    <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-10">
+                        <div class="max-w-2xl">
+                            <div class="inline-block px-4 py-2 rounded-xl bg-white/10 backdrop-blur-md text-white border border-white/20 text-sm font-bold uppercase mb-6 tracking-wider">
+                                Booking Portal
+                            </div>
+                            <h1 class="text-white text-4xl md:text-6xl font-black mb-4 leading-tight">
+                                Secure your spot for <br>
+                                <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#FF6B35] to-[#FFA07A]">Exam & Mock Tests</span>
+                            </h1>
+                            <p class="text-gray-300 text-lg md:text-xl font-medium mb-8">
+                                Find and book official IELTS exams and highly realistic mock tests across top educational centres near you.
+                            </p>
+                            <div class="flex flex-wrap gap-4">
+                                <div class="bg-white/10 backdrop-blur-md border border-white/10 text-white px-5 py-3 rounded-2xl flex items-center gap-3 font-bold shadow-lg">
+                                    <div class="w-10 h-10 rounded-full bg-[#FF6B35]/20 flex items-center justify-center text-[#FF6B35]">
+                                        <iconify-icon icon="ph:calendar-check-fill" class="text-xl"></iconify-icon>
+                                    </div>
+                                    <div>
+                                        <div class="text-2xl font-black leading-none">262+</div>
+                                        <div class="text-[10px] text-gray-300 uppercase tracking-wider">Annual Test Sessions</div>
+                                    </div>
+                                </div>
+                                <div class="bg-white/10 backdrop-blur-md border border-white/10 text-white px-5 py-3 rounded-2xl flex items-center gap-3 font-bold shadow-lg">
+                                    <div class="w-10 h-10 rounded-full bg-[#8B5CF6]/20 flex items-center justify-center text-[#8B5CF6]">
+                                        <iconify-icon icon="ph:map-pin-fill" class="text-xl"></iconify-icon>
+                                    </div>
+                                    <div>
+                                        <div class="text-2xl font-black leading-none">11</div>
+                                        <div class="text-[10px] text-gray-300 uppercase tracking-wider">Official Test Centres</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Optional Decorative Graphic for Desktop -->
+                        <div class="hidden lg:block relative">
+                            <div class="w-64 h-80 bg-white/5 backdrop-blur-xl border border-white/10 rounded-[32px] p-6 shadow-2xl rotate-3 float-animation">
+                                <div class="w-full h-32 bg-gradient-to-br from-purple-500/20 to-orange-500/20 rounded-2xl mb-4 flex items-center justify-center">
+                                    <iconify-icon icon="ph:seal-check-fill" class="text-6xl text-white/50"></iconify-icon>
+                                </div>
+                                <div class="w-3/4 h-4 bg-white/20 rounded-full mb-3"></div>
+                                <div class="w-1/2 h-4 bg-white/20 rounded-full mb-6"></div>
+                                <div class="w-full h-12 bg-[#FF6B35] rounded-xl"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Main Content Area: Sidebar + Results -->
+            <section class="px-4 md:px-8 lg:px-16 pb-24">
+                <div class="max-w-[1360px] mx-auto flex flex-col lg:flex-row gap-8 lg:gap-12">
+                    
+                    <!-- Mobile Filter Toggle Button -->
+                    <button id="mobileFilterBtn" class="lg:hidden w-full bg-white border-2 border-purple-100 p-4 rounded-2xl font-bold text-purple-700 flex items-center justify-center gap-2 shadow-sm">
+                        <iconify-icon icon="ph:faders-bold" class="text-xl"></iconify-icon>
+                        Filter Results
+                    </button>
+
+                    <!-- Filter Sidebar -->
+                    <aside id="filterSidebar" class="hidden lg:block w-full lg:w-80 shrink-0 space-y-8">
+                        <div class="bg-white p-6 rounded-[32px] border-2 border-purple-50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] sticky top-8">
+                            <div class="flex items-center gap-2 mb-8">
+                                <iconify-icon icon="ph:faders-bold" class="text-purple-600 text-xl"></iconify-icon>
+                                <h3 class="font-black text-xl">Filter Results</h3>
+                            </div>
+
+                            <div class="space-y-6">
+                                <!-- Search Venue -->
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Search Venue</label>
+                                    <div class="relative">
+                                        <iconify-icon icon="ph:magnifying-glass-bold" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></iconify-icon>
+                                        <input type="text" id="searchInput" placeholder="e.g. British Council..." class="w-full bg-gray-50 border-2 border-transparent focus:border-purple-200 focus:bg-white rounded-2xl py-3 pl-11 pr-4 font-medium text-gray-700 outline-none transition-all">
+                                    </div>
+                                </div>
+
+                                <!-- City -->
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">City</label>
+                                    <div class="relative">
+                                        <select id="cityFilter" class="w-full bg-gray-50 border-2 border-transparent focus:border-purple-200 focus:bg-white rounded-2xl py-3 px-4 font-medium text-gray-700 outline-none appearance-none transition-all cursor-pointer">
+                                            <option value="">All Cities</option>
+                                            <option value="Tashkent">Tashkent</option>
+                                            <option value="Samarkand">Samarkand</option>
+                                            <option value="Bukhara">Bukhara</option>
+                                            <option value="Andijan">Andijan</option>
+                                            <option value="Karshi">Karshi (Qarshi)</option>
+                                            <option value="Fergana">Fergana</option>
+                                            <option value="Namangan">Namangan</option>
+                                            <option value="Navoi">Navoi</option>
+                                            <option value="Nukus">Nukus</option>
+                                            <option value="Termez">Termez</option>
+                                            <option value="Urgench">Urgench</option>
+                                        </select>
+                                        <iconify-icon icon="ph:caret-down-bold" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></iconify-icon>
+                                    </div>
+                                </div>
+
+                                <!-- Date -->
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Date</label>
+                                    <input type="date" id="dateFilter" class="w-full bg-gray-50 border-2 border-transparent focus:border-purple-200 focus:bg-white rounded-2xl py-3 px-4 font-medium text-gray-700 outline-none transition-all cursor-pointer text-sm">
+                                </div>
+
+                                <!-- Test Type -->
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Test Type</label>
+                                    <div class="flex bg-gray-50 p-1 rounded-2xl border-2 border-transparent" id="testTypeGroup">
+                                        <button class="flex-1 py-2 px-3 text-sm font-bold rounded-xl transition-all toggle-btn bg-white shadow-sm text-purple-600" data-val="All">All</button>
+                                        <button class="flex-1 py-2 px-3 text-sm font-bold rounded-xl transition-all toggle-btn text-gray-500 hover:text-gray-900" data-val="Official">Official</button>
+                                        <button class="flex-1 py-2 px-3 text-sm font-bold rounded-xl transition-all toggle-btn text-gray-500 hover:text-gray-900" data-val="Mock">Mock</button>
+                                    </div>
+                                </div>
+
+                                <!-- Module -->
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Module</label>
+                                    <div class="flex bg-gray-50 p-1 rounded-2xl border-2 border-transparent" id="moduleGroup">
+                                        <button class="flex-1 py-2 px-3 text-sm font-bold rounded-xl transition-all toggle-btn bg-white shadow-sm text-purple-600" data-val="All">All</button>
+                                        <button class="flex-1 py-2 px-3 text-sm font-bold rounded-xl transition-all toggle-btn text-gray-500 hover:text-gray-900" data-val="Academic">Academic</button>
+                                        <button class="flex-1 py-2 px-3 text-sm font-bold rounded-xl transition-all toggle-btn text-gray-500 hover:text-gray-900" data-val="General">General</button>
+                                    </div>
+                                </div>
+
+                                <!-- Format -->
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Format</label>
+                                    <div class="flex bg-gray-50 p-1 rounded-2xl border-2 border-transparent" id="formatGroup">
+                                        <button class="flex-1 py-2 px-3 text-sm font-bold rounded-xl transition-all toggle-btn bg-white shadow-sm text-purple-600" data-val="All">All</button>
+                                        <button class="flex-1 py-2 px-3 text-sm font-bold rounded-xl transition-all toggle-btn text-gray-500 hover:text-gray-900" data-val="Computer">Computer</button>
+                                        <button class="flex-1 py-2 px-3 text-sm font-bold rounded-xl transition-all toggle-btn text-gray-500 hover:text-gray-900" data-val="Paper">Paper</button>
+                                    </div>
+                                </div>
+
+                                <!-- Max Price -->
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Max Price (UZS)</label>
+                                    <input type="range" id="priceSlider" min="50000" max="3000000" step="50000" value="3000000" class="w-full">
+                                    <div class="flex justify-between items-center mt-2">
+                                        <span class="text-xs font-medium text-gray-400">50k</span>
+                                        <span id="priceDisplay" class="font-black text-purple-600">3,000,000 UZS</span>
+                                    </div>
+                                </div>
+
+                                <!-- Reset Button -->
+                                <button id="resetBtn" class="w-full py-3 mt-4 text-sm font-bold text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-2xl transition-all flex items-center justify-center gap-2">
+                                    <iconify-icon icon="ph:arrow-counter-clockwise-bold"></iconify-icon>
+                                    Reset Filters
+                                </button>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- Results Area -->
+                    <div class="flex-1">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+                            <p class="text-gray-500 font-medium"><span id="resultCount" class="font-black text-gray-900 text-xl">0</span> official test centres</p>
+                            <div class="relative inline-block">
+                                <select class="bg-white border-2 border-purple-50 rounded-2xl py-2 pl-4 pr-10 font-bold text-sm outline-none cursor-pointer appearance-none hover:border-purple-200 transition-colors shadow-sm text-gray-700">
+                                    <option>Sort: Soonest first</option>
+                                    <option>Sort: Price low to high</option>
+                                    <option>Sort: Price high to low</option>
+                                    <option>Sort: Most seats</option>
+                                </select>
+                                <iconify-icon icon="ph:caret-down-bold" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></iconify-icon>
+                            </div>
+                        </div>
+
+                        <!-- Education Centre Mock Tests (Dynamic) -->
+                        <div id="mockSessionsSection" class="mb-8 hidden">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-2 h-8 bg-[#FF6B35] rounded-full"></div>
+                                <h3 class="text-lg font-black text-gray-900">Education Centre Mock Tests</h3>
+                                <span id="mockSessionCount" class="px-3 py-1 bg-orange-50 text-orange-600 text-xs font-black rounded-xl">0 upcoming</span>
+                            </div>
+                            <div id="mockSessionsContainer" class="space-y-4"></div>
+                        </div>
+
+                        <!-- Cards Container -->
+                        <div id="cardsContainer" class="space-y-6">
+
+                            <!-- Empty State -->
+                            <div id="noResults" class="hidden bg-white rounded-[32px] border-2 border-dashed border-purple-100 p-16 text-center">
+                                <div class="w-24 h-24 bg-purple-50 rounded-full flex items-center justify-center mx-auto mb-6 text-purple-200 text-5xl">
+                                    <iconify-icon icon="ph:magnifying-glass-duotone"></iconify-icon>
+                                </div>
+                                <h4 class="text-2xl font-black mb-2">No exams found</h4>
+                                <p class="text-gray-500 font-medium mb-6">Try adjusting your filters to see more available dates.</p>
+                                <button onclick="document.getElementById('resetBtn').click()" class="text-purple-600 font-bold hover:text-purple-700 transition-colors inline-flex items-center gap-2">
+                                    Clear all filters <iconify-icon icon="ph:arrow-right-bold"></iconify-icon>
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="px-6 md:px-16 py-24 bg-white border-t border-purple-50 mt-auto">
+            <div class="max-w-[1360px] mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 items-start">
+                    <div class="lg:col-span-5">
+                        <div class="text-3xl font-black flex items-center uppercase tracking-tighter mb-8">
+                            <span class="text-black border-r-4 border-[#FF6B35] pr-3 mr-3">IELTS</span>
+                            <span class="text-black/60 text-lg tracking-[0.2em] font-bold">PRACTICE</span>
+                        </div>
+                        <p class="text-gray-400 text-lg font-medium max-w-sm mb-10 leading-relaxed">
+                            Empowering students worldwide to achieve their dreams through innovative, technology-driven IELTS preparation tools.
+                        </p>
+                        <div class="flex gap-4">
+                            <a id="soc-1" href="https://t.me/ieltspractice_net" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:telegram-logo-bold"></iconify-icon></a>
+                            <a id="soc-2" href="https://x.com/ieltspracticeUz" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:twitter-logo-bold"></iconify-icon></a>
+                            <a id="soc-3" href="https://www.instagram.com/ieltspractice_net?igsh=MWR3OGw3ZmxjcjF1Ng%3D%3D&utm_source=qr" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:instagram-logo-bold"></iconify-icon></a>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-3 grid grid-cols-2 gap-10">
+                        <div>
+                            <h6 class="font-black uppercase text-xs tracking-widest text-gray-400 mb-8">Quick Links</h6>
+                            <ul class="space-y-4 font-bold text-gray-700">
+                                <li><a id="foot-1" href="/" class="hover:text-purple-600 transition-colors">Home</a></li>
+                                <li><a id="foot-2" href="/courses" class="hover:text-purple-600 transition-colors">Courses</a></li>
+                                <li><a id="foot-3" href="/education-centres" class="hover:text-purple-600 transition-colors">Centers</a></li>
+                                <li><a id="foot-4" href="/dashboard" class="hover:text-purple-600 transition-colors">Mock Exams</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h6 class="font-black uppercase text-xs tracking-widest text-gray-400 mb-8">Support</h6>
+                            <ul class="space-y-4 font-bold text-gray-700">
+                                <li><a id="foot-5" href="#" class="hover:text-purple-600 transition-colors">Help Center</a></li>
+                                <li><a id="foot-6" href="#" class="hover:text-purple-600 transition-colors">FAQ</a></li>
+                                <li><a id="foot-7" href="/privacypolicy" class="hover:text-purple-600 transition-colors">Privacy</a></li>
+                                <li><a id="foot-8" href="/termsconditions" class="hover:text-purple-600 transition-colors">Terms</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-4 bg-[#F5F1FF] p-8 rounded-[40px]">
+                        <h6 class="font-black uppercase text-xs tracking-widest text-purple-600 mb-6">Contact Us</h6>
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-purple-600 shadow-sm"><iconify-icon icon="ph:envelope-bold"></iconify-icon></div>
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 uppercase">Email</p>
+                                    <p class="font-black">support@ieltsedu.net</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-orange-600 shadow-sm"><iconify-icon icon="ph:phone-bold"></iconify-icon></div>
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 uppercase">Phone</p>
+                                    <p class="font-black">+998 (88) 532 4701</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-24 pt-10 border-t border-purple-50 flex flex-col md:flex-row justify-between items-center gap-6 text-xs font-black text-gray-400 tracking-widest">
+                    <div>© 2026 IELTSPRACTICE LEARNING PLATFORM</div>
+                    <div class="flex gap-8">
+                        <span style="color: #6B7280;">Created by <a href="https://xalimov-ahrorbek-portfolio.netlify.app/" target="_blank" style="color: #374151; text-decoration: underline; font-weight: 700; transition: color 0.3s;">Xalimov Ahrorbek</a></span>
+                        <a id="copy-1" href="/privacypolicy" class="hover:text-purple-600 transition-colors">PRIVACY POLICY</a>
+                        <a id="copy-2" href="/termsconditions" class="hover:text-purple-600 transition-colors">TERMS OF SERVICE</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Scroll Reveal Animation
+        const observerOptions = {
+            root: null,
+            threshold: 0.1,
+            rootMargin: '0px'
+        };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+
+        // Mobile Sidebar Toggle
+        const mobileFilterBtn = document.getElementById('mobileFilterBtn');
+        const filterSidebar = document.getElementById('filterSidebar');
+        
+        mobileFilterBtn.addEventListener('click', () => {
+            filterSidebar.classList.toggle('hidden');
+            if(!filterSidebar.classList.contains('hidden')) {
+                filterSidebar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+
+        // Filter Logic
+        function initFilters() {
+            const searchInput = document.getElementById('searchInput');
+            const cityFilter = document.getElementById('cityFilter');
+            const priceSlider = document.getElementById('priceSlider');
+            const priceDisplay = document.getElementById('priceDisplay');
+            const resetBtn = document.getElementById('resetBtn');
+            const resultCount = document.getElementById('resultCount');
+            const noResults = document.getElementById('noResults');
+            const cardsContainer = document.getElementById('cardsContainer');
+            const allCards = Array.from(document.querySelectorAll('.exam-card'));
+
+            // Group Toggle Logic
+            function handleToggleGroup(groupId) {
+                const group = document.getElementById(groupId);
+                const btns = group.querySelectorAll('.toggle-btn');
+                btns.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        btns.forEach(b => {
+                            b.classList.remove('bg-white', 'shadow-sm', 'text-purple-600');
+                            b.classList.add('text-gray-500');
+                        });
+                        const target = e.currentTarget;
+                        target.classList.remove('text-gray-500');
+                        target.classList.add('bg-white', 'shadow-sm', 'text-purple-600');
+                        applyFilters();
+                    });
+                });
+            }
+
+            handleToggleGroup('testTypeGroup');
+            handleToggleGroup('moduleGroup');
+            handleToggleGroup('formatGroup');
+
+            // Get active value from a toggle group
+            function getActiveToggle(groupId) {
+                const group = document.getElementById(groupId);
+                const activeBtn = group.querySelector('.bg-white.text-purple-600');
+                return activeBtn ? activeBtn.getAttribute('data-val') : 'All';
+            }
+
+            // Price Slider Update
+            priceSlider.addEventListener('input', (e) => {
+                const val = parseInt(e.target.value);
+                priceDisplay.textContent = val.toLocaleString('en-US') + ' UZS';
+                applyFilters();
+            });
+
+            // Event Listeners for inputs
+            searchInput.addEventListener('input', applyFilters);
+            cityFilter.addEventListener('change', applyFilters);
+
+            // Apply Filters Function
+            function applyFilters() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                const city = cityFilter.value;
+                const maxPrice = parseInt(priceSlider.value);
+                const type = getActiveToggle('testTypeGroup');
+                const module = getActiveToggle('moduleGroup');
+                const format = getActiveToggle('formatGroup');
+
+                let visibleCount = 0;
+
+                allCards.forEach(card => {
+                    const cardType = card.dataset.type;
+                    const cardModule = card.dataset.module;
+                    const cardFormat = card.dataset.format;
+                    const cardCity = card.dataset.city;
+                    const cardPrice = parseInt(card.dataset.price);
+                    const cardVenue = card.dataset.venue.toLowerCase();
+
+                    let show = true;
+
+                    if (searchTerm && !cardVenue.includes(searchTerm) && !cardCity.toLowerCase().includes(searchTerm)) show = false;
+                    if (city && cardCity !== city) show = false;
+                    if (cardPrice > maxPrice) show = false;
+                    if (type !== 'All' && cardType !== type) show = false;
+                    if (module !== 'All' && cardModule !== module) show = false;
+                    if (format !== 'All' && cardFormat !== format) show = false;
+
+                    if (show) {
+                        card.style.display = 'flex';
+                        visibleCount++;
+                        // Retrigger animation for visible items
+                        card.classList.remove('active');
+                        setTimeout(() => card.classList.add('active'), 50);
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                resultCount.textContent = visibleCount;
+                
+                if (visibleCount === 0) {
+                    noResults.classList.remove('hidden');
+                } else {
+                    noResults.classList.add('hidden');
+                }
+            }
+
+            // Reset Filters
+            resetBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                cityFilter.value = '';
+                priceSlider.value = 3000000;
+                priceDisplay.textContent = '3,000,000 UZS';
+                
+                // Reset toggles to 'All'
+                ['testTypeGroup', 'moduleGroup', 'formatGroup'].forEach(groupId => {
+                    const group = document.getElementById(groupId);
+                    const btns = group.querySelectorAll('.toggle-btn');
+                    btns.forEach((b, index) => {
+                        if (index === 0) {
+                            b.classList.remove('text-gray-500');
+                            b.classList.add('bg-white', 'shadow-sm', 'text-purple-600');
+                        } else {
+                            b.classList.remove('bg-white', 'shadow-sm', 'text-purple-600');
+                            b.classList.add('text-gray-500');
+                        }
+                    });
+                });
+
+                applyFilters();
+            });
+        }
+
+        // Initialize filters when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            initFilters();
+            loadMockSessions();
+        });
+
+        async function loadMockSessions() {
+            try {
+                const res = await fetch('/api/v1/public/centres/mock-sessions');
+                if (!res.ok) return;
+                const json = await res.json();
+                const sessions = json.data || [];
+                if (!sessions.length) return;
+
+                const section = document.getElementById('mockSessionsSection');
+                const container = document.getElementById('mockSessionsContainer');
+                const countEl = document.getElementById('mockSessionCount');
+
+                section.classList.remove('hidden');
+                countEl.textContent = sessions.length + ' upcoming';
+
+                container.innerHTML = sessions.map(s => {
+                    const dt = new Date(s.dateTime);
+                    const day = dt.getDate().toString().padStart(2, '0');
+                    const month = dt.toLocaleString('en', { month: 'short' }).toUpperCase();
+                    const weekday = dt.toLocaleString('en', { weekday: 'long' });
+                    const timeStr = dt.toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' });
+                    const priceStr = s.price ? Number(s.price).toLocaleString() + ' UZS' : 'Free';
+                    const spotsLeft = s.capacity - (s._count?.bookings || 0);
+                    const pct = Math.round(((s._count?.bookings || 0) / s.capacity) * 100);
+                    const isFull = spotsLeft <= 0;
+
+                    return `
+                    <div class="mock-session-card exam-card bg-white p-6 rounded-[32px] border-2 border-orange-100 hover:border-orange-200 transition-playful card-lift shadow-[0_4px_20px_rgb(0,0,0,0.03)] flex flex-col sm:flex-row gap-6 scroll-reveal active"
+                         data-type="Mock" data-module="${s.type}" data-format="${s.format}" data-city="${s.centre?.city || ''}" data-price="${s.price || 0}" data-venue="${(s.centre?.name || '').toLowerCase()}">
+                        <div class="shrink-0 w-full sm:w-24 bg-[#FFF4EE] text-[#FF6B35] rounded-2xl flex sm:flex-col items-center justify-center p-4 gap-2 sm:gap-0 border border-orange-100/50">
+                            <span class="font-display text-4xl sm:text-5xl font-black leading-none">${day}</span>
+                            <div class="flex flex-col sm:items-center">
+                                <span class="text-sm font-bold uppercase tracking-widest">${month}</span>
+                                <span class="text-xs font-medium opacity-80">${weekday.slice(0,3)}</span>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex flex-wrap gap-2 mb-3">
+                                <span class="px-3 py-1 rounded-xl text-[11px] font-black uppercase tracking-wider bg-orange-50 text-orange-600 flex items-center gap-1">
+                                    <iconify-icon icon="ph:buildings-bold"></iconify-icon> Education Centre Mock
+                                </span>
+                                <span class="px-3 py-1 rounded-xl text-[11px] font-black uppercase tracking-wider bg-pink-50 text-pink-600">${s.type}</span>
+                                <span class="px-3 py-1 rounded-xl text-[11px] font-black uppercase tracking-wider bg-blue-50 text-blue-600">${s.format}</span>
+                            </div>
+                            <h3 class="text-xl font-black text-gray-900 mb-1">${s.centre?.name || 'Education Centre'}</h3>
+                            <p class="text-gray-500 text-sm font-medium mb-1 flex items-center gap-1">
+                                <iconify-icon icon="ph:map-pin-fill" class="text-orange-500"></iconify-icon> ${s.location || s.centre?.address || s.centre?.city || 'Location TBD'}
+                            </p>
+                            <p class="text-gray-400 text-xs font-medium mb-4 flex items-center gap-1">
+                                <iconify-icon icon="ph:clock-fill" class="text-purple-500"></iconify-icon> ${timeStr}
+                            </p>
+                            <div class="mb-2">
+                                <div class="flex justify-between items-end mb-1 text-sm">
+                                    <span class="font-bold ${isFull ? 'text-red-500' : 'text-green-500'} flex items-center gap-1">
+                                        <iconify-icon icon="ph:${isFull ? 'x-circle-fill' : 'check-circle-fill'}"></iconify-icon>
+                                        ${isFull ? 'Full' : spotsLeft + ' spots left'}
+                                    </span>
+                                    <span class="font-bold text-gray-400 text-xs">${s._count?.bookings || 0}/${s.capacity} booked</span>
+                                </div>
+                                <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                                    <div class="h-full rounded-full" style="width:${pct}%; background:${pct > 80 ? '#EF4444' : pct > 50 ? '#F59E0B' : '#10B981'};"></div>
+                                </div>
+                            </div>
+                            ${s.notes ? `<p class="text-gray-400 text-xs mt-3 italic">${s.notes}</p>` : ''}
+                        </div>
+                        <div class="shrink-0 sm:w-44 flex flex-row sm:flex-col justify-between items-center sm:items-end sm:border-l-2 border-dashed border-orange-100 sm:pl-6">
+                            <div class="text-left sm:text-right">
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Fee</p>
+                                <p class="text-xl sm:text-2xl font-black text-[#111827] leading-none mb-1">${s.price ? (Number(s.price) / 1000).toFixed(0) + 'k' : 'Free'}</p>
+                                ${s.price ? '<p class="text-xs font-bold text-gray-400">UZS</p>' : ''}
+                            </div>
+                            <button ${isFull ? 'disabled' : ''} onclick="openBookModal(${s.id}, '${s.centre?.name?.replace(/'/g, "\\'") || 'Education Centre'}', '${s.type}', '${dt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}')" class="${isFull ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#FF6B35] btn-bounce'} text-white px-6 py-3 rounded-xl font-bold text-sm transition-playful shadow-lg shadow-orange-500/20 whitespace-nowrap text-center">
+                                ${isFull ? 'Full' : 'Book Now'}
+                            </button>
+                        </div>
+                    </div>`;
+                }).join('');
+
+                // Observe new cards for scroll-reveal animation
+                container.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+
+            } catch(e) {
+                console.error('Failed to load mock sessions:', e);
+            }
+        }
+
+        // Book Now Modal
+        let currentBookSessionId = null;
+
+        function openBookModal(sessionId, centreName, type, dateStr) {
+            currentBookSessionId = sessionId;
+            document.getElementById('bookSessionTitle').textContent = type + ' Mock Test';
+            document.getElementById('bookSessionSubtitle').textContent = centreName + ' \u00B7 ' + dateStr;
+            document.getElementById('bookModal').classList.remove('hidden');
+            document.getElementById('bookModal').classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeBookModal() {
+            document.getElementById('bookModal').classList.add('hidden');
+            document.getElementById('bookModal').classList.remove('flex');
+            document.body.style.overflow = '';
+            currentBookSessionId = null;
+            document.getElementById('bookForm').reset();
+            document.getElementById('bookSuccess').classList.add('hidden');
+            document.getElementById('bookFormFields').classList.remove('hidden');
+        }
+
+        async function submitBooking(e) {
+            e.preventDefault();
+            if (!currentBookSessionId) return;
+
+            const firstName = document.getElementById('bookFirstName').value.trim();
+            const lastName = document.getElementById('bookLastName').value.trim();
+            const phone = document.getElementById('bookPhone').value.trim();
+            const centre = document.getElementById('bookCentre').value.trim();
+            const telegram = document.getElementById('bookTelegram').value.trim();
+
+            if (!firstName || !lastName || !phone) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/v1/public/centres/mock-sessions/${currentBookSessionId}/book`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ firstName, lastName, phone, centre: centre || null, telegram: telegram || null })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    document.getElementById('bookFormFields').classList.add('hidden');
+                    document.getElementById('bookSuccess').classList.remove('hidden');
+                } else {
+                    alert(data.error || 'Failed to submit booking. Please try again.');
+                }
+            } catch (err) {
+                console.error('Booking error:', err);
+                alert('Something went wrong. Please try again later.');
+            }
+        }
+
+        document.addEventListener('click', (e) => {
+            if (e.target === document.getElementById('bookModal')) closeBookModal();
+        });
+    </script>
+
+    <!-- Book Now Modal -->
+    <div id="bookModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div class="bg-white rounded-[32px] p-8 w-full max-w-md mx-4 shadow-2xl relative">
+            <button onclick="closeBookModal()" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:bg-gray-200 transition-colors">
+                <iconify-icon icon="ph:x-bold" class="text-lg"></iconify-icon>
+            </button>
+
+            <div id="bookFormFields">
+                <div class="mb-6">
+                    <div class="text-[10px] font-black uppercase tracking-widest text-orange-500 mb-2">Mock Test Booking</div>
+                    <h3 class="text-2xl font-black text-gray-900 leading-tight" id="bookSessionTitle">Mock Test</h3>
+                    <p class="text-sm text-gray-500 font-medium mt-1" id="bookSessionSubtitle">Centre \u00B7 Date</p>
+                </div>
+
+                <form id="bookForm" onsubmit="submitBooking(event)">
+                    <div class="space-y-4 mb-6">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 block">First Name <span class="text-red-400">*</span></label>
+                            <input type="text" id="bookFirstName" required class="w-full p-3.5 rounded-2xl border-2 border-gray-100 text-sm font-bold text-gray-800 focus:border-purple-400 focus:outline-none transition-colors" placeholder="John" />
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 block">Last Name <span class="text-red-400">*</span></label>
+                            <input type="text" id="bookLastName" required class="w-full p-3.5 rounded-2xl border-2 border-gray-100 text-sm font-bold text-gray-800 focus:border-purple-400 focus:outline-none transition-colors" placeholder="Doe" />
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 block">Phone Number <span class="text-red-400">*</span></label>
+                            <input type="tel" id="bookPhone" required class="w-full p-3.5 rounded-2xl border-2 border-gray-100 text-sm font-bold text-gray-800 focus:border-purple-400 focus:outline-none transition-colors" placeholder="+998 90 123 45 67" />
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 block">Education Centre <span class="text-gray-300 font-normal">(optional)</span></label>
+                            <input type="text" id="bookCentre" class="w-full p-3.5 rounded-2xl border-2 border-gray-100 text-sm font-bold text-gray-800 focus:border-purple-400 focus:outline-none transition-colors" placeholder="e.g. British Council" />
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 block">Telegram Username <span class="text-gray-300 font-normal">(optional)</span></label>
+                            <input type="text" id="bookTelegram" class="w-full p-3.5 rounded-2xl border-2 border-gray-100 text-sm font-bold text-gray-800 focus:border-purple-400 focus:outline-none transition-colors" placeholder="@username" />
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-4 rounded-2xl bg-gray-900 text-white font-bold text-sm hover:bg-[#FF6B35] transition-all duration-300 btn-bounce">
+                        Book Now
+                    </button>
+                </form>
+            </div>
+
+            <div id="bookSuccess" class="hidden text-center py-8">
+                <div class="w-16 h-16 rounded-full bg-green-50 text-green-500 flex items-center justify-center mx-auto mb-4">
+                    <iconify-icon icon="ph:check-bold" class="text-3xl"></iconify-icon>
+                </div>
+                <h3 class="text-xl font-black text-gray-900 mb-2">We will get in touch shortly!</h3>
+                <p class="text-sm text-gray-500 font-medium mb-6">Your booking has been submitted successfully. Our team will contact you to confirm your spot.</p>
+                <button onclick="closeBookModal()" class="w-full py-3 rounded-2xl bg-gray-100 text-gray-800 font-bold text-sm hover:bg-gray-200 transition-colors">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

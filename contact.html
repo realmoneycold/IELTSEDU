@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="./js/page-transitions.js?v=2"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | IELTS Practice</title>
+    <link rel="icon" type="image/png" href="/favicon/image.png">
+    <link rel="stylesheet" href="/output.css">
+    <link rel="stylesheet" href="/css/logo.css">
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <meta name="view-transition" content="same-origin">
+    <style>
+        @import url('https://api.fontshare.com/v2/css?f[]=clash-grotesk@700,600,400&f[]=satoshi@700,500,400&display=swap');
+
+        :root {
+            --lavender-main: #8B5CF6;
+            --brand-orange: #FF6B35;
+            --bg-soft: #F9F5FF;
+            --dark: #111827;
+        }
+
+        body {
+            font-family: 'Satoshi', sans-serif;
+            background-color: var(--bg-soft);
+            color: var(--dark);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Clash Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .scroll-reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .transition-playful {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .card-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(139, 92, 246, 0.2);
+        }
+
+        .btn-bounce:hover {
+            transform: scale(1.05);
+        }
+
+        .orange-text {
+            color: var(--brand-orange);
+        }
+
+        .purple-badge { background-color: #F5F1FF; color: #8B5CF6; }
+        .orange-badge  { background-color: #FFF8F5; color: #FF6B35; }
+        .yellow-badge  { background-color: #FFFBEB; color: #D97706; }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F9F5FF;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D4C5E2;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8B5CF6;
+        }
+
+        @view-transition {
+            navigation: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen relative">
+        <!-- Navigation Header (Identical to Home) -->
+        <nav class="flex items-center justify-between px-4 md:px-8 lg:px-16 py-4 md:py-8 bg-white relative z-[100]">
+            <div class="flex items-center gap-12">
+                <a href="/" class="ielts-logo-horizontal">
+                    <div class="logo-text">
+                        <span class="logo-ielts">IELTS</span>
+                        <div class="logo-divider"></div>
+                        <span class="logo-practice">PRACTICE</span>
+                    </div>
+                </a>
+                <div class="hidden lg:flex items-center gap-8 font-semibold text-gray-600">
+                    <a id="nav-home-link" href="/" class="hover:text-black transition-colors">Home</a>
+                    <a id="nav-courses-link" href="/courses" class="hover:text-black transition-colors">Courses</a>
+                    <a id="nav-exam-link" href="/exam-dates" class="hover:text-black transition-colors">Exam &amp; Mock dates</a>
+                    <a id="nav-centres-link" href="/education-centres" class="hover:text-black transition-colors">Educational Centres</a>
+                    <a id="nav-contact-link" href="/contact" class="hover:text-black transition-colors text-[#FF6B35] font-bold">Contact</a>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 md:gap-6">
+                <a id="nav-signup-btn" href="/signup" class="font-bold hover:text-[#FF6B35] transition-colors hidden sm:inline">Sign up</a>
+                <a id="nav-login-btn" href="/login" class="bg-[#FF6B35] px-5 md:px-8 py-2.5 md:py-3 rounded-2xl font-bold hover:bg-[#e85a2a] transition-all transform hover:scale-105 text-sm md:text-base" style="color: white;">
+                    Login
+                </a>
+                <button id="mobileMenuBtn" class="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-50 transition-colors text-gray-700">
+                    <iconify-icon icon="ph:list-bold" class="text-2xl" id="menuIcon"></iconify-icon>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="lg:hidden fixed inset-0 top-[72px] z-[90] bg-white/95 backdrop-blur-xl border-t border-purple-50 p-6 space-y-2 hidden">
+            <a href="/" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg text-gray-700 hover:bg-purple-50 transition-colors">
+                <iconify-icon icon="ph:house-bold" class="text-xl"></iconify-icon> Home
+            </a>
+            <a href="/courses" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg text-gray-700 hover:bg-purple-50 transition-colors">
+                <iconify-icon icon="ph:graduation-cap-bold" class="text-xl"></iconify-icon> Courses
+            </a>
+            <a href="/exam-dates" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg text-gray-700 hover:bg-purple-50 transition-colors">
+                <iconify-icon icon="ph:calendar-bold" class="text-xl"></iconify-icon> Exam &amp; Mock dates
+            </a>
+            <a href="/education-centres" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg text-gray-700 hover:bg-purple-50 transition-colors">
+                <iconify-icon icon="ph:buildings-bold" class="text-xl"></iconify-icon> Educational Centres
+            </a>
+            <a href="/contact" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg text-[#FF6B35] bg-purple-50/50 hover:bg-purple-50 transition-colors">
+                <iconify-icon icon="ph:envelope-bold" class="text-xl"></iconify-icon> Contact
+            </a>
+            <div class="pt-4 border-t border-purple-50 space-y-2">
+                <a href="/signup" class="flex items-center gap-3 p-4 rounded-2xl font-bold text-lg text-gray-700 hover:bg-purple-50 transition-colors">
+                    <iconify-icon icon="ph:user-plus-bold" class="text-xl"></iconify-icon> Sign up
+                </a>
+            </div>
+        </div>
+        <script>
+            (function() {
+                var btn = document.getElementById('mobileMenuBtn');
+                var menu = document.getElementById('mobileMenu');
+                var icon = document.getElementById('menuIcon');
+                var open = false;
+                btn.addEventListener('click', function() {
+                    open = !open;
+                    menu.classList.toggle('hidden', !open);
+                    icon.setAttribute('icon', open ? 'ph:x-bold' : 'ph:list-bold');
+                });
+            })();
+        </script>
+
+        <main>
+            <!-- Hero & Contact Section -->
+            <section id="contact-hero" class="px-6 md:px-16 pt-4 pb-12 lg:pt-6 lg:pb-20">
+                <div class="max-w-[1360px] mx-auto bg-white rounded-[48px] p-8 md:p-16 lg:p-20 shadow-2xl shadow-purple-100/50">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-20">
+                        <div class="z-10">
+                            <div class="inline-block px-4 py-2 rounded-xl bg-[#F5F1FF] text-[#8B5CF6] text-xs font-black uppercase mb-6">Say Hello</div>
+                            <h1 class="text-6xl md:text-8xl font-black mb-6 leading-tight text-dark">
+                                Get in <span class="orange-text">Touch</span>
+                            </h1>
+                            <p class="text-xl text-gray-500 mb-12 max-w-lg font-medium">
+                                Have a question or need guidance? Our team of IELTS experts is here to help you navigate your journey.
+                            </p>
+
+                            <div class="space-y-10">
+                                <div class="flex items-start gap-6 group">
+                                    <div class="w-14 h-14 rounded-2xl bg-[#F5F1FF] flex items-center justify-center text-[#8B5CF6] shrink-0 group-hover:bg-[#8B5CF6] group-hover:text-white transition-all duration-300">
+                                        <iconify-icon icon="ph:envelope-bold" class="text-2xl"></iconify-icon>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Email us</p>
+                                        <p class="text-2xl font-black">support@ieltsedu.net</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-6 group">
+                                    <div class="w-14 h-14 rounded-2xl bg-[#FFF8F5] flex items-center justify-center text-[#FF6B35] shrink-0 group-hover:bg-[#FF6B35] group-hover:text-white transition-all duration-300">
+                                        <iconify-icon icon="ph:phone-bold" class="text-2xl"></iconify-icon>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Call us</p>
+                                        <p class="text-2xl font-black">+998 88 532 4701</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-6 group">
+                                    <div class="w-14 h-14 rounded-2xl bg-[#FFFBEB] flex items-center justify-center text-[#D97706] shrink-0 group-hover:bg-[#D97706] group-hover:text-white transition-all duration-300">
+                                        <iconify-icon icon="ph:map-pin-bold" class="text-2xl"></iconify-icon>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Our HQ</p>
+                                        <p class="text-2xl font-black">Al Hakim At-Termiziy Street, 28V, Alpomish mahalla citizens' assembly, Termez, Surkhandarya region (IT PARK)</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-16 flex items-center gap-6">
+                                <p class="font-black text-sm uppercase text-gray-400 tracking-widest">Follow us:</p>
+                                <div class="flex gap-4">
+                                    <a id="social-tg" href="https://t.me/ieltspractice_net" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:telegram-logo-bold" class="text-xl"></iconify-icon></a>
+                                    <a id="social-tw" href="https://x.com/ieltspracticeUz" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:twitter-logo-bold"></iconify-icon></a>
+                                    <a id="social-ig" href="https://www.instagram.com/ieltspractice_net?igsh=MWR3OGw3ZmxjcjF1Ng%3D%3D&utm_source=qr" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:instagram-logo-bold" class="text-xl"></iconify-icon></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative">
+                            <form id="contact-form" class="bg-[#F9F5FF] p-8 md:p-12 rounded-[40px] shadow-sm relative z-10 border border-purple-100">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                    <div class="space-y-2">
+                                        <label class="text-sm font-black text-gray-600 ml-2">Full Name</label>
+                                        <input type="text" name="name" placeholder="John Doe" required class="w-full bg-white border-2 border-transparent focus:border-[#8B5CF6] rounded-2xl px-6 py-4 outline-none transition-all">
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-sm font-black text-gray-600 ml-2">Email Address</label>
+                                        <input type="email" name="email" placeholder="john@example.com" required class="w-full bg-white border-2 border-transparent focus:border-[#8B5CF6] rounded-2xl px-6 py-4 outline-none transition-all">
+                                    </div>
+                                </div>
+                                <div class="space-y-2 mb-6">
+                                    <label class="text-sm font-black text-gray-600 ml-2">Subject</label>
+                                    <select name="subject" required class="w-full bg-white border-2 border-transparent focus:border-[#8B5CF6] rounded-2xl px-6 py-4 outline-none transition-all appearance-none">
+                                        <option value="Mock Exam Query">Mock Exam Query</option>
+                                        <option value="Technical Support">Technical Support</option>
+                                        <option value="Business Partnerships">Business Partnerships</option>
+                                        <option value="General Question">General Question</option>
+                                    </select>
+                                </div>
+                                <div class="space-y-2 mb-8">
+                                    <label class="text-sm font-black text-gray-600 ml-2">Message</label>
+                                    <textarea name="message" rows="5" placeholder="How can we help you?" required class="w-full bg-white border-2 border-transparent focus:border-[#8B5CF6] rounded-2xl px-6 py-4 outline-none transition-all resize-none"></textarea>
+                                </div>
+                                <button type="submit" class="w-full bg-[#FF6B35] text-white py-5 rounded-2xl font-bold text-xl transition-playful btn-bounce shadow-xl shadow-orange-200">
+                                    Send Message
+                                </button>
+                            </form>
+                            
+                            <!-- Abstract elements -->
+                            <div class="absolute -top-10 -right-10 w-40 h-40 bg-orange-400/10 blur-3xl -z-10"></div>
+                            <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-purple-400/10 blur-3xl -z-10"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Why Contact Us Section -->
+            <section class="px-6 md:px-16 py-20 lg:py-32 bg-white rounded-[64px] mx-6">
+                <div class="max-w-[1360px] mx-auto">
+                    <div class="text-center mb-20 scroll-reveal active">
+                        <h2 class="text-4xl md:text-6xl font-black mb-6">Why talk to <span class="orange-text">us</span>?</h2>
+                        <p class="text-gray-500 text-lg max-w-2xl mx-auto font-medium">
+                            We are more than just a platform; we are your dedicated partners in academic success.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                        <div class="bg-[#F9F5FF] p-10 rounded-[40px] card-lift transition-playful">
+                            <div class="w-16 h-16 rounded-2xl bg-white flex items-center justify-center text-[#8B5CF6] shadow-sm mb-8">
+                                <iconify-icon icon="ph:timer-bold" class="text-3xl"></iconify-icon>
+                            </div>
+                            <h3 class="text-2xl font-black mb-4">Lightning Fast</h3>
+                            <p class="text-gray-500 font-medium leading-relaxed">
+                                We respond to all queries within 2 hours during business hours. Your time is precious.
+                            </p>
+                        </div>
+                        <div class="bg-[#FFF8F5] p-10 rounded-[40px] card-lift transition-playful">
+                            <div class="w-16 h-16 rounded-2xl bg-white flex items-center justify-center text-[#FF6B35] shadow-sm mb-8">
+                                <iconify-icon icon="ph:student-bold" class="text-3xl"></iconify-icon>
+                            </div>
+                            <h3 class="text-2xl font-black mb-4">Expert Support</h3>
+                            <p class="text-gray-500 font-medium leading-relaxed">
+                                Speak directly with Band 9 instructors for any pedagogical advice or curriculum help.
+                            </p>
+                        </div>
+                        <div class="bg-[#FFFBEB] p-10 rounded-[40px] card-lift transition-playful">
+                            <div class="w-16 h-16 rounded-2xl bg-white flex items-center justify-center text-[#D97706] shadow-sm mb-8">
+                                <iconify-icon icon="ph:clock-bold" class="text-3xl"></iconify-icon>
+                            </div>
+                            <h3 class="text-2xl font-black mb-4">24/7 Availability</h3>
+                            <p class="text-gray-500 font-medium leading-relaxed">
+                                Our technical support team works around the clock to ensure your practice never stops.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Final CTA (Reused from Home) -->
+            <section id="cta" class="px-6 md:px-16 py-20 lg:py-32">
+                <div class="max-w-[1360px] mx-auto bg-gray-900 rounded-[64px] p-12 md:p-24 text-center relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-64 h-64 bg-purple-600/20 blur-[100px]"></div>
+                    <div class="absolute bottom-0 right-0 w-64 h-64 bg-orange-600/20 blur-[100px]"></div>
+                    
+                    <div class="relative z-10 max-w-4xl mx-auto">
+                        <h2 class="text-4xl md:text-7xl font-black text-white mb-8">
+                            Ready to <span class="orange-text">start</span> your journey?
+                        </h2>
+                        <p class="text-gray-400 text-xl font-medium mb-12 max-w-2xl mx-auto">
+                            Join 180,000+ students already mastering the IELTS. Start your first mock test today.
+                        </p>
+
+                        <div class="flex flex-col sm:flex-row justify-center gap-4">
+                            <a id="cta-register" href="/signup" class="bg-[#FF6B35] text-white px-12 py-5 rounded-2xl font-bold text-xl btn-bounce transition-playful shadow-xl shadow-orange-500/20">
+                                Create Free Account
+                            </a>
+                            <a id="cta-courses" href="/courses" class="bg-white/10 text-white border border-white/20 px-12 py-5 rounded-2xl font-bold text-xl hover:bg-white/20 transition-playful">
+                                Explore Courses
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer (Identical to Home) -->
+        <footer class="px-6 md:px-16 py-24 bg-white border-t border-purple-50">
+            <div class="max-w-[1360px] mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 items-start">
+                    <div class="lg:col-span-5">
+                        <div class="ielts-logo-horizontal mb-8">
+                            <div class="logo-text">
+                                <span class="logo-ielts">IELTS</span>
+                                <div class="logo-divider"></div>
+                                <span class="logo-practice">PRACTICE</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-lg font-medium max-w-sm mb-10 leading-relaxed">
+                            Empowering students worldwide to achieve their dreams through innovative, technology-driven IELTS preparation tools.
+                        </p>
+                        <div class="flex gap-4">
+                            <a id="foot-soc-1" href="https://t.me/ieltspractice_net" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:telegram-logo-bold"></iconify-icon></a>
+                            <a id="foot-soc-2" href="https://x.com/ieltspracticeUz" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:twitter-logo-bold"></iconify-icon></a>
+                            <a id="foot-soc-3" href="https://www.instagram.com/ieltspractice_net?igsh=MWR3OGw3ZmxjcjF1Ng%3D%3D&utm_source=qr" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:instagram-logo-bold"></iconify-icon></a>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-3 grid grid-cols-2 gap-10">
+                        <div>
+                            <h6 class="font-black uppercase text-xs tracking-widest text-gray-400 mb-8">Quick Links</h6>
+                            <ul class="space-y-4 font-bold text-gray-700">
+                                <li><a id="foot-link-1" href="/" class="hover:text-purple-600 transition-colors">Home</a></li>
+                                <li><a id="foot-link-2" href="/courses" class="hover:text-purple-600 transition-colors">Courses</a></li>
+                                <li><a id="foot-link-3" href="/education-centres" class="hover:text-purple-600 transition-colors">Centers</a></li>
+                                <li><a id="foot-link-4" href="/dashboard" class="hover:text-purple-600 transition-colors">Mock Exams</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h6 class="font-black uppercase text-xs tracking-widest text-gray-400 mb-8">Support</h6>
+                            <ul class="space-y-4 font-bold text-gray-700">
+                                <li><a id="foot-link-5" href="#" class="hover:text-purple-600 transition-colors">Help Center</a></li>
+                                <li><a id="foot-link-6" href="#" class="hover:text-purple-600 transition-colors">FAQ</a></li>
+                                <li><a id="foot-link-7" href="/privacypolicy" class="hover:text-purple-600 transition-colors">Privacy</a></li>
+                                <li><a id="foot-link-8" href="/termsconditions" class="hover:text-purple-600 transition-colors">Terms</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-4 bg-[#F5F1FF] p-8 rounded-[40px]">
+                        <h6 class="font-black uppercase text-xs tracking-widest text-purple-600 mb-6">Contact Us</h6>
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-purple-600 shadow-sm"><iconify-icon icon="ph:envelope-bold"></iconify-icon></div>
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 uppercase">Email</p>
+                                    <p class="font-black">support@ieltsedu.net</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-orange-600 shadow-sm"><iconify-icon icon="ph:phone-bold"></iconify-icon></div>
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 uppercase">Phone</p>
+                                    <p class="font-black">+998 88 532 4701</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-24 pt-10 border-t border-purple-50 flex flex-col md:flex-row justify-between items-center gap-6 text-xs font-black text-gray-400 tracking-widest">
+                    <div>© 2026 IELTSPRACTICE LEARNING PLATFORM</div>
+                    <div class="flex gap-8">
+                        <span style="color: #6B7280;">Created by <a href="https://xalimov-ahrorbek-portfolio.netlify.app/" target="_blank" style="color: #374151; text-decoration: underline; font-weight: 700; transition: color 0.3s;">Xalimov Ahrorbek</a></span>
+                        <a id="footer-policy" href="/privacypolicy" class="hover:text-purple-600 transition-colors">PRIVACY POLICY</a>
+                        <a id="footer-terms" href="/termsconditions" class="hover:text-purple-600 transition-colors">TERMS OF SERVICE</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Intersection Observer for scroll reveal animations
+        const observerOptions = {
+            root: null,
+            threshold: 0.1,
+            rootMargin: '0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+
+        // Handle Contact Form Submission
+        document.getElementById('contact-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: this.querySelector('[name="name"]').value,
+                email: this.querySelector('[name="email"]').value,
+                subject: this.querySelector('[name="subject"]').value,
+                message: this.querySelector('[name="message"]').value
+            };
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
+            submitBtn.classList.remove('bg-[#FF6B35]');
+            submitBtn.classList.add('bg-gray-400');
+            
+            try {
+                const response = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Show success state on button
+                    submitBtn.classList.remove('bg-gray-400');
+                    submitBtn.classList.add('bg-green-500');
+                    submitBtn.innerHTML = '✅ Message Sent!';
+                    
+                    // Reset form
+                    this.reset();
+                    
+                    // Revert button after 3 seconds
+                    setTimeout(() => {
+                        submitBtn.classList.remove('bg-green-500');
+                        submitBtn.classList.add('bg-[#FF6B35]');
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }, 3000);
+                } else {
+                    alert(result.message || 'Failed to send message. Please try again.');
+                    submitBtn.classList.remove('bg-gray-400');
+                    submitBtn.classList.add('bg-[#FF6B35]');
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Contact form error:', error);
+                alert('Failed to send message. Please try again later.');
+                submitBtn.classList.remove('bg-gray-400');
+                submitBtn.classList.add('bg-[#FF6B35]');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

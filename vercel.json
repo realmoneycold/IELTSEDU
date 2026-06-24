@@ -1,0 +1,39 @@
+{
+  "version": 2,
+  "buildCommand": null,
+  "outputDirectory": ".",
+  "installCommand": null,
+  "framework": null,
+  "cleanUrls": true,
+  "trailingSlash": false,
+
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    }
+  ],
+
+  "rewrites": [
+    { "source": "/teacher-dashboard", "destination": "/teacher-dashboard/teacher-dashboard.html" },
+    { "source": "/teacher-login",     "destination": "/teacher-login/teacher-login.html" },
+    { "source": "/education/dashboard", "destination": "/education/dashboard.html" },
+    { "source": "/admin",             "destination": "/admin/admin.html" },
+    { "source": "/dashboard/student-progress", "destination": "/dashboard/student-progress.html" },
+    { "source": "/dashboard/test-room",        "destination": "/dashboard/test-room.html" },
+    { "source": "/pages/exam-dates",           "destination": "/pages/exam-dates.html" },
+    { "source": "/pages/education-centres",    "destination": "/pages/education-centres.html" },
+    { "source": "/pages/ai-writing-assistant", "destination": "/pages/ai-writing-assistant.html" }
+  ],
+
+  "redirects": [
+    { "source": "/404-new", "destination": "/404", "permanent": false }
+  ],
+
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/404-new.html", "status": 404 }
+  ]
+}

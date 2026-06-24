@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email | IELTS Practice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <meta name="view-transition" content="same-origin">
+    <style>
+        @import url('https://api.fontshare.com/v2/css?f[]=clash-grotesk@700,600,400&f[]=satoshi@700,500,400&display=swap');
+
+        :root {
+            --lavender-main: #8B5CF6;
+            --brand-orange: #FF6B35;
+            --bg-soft: #F9F5FF;
+            --dark: #111827;
+        }
+
+        body {
+            font-family: 'Satoshi', sans-serif;
+            background-color: var(--bg-soft);
+            color: var(--dark);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Clash Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .scroll-reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .transition-playful {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .card-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(139, 92, 246, 0.2);
+        }
+
+        .btn-bounce:hover {
+            transform: scale(1.05);
+        }
+
+        .orange-text {
+            color: var(--brand-orange);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F9F5FF;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D4C5E2;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8B5CF6;
+        }
+
+        @view-transition {
+            navigation: auto;
+        }
+
+        /* Verification Input specific styles */
+        .verify-input:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen relative flex flex-col">
+        <!-- Header (Persistent Navigation) -->
+        <nav class="flex items-center justify-between px-8 md:px-16 py-8 bg-white z-40 sticky top-0 border-b border-purple-50">
+            <div class="flex items-center gap-12">
+                <a href="./index.html" class="text-3xl font-black flex items-center uppercase tracking-tighter">
+                    <span class="text-black border-r-4 border-[#FF6B35] pr-3 mr-3">IELTS</span>
+                    <span class="text-black/60 text-lg tracking-[0.2em] font-bold">PRACTICE</span>
+                </a>
+                <div class="hidden lg:flex items-center gap-8 font-semibold text-gray-600">
+                    <a id="nav-home-link" href="./index.html" class="hover:text-black transition-colors">Home</a>
+                    <a id="nav-courses-link" href="./courses.html" class="hover:text-black transition-colors">Courses</a>
+                    <a id="nav-exam-link" href="./pages/exam-dates.html" class="hover:text-black transition-colors">Exam &amp; Mock dates</a>
+                    <a id="nav-centres-link" href="./pages/education-centres.html" class="hover:text-black transition-colors">Educational Centres</a>
+                    <a id="nav-contact-link" href="./contact.html" class="hover:text-black transition-colors">Contact</a>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <a id="nav-signup-link" href="./signup.html" class="font-bold text-[#000000] hover:text-[#FF6B35] transition-colors">Sign up</a>
+                <a id="nav-login-btn" href="/login.html" class="bg-[#FF6B35] text-white px-8 py-3 rounded-2xl font-bold hover:bg-[#e85a2a] transition-all transform hover:scale-105">
+                    Login
+                </a>
+            </div>
+        </nav>
+
+        <main class="flex-grow flex items-center justify-center py-12 md:py-16 px-6">
+            <div class="max-w-[1360px] w-full grid grid-cols-1 lg:grid-cols-2 gap-12 bg-white rounded-[48px] p-8 md:p-12 lg:p-16 shadow-2xl shadow-purple-100/50 relative overflow-hidden">
+                
+                <!-- Left Side: Motivation & Stats (Desktop Only) -->
+                <div class="hidden lg:flex flex-col justify-between">
+                    <div>
+                        <div class="inline-block px-4 py-2 rounded-xl bg-[#FFF8F5] text-[#FF6B35] text-xs font-black uppercase mb-6">Security Check</div>
+                        <h1 class="text-6xl font-black mb-6 leading-tight">
+                            Protecting <br/><span class="orange-text">Your Account</span>
+                        </h1>
+                        <p class="text-xl text-gray-500 mb-10 max-w-sm font-medium leading-relaxed">
+                            We need to verify your email address to ensure your account's security and send you important updates regarding your IELTS journey.
+                        </p>
+
+                        <div class="space-y-6 mb-12">
+                            <div class="flex items-center gap-5 group cursor-default">
+                                <div class="w-12 h-12 rounded-2xl bg-orange-100 flex items-center justify-center text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-all">
+                                    <iconify-icon icon="ph:envelope-open-bold" class="text-2xl"></iconify-icon>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-gray-700">Check Your Inbox</p>
+                                    <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">For The 6-Digit Code</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-5 group cursor-default">
+                                <div class="w-12 h-12 rounded-2xl bg-purple-100 flex items-center justify-center text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-all">
+                                    <iconify-icon icon="ph:shield-check-bold" class="text-2xl"></iconify-icon>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-gray-700">Secure Platform</p>
+                                    <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Data Protection</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-5 group cursor-default">
+                                <div class="w-12 h-12 rounded-2xl bg-yellow-100 flex items-center justify-center text-yellow-600 group-hover:bg-yellow-600 group-hover:text-white transition-all">
+                                    <iconify-icon icon="ph:clock-bold" class="text-2xl"></iconify-icon>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-gray-700">Quick Process</p>
+                                    <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Takes Less Than A Minute</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-6">
+                        <div class="bg-[#F9F5FF] p-6 rounded-[32px] card-lift transition-playful">
+                            <div class="text-3xl font-black text-dark">50K+</div>
+                            <div class="text-[10px] font-black uppercase text-gray-400 tracking-wider">Students</div>
+                        </div>
+                        <div class="bg-[#F5F1FF] p-6 rounded-[32px] card-lift transition-playful">
+                            <div class="text-3xl font-black text-dark">1.2K+</div>
+                            <div class="text-[10px] font-black uppercase text-gray-400 tracking-wider">Centres</div>
+                        </div>
+                        <div class="bg-[#FFFBEB] p-6 rounded-[32px] card-lift transition-playful">
+                            <div class="text-3xl font-black text-dark">98%</div>
+                            <div class="text-[10px] font-black uppercase text-gray-400 tracking-wider">Pass Rate</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side: Verification Form -->
+                <div class="relative z-10">
+                    <div class="max-w-md mx-auto">
+                        <!-- Stepper -->
+                        <div class="flex items-center justify-between mb-12 px-2">
+                            <!-- Step 1 (Completed) -->
+                            <div class="flex flex-col items-center gap-2">
+                                <div class="w-10 h-10 rounded-full bg-[#8B5CF6] text-white flex items-center justify-center font-black shadow-lg shadow-purple-200">
+                                    <iconify-icon icon="ph:check-bold" class="text-lg"></iconify-icon>
+                                </div>
+                                <span class="text-[10px] font-black uppercase tracking-widest text-[#8B5CF6]">Details</span>
+                            </div>
+                            <div class="h-1 flex-1 mx-3 bg-[#8B5CF6] rounded-full"></div>
+                            
+                            <!-- Step 2 (Active) -->
+                            <div class="flex flex-col items-center gap-2">
+                                <div class="w-10 h-10 rounded-full bg-[#8B5CF6] text-white flex items-center justify-center font-black ring-4 ring-purple-100">2</div>
+                                <span class="text-[10px] font-black uppercase tracking-widest text-[#8B5CF6]">Verify</span>
+                            </div>
+                            
+                            <div class="h-1 flex-1 mx-3 bg-gray-100 rounded-full relative overflow-hidden">
+                                <div class="absolute inset-0 bg-[#8B5CF6] w-1/4 opacity-50 rounded-full"></div>
+                            </div>
+                            
+                            <!-- Step 3 (Pending) -->
+                            <div class="flex flex-col items-center gap-2 opacity-40">
+                                <div class="w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-black">3</div>
+                                <span class="text-[10px] font-black uppercase tracking-widest">Ready</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-8 text-center sm:text-left">
+                            <h2 class="text-4xl md:text-5xl font-black mb-4">Verify Your Email</h2>
+                            <p class="text-gray-500 font-medium mb-6">
+                                We've sent a 6-digit verification code to your email address to confirm it belongs to you.
+                            </p>
+                            
+                            <!-- Email Display Badge -->
+                            <div class="inline-flex items-center gap-3 bg-purple-50 text-purple-900 px-5 py-3 rounded-2xl font-bold text-sm border border-purple-100">
+                                <iconify-icon icon="ph:envelope-simple-open-duotone" class="text-xl text-[#8B5CF6]"></iconify-icon>
+                                <span id="user-display-email">joh****@example.com</span>
+                                <a id="change-email-link" href="./signup.html" class="ml-4 text-[#8B5CF6] hover:text-[#FF6B35] underline decoration-purple-300 underline-offset-4 transition-colors font-black">
+                                    Change
+                                </a>
+                            </div>
+                        </div>
+
+                        <form id="verification-form" class="space-y-8">
+                            <!-- Verification Code Inputs -->
+                            <div class="space-y-3">
+                                <label class="text-xs font-black text-gray-600 ml-2 uppercase tracking-widest flex items-center justify-between">
+                                    <span>Security Code</span>
+                                </label>
+                                <div class="flex justify-between gap-2 sm:gap-3" id="otp-container">
+                                    <input type="text" maxlength="1" class="verify-input w-12 h-14 sm:w-[60px] sm:h-[68px] text-center text-2xl font-black text-gray-800 bg-[#F9F5FF] border-2 border-transparent focus:border-[#8B5CF6] focus:bg-white rounded-2xl outline-none transition-all duration-300 placeholder:text-gray-300" placeholder="-">
+                                    <input type="text" maxlength="1" class="verify-input w-12 h-14 sm:w-[60px] sm:h-[68px] text-center text-2xl font-black text-gray-800 bg-[#F9F5FF] border-2 border-transparent focus:border-[#8B5CF6] focus:bg-white rounded-2xl outline-none transition-all duration-300 placeholder:text-gray-300" placeholder="-">
+                                    <input type="text" maxlength="1" class="verify-input w-12 h-14 sm:w-[60px] sm:h-[68px] text-center text-2xl font-black text-gray-800 bg-[#F9F5FF] border-2 border-transparent focus:border-[#8B5CF6] focus:bg-white rounded-2xl outline-none transition-all duration-300 placeholder:text-gray-300" placeholder="-">
+                                    <input type="text" maxlength="1" class="verify-input w-12 h-14 sm:w-[60px] sm:h-[68px] text-center text-2xl font-black text-gray-800 bg-[#F9F5FF] border-2 border-transparent focus:border-[#8B5CF6] focus:bg-white rounded-2xl outline-none transition-all duration-300 placeholder:text-gray-300" placeholder="-">
+                                    <input type="text" maxlength="1" class="verify-input w-12 h-14 sm:w-[60px] sm:h-[68px] text-center text-2xl font-black text-gray-800 bg-[#F9F5FF] border-2 border-transparent focus:border-[#8B5CF6] focus:bg-white rounded-2xl outline-none transition-all duration-300 placeholder:text-gray-300" placeholder="-">
+                                    <input type="text" maxlength="1" class="verify-input w-12 h-14 sm:w-[60px] sm:h-[68px] text-center text-2xl font-black text-gray-800 bg-[#F9F5FF] border-2 border-transparent focus:border-[#8B5CF6] focus:bg-white rounded-2xl outline-none transition-all duration-300 placeholder:text-gray-300" placeholder="-">
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="w-full bg-[#FF6B35] text-white py-4.5 rounded-2xl font-bold text-lg transition-playful btn-bounce shadow-xl shadow-orange-200 mt-4 flex items-center justify-center gap-3">
+                                Verify & Continue
+                                <iconify-icon icon="ph:arrow-right-bold"></iconify-icon>
+                            </button>
+                        </form>
+
+                        <!-- Resend Help -->
+                        <div class="mt-10 text-center">
+                            <p class="text-sm font-medium text-gray-500 mb-2">
+                                Didn't receive the code?
+                            </p>
+                            <button id="resend-btn" class="text-[#8B5CF6] font-black hover:text-[#FF6B35] transition-colors flex items-center justify-center gap-2 mx-auto">
+                                <iconify-icon icon="ph:arrows-clockwise-bold"></iconify-icon>
+                                Resend Code <span id="timer-text" class="text-gray-400 font-bold ml-1">(00:59)</span>
+                            </button>
+                            <p class="text-xs text-gray-400 mt-4 max-w-[280px] mx-auto leading-relaxed">
+                                Please check your spam folder or wait a moment before requesting a new code.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Floating Decorative Elements -->
+                <div class="absolute -bottom-20 -left-20 w-96 h-96 bg-orange-100 rounded-full blur-[120px] opacity-50 pointer-events-none z-0"></div>
+                <div class="absolute -top-20 -right-20 w-96 h-96 bg-purple-100 rounded-full blur-[120px] opacity-50 pointer-events-none z-0"></div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="px-6 md:px-16 py-24 bg-white border-t border-purple-50">
+            <div class="max-w-[1360px] mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 items-start">
+                    <div class="lg:col-span-5">
+                        <div class="text-3xl font-black flex items-center uppercase tracking-tighter mb-8">
+                            <span class="text-black border-r-4 border-[#FF6B35] pr-3 mr-3">IELTS</span>
+                            <span class="text-black/60 text-lg tracking-[0.2em] font-bold">PRACTICE</span>
+                        </div>
+                        <p class="text-gray-400 text-lg font-medium max-w-sm mb-10 leading-relaxed">
+                            Empowering students worldwide to achieve their dreams through innovative, technology-driven IELTS preparation tools.
+                        </p>
+                        <div class="flex gap-4">
+                            <a id="foot-soc-1" href="https://t.me/ieltspractice_net" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:telegram-logo-bold"></iconify-icon></a>
+                            <a id="foot-soc-2" href="https://x.com/ieltspracticeUz" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:twitter-logo-bold"></iconify-icon></a>
+                            <a id="foot-soc-3" href="https://www.instagram.com/ieltspractice_net?igsh=MWR3OGw3ZmxjcjF1Ng%3D%3D&utm_source=qr" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:instagram-logo-bold"></iconify-icon></a>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-3 grid grid-cols-2 gap-10">
+                        <div>
+                            <h6 class="font-black uppercase text-xs tracking-widest text-gray-400 mb-8">Quick Links</h6>
+                            <ul class="space-y-4 font-bold text-gray-700">
+                                <li><a id="foot-1" href="./index.html" class="hover:text-purple-600 transition-colors">Home</a></li>
+                                <li><a id="foot-2" href="./courses.html" class="hover:text-purple-600 transition-colors">Courses</a></li>
+                                <li><a id="foot-3" href="./pages/education-centres.html" class="hover:text-purple-600 transition-colors">Centers</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h6 class="font-black uppercase text-xs tracking-widest text-gray-400 mb-8">Support</h6>
+                            <ul class="space-y-4 font-bold text-gray-700">
+                                <li><a id="foot-5" href="#" class="hover:text-purple-600 transition-colors">Help Center</a></li>
+                                <li><a id="foot-6" href="#" class="hover:text-purple-600 transition-colors">FAQ</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-4 bg-[#F5F1FF] p-8 rounded-[40px]">
+                        <h6 class="font-black uppercase text-xs tracking-widest text-purple-600 mb-6">Contact Us</h6>
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-purple-600 shadow-sm"><iconify-icon icon="ph:envelope-bold"></iconify-icon></div>
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 uppercase">Email</p>
+                                    <p class="font-black">hello@ieltspractice.com</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-24 pt-10 border-t border-purple-50 flex flex-col md:flex-row justify-between items-center gap-6 text-xs font-black text-gray-400 tracking-widest">
+                    <div>© 2026 IELTSPRACTICE LEARNING PLATFORM</div>
+                    <div class="flex gap-8">
+                        <span style="color: #6B7280;">Created by <a href="https://xalimov-ahrorbek-portfolio.netlify.app/" target="_blank" style="color: #374151; text-decoration: underline; font-weight: 700; transition: color 0.3s;">Xalimov Ahrorbek</a></span>
+                        <a id="policy-link" href="./privacypolicy" class="hover:text-purple-600 transition-colors">PRIVACY POLICY</a>
+                        <a id="terms-link" href="./termsconditions" class="hover:text-purple-600 transition-colors">TERMS OF SERVICE</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Load Pending Email
+        window.addEventListener('DOMContentLoaded', () => {
+            const pendingEmail = localStorage.getItem('pendingEmail');
+            if (pendingEmail) {
+                document.getElementById('user-display-email').textContent = pendingEmail;
+            }
+        });
+
+        // OTP Input Logic
+        const inputs = document.querySelectorAll('.verify-input');
+
+        inputs.forEach((input, index) => {
+            // Allow only numbers
+            input.addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                
+                if (this.value !== '') {
+                    if (index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    } else {
+                        this.blur();
+                    }
+                }
+            });
+
+            // Handle backspace
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace') {
+                    if (this.value === '' && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                }
+            });
+            
+            // Paste handler
+            input.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '').slice(0, 6);
+                
+                if(pastedData) {
+                    for(let i = 0; i < pastedData.length; i++) {
+                        if(i < inputs.length) {
+                            inputs[i].value = pastedData[i];
+                            if(i < inputs.length - 1) inputs[i+1].focus();
+                        }
+                    }
+                    if(pastedData.length === 6) inputs[5].blur();
+                }
+            });
+        });
+
+        // Focus first input on load
+        window.addEventListener('load', () => {
+            setTimeout(() => inputs[0].focus(), 300);
+        });
+
+        // Resend Timer Logic
+        const resendBtn = document.getElementById('resend-btn');
+        const timerText = document.getElementById('timer-text');
+        let timeLeft = 59;
+        let timerInterval;
+
+        function startTimer() {
+            resendBtn.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+            timerText.style.display = 'inline';
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const seconds = timeLeft < 10 ? `0${timeLeft}` : timeLeft;
+                timerText.textContent = `(00:${seconds})`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    resendBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+                    timerText.style.display = 'none';
+                    timeLeft = 59;
+                }
+            }, 1000);
+        }
+
+        startTimer();
+        
+        // Resend click handler
+        resendBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const email = localStorage.getItem('pendingEmail');
+            if (email) {
+                try {
+                    await fetch('/api/auth/resend-verification', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ email })
+                    });
+                } catch(err) {}
+            }
+            startTimer();
+        });
+
+        // Verify Form Submit
+        document.getElementById('verification-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const code = Array.from(inputs).map(i => i.value).join('');
+            const email = localStorage.getItem('pendingEmail');
+
+            if (code.length < 6) {
+                alert('Please enter the full 6-digit code.');
+                return;
+            }
+            if (!email) {
+                window.location.href = '/signup.html';
+                return;
+            }
+
+            const submitBtn = document.querySelector('#verification-form button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Verifying...';
+
+            try {
+                const res = await fetch('/api/auth/verify', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ email, code })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    localStorage.removeItem('pendingEmail');
+                    window.location.href = '/login.html';
+                } else {
+                    alert(data.message || 'Invalid verification code. Please try again.');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Verify &amp; Continue <iconify-icon icon="ph:arrow-right-bold"></iconify-icon>';
+                }
+            } catch (err) {
+                alert('Network error. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Verify &amp; Continue <iconify-icon icon="ph:arrow-right-bold"></iconify-icon>';
+            }
+        });
+    </script>
+</body>
+</html>

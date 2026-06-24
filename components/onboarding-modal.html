@@ -1,0 +1,417 @@
+<!-- Onboarding Modal -->
+<div id="onboarding-modal" class="onboarding-modal" style="display: none;">
+  <div class="onboarding-modal-overlay"></div>
+  
+  <div class="onboarding-modal-content">
+    <div class="onboarding-modal-header">
+      <h2>Let's Personalize Your IELTS Journey</h2>
+      <p>Help us understand your goals</p>
+    </div>
+
+    <form id="onboarding-form">
+      <!-- Question 1: Username -->
+      <div class="onboarding-form-section" id="section-1" style="display: block;">
+        <div class="onboarding-question-number">1 of 4</div>
+
+        <label class="onboarding-question-title">Choose your username</label>
+
+        <div class="onboarding-option-group" style="gap: 8px;">
+          <input type="text" id="onboarding-username" class="onboarding-form-input" placeholder="e.g. johndoe123" autocomplete="username">
+          <small class="onboarding-hint-text" style="display: block;">
+            3-20 characters, lowercase letters and numbers only
+          </small>
+          <small id="onboarding-username-error" class="onboarding-hint-text" style="display: none; color: #EF4444; font-weight: 600;"></small>
+        </div>
+
+        <div class="onboarding-button-group">
+          <button type="button" class="onboarding-btn-secondary" onclick="skipOnboarding()">Skip</button>
+          <button type="button" class="onboarding-btn-primary" onclick="nextQuestion(1)">Next</button>
+        </div>
+      </div>
+
+      <!-- Question 2: Exam Date -->
+      <div class="onboarding-form-section" id="section-2" style="display: none;">
+        <div class="onboarding-question-number">2 of 4</div>
+
+        <label class="onboarding-question-title">When is your exam?</label>
+
+        <div class="onboarding-option-group">
+          <label class="onboarding-radio-option">
+            <input type="radio" name="exam-date-option" value="date" id="exam-date-value">
+            <span class="onboarding-radio-label">I have an exam date</span>
+          </label>
+
+          <div id="exam-date-picker-container" style="display: none;">
+            <input type="date" id="exam-date" class="onboarding-form-input" min="">
+            <small class="onboarding-hint-text" style="display: block;">
+              Select your exam date (must be in future)
+            </small>
+          </div>
+
+          <label class="onboarding-radio-option">
+            <input type="radio" name="exam-date-option" value="unsure" id="exam-date-unsure" checked>
+            <span class="onboarding-radio-label">I'm not sure yet</span>
+          </label>
+        </div>
+
+        <div class="onboarding-button-group">
+          <button type="button" class="onboarding-btn-secondary" onclick="previousQuestion(2)">Back</button>
+          <button type="button" class="onboarding-btn-primary" onclick="nextQuestion(2)">Next</button>
+        </div>
+      </div>
+
+      <!-- Question 3: Target Band -->
+      <div class="onboarding-form-section" id="section-3" style="display: none;">
+        <div class="onboarding-question-number">3 of 4</div>
+
+        <label class="onboarding-question-title">What is your Target Band?</label>
+
+        <div class="onboarding-band-selection">
+          <select id="target-band" class="onboarding-form-input" required>
+            <option value="">Select your target band...</option>
+            <option value="5.5">5.5 - Foundation</option>
+            <option value="6.0">6.0 - Competent</option>
+            <option value="6.5">6.5 - Competent+</option>
+            <option value="7.0">7.0 - Good</option>
+            <option value="7.5">7.5 - Good+</option>
+            <option value="8.0">8.0 - Very Good</option>
+            <option value="8.5">8.5 - Very Good+</option>
+            <option value="9.0">9.0 - Expert</option>
+          </select>
+        </div>
+
+        <p class="onboarding-hint-text">
+          Your target band helps us recommend appropriate practice materials
+        </p>
+
+        <div class="onboarding-button-group">
+          <button type="button" class="onboarding-btn-secondary" onclick="previousQuestion(3)">Back</button>
+          <button type="button" class="onboarding-btn-primary" onclick="nextQuestion(3)">Next</button>
+        </div>
+      </div>
+
+      <!-- Question 4: Source -->
+      <div class="onboarding-form-section" id="section-4" style="display: none;">
+        <div class="onboarding-question-number">4 of 4</div>
+
+        <label class="onboarding-question-title">Where did you hear about us?</label>
+
+        <div class="onboarding-option-group">
+          <label class="onboarding-radio-option">
+            <input type="radio" name="source" value="Friend" required>
+            <span class="onboarding-radio-label">
+              <span class="onboarding-emoji">👥</span> Friend or colleague
+            </span>
+          </label>
+
+          <label class="onboarding-radio-option">
+            <input type="radio" name="source" value="Social Media" required>
+            <span class="onboarding-radio-label">
+              <span class="onboarding-emoji">📱</span> Social Media (Instagram, TikTok, Facebook)
+            </span>
+          </label>
+
+          <label class="onboarding-radio-option">
+            <input type="radio" name="source" value="Presentations" required>
+            <span class="onboarding-radio-label">
+              <span class="onboarding-emoji">🎓</span> School/University Presentation
+            </span>
+          </label>
+
+          <label class="onboarding-radio-option">
+            <input type="radio" name="source" value="Other" required>
+            <span class="onboarding-radio-label">
+              <span class="onboarding-emoji">🔍</span> Internet Search / Other
+            </span>
+          </label>
+        </div>
+
+        <div id="onboarding-error" class="onboarding-error-message" style="display: none;"></div>
+
+        <div class="onboarding-button-group">
+          <button type="button" class="onboarding-btn-secondary" onclick="previousQuestion(4)">Back</button>
+          <button type="submit" class="onboarding-btn-primary" id="onboarding-submit">Complete Setup</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+@import url('https://api.fontshare.com/v2/css?f[]=clash-grotesk@700,600,400&f[]=satoshi@700,500,400&display=swap');
+
+.onboarding-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Satoshi', sans-serif;
+  color: #111827;
+}
+
+.onboarding-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(17, 24, 39, 0.4);
+  backdrop-filter: blur(8px);
+}
+
+.onboarding-modal-content {
+  position: relative;
+  background: #ffffff;
+  border-radius: 32px;
+  width: 90%;
+  max-width: 500px;
+  padding: 48px 40px;
+  box-shadow: 0 30px 60px -12px rgba(139, 92, 246, 0.2);
+  animation: onboardingSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 4px solid #F5F1FF;
+}
+
+@keyframes onboardingSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.onboarding-form-section {
+  animation: sectionFadeIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes sectionFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.onboarding-modal-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.onboarding-modal-header h2 {
+  margin: 0 0 8px 0;
+  font-size: 32px;
+  font-family: 'Clash Grotesk', sans-serif;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.02em;
+}
+
+.onboarding-modal-header p {
+  margin: 0;
+  color: #9CA3AF;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.onboarding-question-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #F9F5FF;
+  color: #8B5CF6;
+  padding: 6px 16px;
+  border-radius: 24px;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 24px;
+  border: 1px solid #F5F1FF;
+}
+
+.onboarding-question-title {
+  display: block;
+  font-size: 22px;
+  font-family: 'Clash Grotesk', sans-serif;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 20px;
+  letter-spacing: -0.01em;
+}
+
+.onboarding-option-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.onboarding-radio-option {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  border: 2px solid #F3F4F6;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: #ffffff;
+}
+
+.onboarding-radio-option:hover {
+  border-color: #D4C5E2;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.05);
+}
+
+.onboarding-radio-option:has(input[type="radio"]:checked) {
+  border-color: #8B5CF6;
+  background: #F9F5FF;
+}
+
+/* Fallback for browsers not supporting :has() */
+.onboarding-radio-option input[type="radio"]:checked + .onboarding-radio-label {
+  color: #8B5CF6;
+  font-weight: 700;
+}
+
+.onboarding-radio-option input[type="radio"] {
+  margin-right: 16px;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  accent-color: #8B5CF6;
+}
+
+.onboarding-radio-label {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #4B5563;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.onboarding-emoji {
+  font-size: 24px;
+}
+
+.onboarding-form-input {
+  width: 100%;
+  background-color: #F9FAFB;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  padding: 14px 20px;
+  font-weight: 700;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.2s ease;
+  color: #1F2937;
+  font-family: 'Satoshi', sans-serif;
+  box-sizing: border-box;
+}
+
+.onboarding-form-input:focus {
+  border-color: #8B5CF6;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+}
+
+.onboarding-band-selection select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%239CA3AF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 20px top 50%;
+  background-size: 12px auto;
+}
+
+.onboarding-hint-text {
+  font-size: 14px;
+  color: #9CA3AF;
+  font-weight: 500;
+  margin-top: 12px;
+}
+
+.onboarding-button-group {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-top: 36px !important;
+}
+
+.onboarding-btn-primary, .onboarding-btn-secondary {
+  flex: 1;
+  padding: 16px 24px;
+  border: none;
+  border-radius: 16px;
+  font-size: 16px;
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.onboarding-btn-primary {
+  background: #8B5CF6;
+  color: white;
+  box-shadow: 0 10px 20px -5px rgba(139, 92, 246, 0.3);
+}
+
+.onboarding-btn-primary:hover {
+  background: #7C3AED;
+  transform: translateY(-4px);
+  box-shadow: 0 15px 25px -5px rgba(139, 92, 246, 0.4);
+}
+
+.onboarding-btn-secondary {
+  background: #F9FAFB;
+  color: #4B5563;
+  border: 2px solid #E5E7EB;
+}
+
+.onboarding-btn-secondary:hover {
+  background: #F3F4F6;
+  color: #111827;
+  border-color: #D1D5DB;
+  transform: translateY(-4px);
+}
+
+.onboarding-error-message {
+  color: #EF4444;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 16px;
+  background: #FEF2F2;
+  border: 2px solid #FECACA;
+  border-radius: 12px;
+  margin-top: 16px !important;
+}
+
+@media (max-width: 640px) {
+  .onboarding-modal-content {
+    width: 95%;
+    padding: 32px 24px;
+    border-radius: 24px;
+  }
+
+  .onboarding-modal-header h2 {
+    font-size: 26px;
+  }
+
+  .onboarding-question-title {
+    font-size: 18px;
+  }
+}
+</style>

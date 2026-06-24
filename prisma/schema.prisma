@@ -1,0 +1,1062 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id                  Int                  @id @default(autoincrement())
+  full_name           String
+  name                String?
+  email               String               @unique
+  username            String?              @unique
+  password            String?
+  country             String?
+  phone               String?
+  test_type           String?
+  role                Role                 @default(STUDENT)
+  is_verified         Boolean              @default(false)
+  isVerified          Boolean?             @default(false)
+  is_onboarded        Boolean              @default(false)
+  isOnboarded         Boolean?             @default(false)
+  target_band         Float?               @default(8.0)
+  targetBand          Float?               @default(8.0)
+  current_band        Float                @default(5.0)
+  currentBand         Float?               @default(5.0)
+  study_hours         Float                @default(0)
+  tasks_done          Int                  @default(0)
+  tasksDone           Int?                 @default(0)
+  weekly_goal_percent Float                @default(0)
+  exam_date           DateTime?
+  examDate            DateTime?
+  exam_date_text      String?
+  target_band_range   String?
+  study_commitment    String?
+  referral_source     String?
+  isActive            Boolean              @default(true)
+  lastSeenAt          DateTime?
+  isExamDateUnsure    Boolean              @default(true)
+  sourceOfExposure    String?
+  onboardingComplete  Boolean              @default(false)
+  centreId            Int?
+  plan                SubscriptionPlan     @default(FREE_TRIAL)
+  trialStartDate      DateTime?            @default(now())
+  trialEndDate        DateTime?
+  planExpiresAt       DateTime?
+  planUpdatedAt       DateTime?
+  dailyAiUsageCount   Int                  @default(0)
+  lastAiUsageDate     DateTime?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  settings            Json?
+  tasksAssigned       AdminTask[]
+  aiChats             AiChatSession[]
+  AIWritingAssessments AIWritingAssessment[] @relation("AIWritingAssessments")
+  devices             Device[]
+  following           Follow[]             @relation("Following")
+  followers           Follow[]             @relation("Followers")
+  applications        GroupApplication[]
+  lessons             Lesson[]             @relation("TeacherLessons")
+  loginLogs           LoginLog[]
+  materials           Material[]           @relation("TeacherMaterials")
+  mockResults         MockResult[]
+  passwordResets      PasswordResetToken[]
+  createdTests        PracticeTest[]       @relation("TestsCreated")
+  practiceTestResults PracticeTestResult[]
+  progressSnapshots   ProgressSnapshot[]
+  resolvedReports     Report[]             @relation("ReportsResolved")
+  reports             Report[]             @relation("ReportsSubmitted")
+  taughtGroups        StudyGroup[]         @relation("TeacherGroups")
+  studyStreaks        StudyStreak[]
+  testUnlocks         TestUnlock[]
+  typingResults       TypingResult[]
+  typingRanking       TypingRanking?
+  centre              EducationCentre?     @relation(fields: [centreId], references: [id])
+  weeklyProgress      WeeklyProgress[]
+  Staff               Staff[]
+  accounts            Account[]
+  announcements       Announcement[]       @relation("AuthorAnnouncements")
+  EducationCentre     EducationCentre[]    @relation("Centres")
+  dailyStudyLogs      DailyStudyLog[]
+  leaderboardEntries  LeaderboardEntry[]
+  joinedLiveSessions  SessionParticipant[] @relation("SessionParticipants")
+  createdLiveSessions LiveSession[]        @relation("TeacherSessions")
+  sessions            Session[]
+  skillStatistics     SkillStatistics[]
+  testAttempts        TestAttempt[]
+  testSubmissions     TestSubmission[]
+  userProgress        UserProgress[]
+  studyStreak         UserStudyStreak?
+  weaknessAnalysis    WeaknessAnalysis[]
+  teacherStats        TeacherStats?
+  paymentRequests     PaymentRequest[]
+
+  @@map("User")
+}
+
+model TeacherStats {
+  id                  Int      @id @default(autoincrement())
+  teacherId           Int      @unique
+  totalHoursTaught    Int      @default(0)
+  totalStudentsHelped Int      @default(0)
+  totalMaterialsShared Int     @default(0)
+  totalSubmissionsGraded Int   @default(0)
+  lastWeekFollowers   Int      @default(0)
+  lastWeekMaterials   Int      @default(0)
+  lastWeekLessons     Int      @default(0)
+  lastWeekGraded      Int      @default(0)
+  updatedAt           DateTime @updatedAt
+  createdAt           DateTime @default(now())
+  teacher             User     @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+
+  @@map("teacher_stats")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            Int
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       Int
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model EducationCentre {
+  id             Int           @id @default(autoincrement())
+  name           String        @unique
+  code           String        @unique
+  city           String
+  address        String?
+  phone          String?
+  website        String?
+  totalStudents  Int           @default(0)
+  activeStudents Int           @default(0)
+  rating         Float?        @default(4.5)
+  isActive       Boolean       @default(true)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  country        String
+  email          String?
+  managerId      Int?
+  latitude       Float?
+  longitude      Float?
+  inquiries      Inquiry[]
+  mockSessions   MockSession[]
+  StudyGroup     StudyGroup[]
+  users          User[]
+  Staff          Staff[]
+  manager        User?         @relation("Centres", fields: [managerId], references: [id])
+  centreUsers    CentreUser[]
+
+  @@index([city])
+  @@index([code])
+  @@index([latitude, longitude])
+  @@map("centres")
+}
+
+model CentreUser {
+  id           Int             @id @default(autoincrement())
+  email        String          @unique
+  fullName     String
+  passwordHash String
+  role         String          @default("CENTRE_ADMIN")
+  centreId     Int
+  isActive     Boolean         @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  centre       EducationCentre @relation(fields: [centreId], references: [id], onDelete: Cascade)
+
+  @@index([centreId])
+  @@index([email])
+  @@map("centre_users")
+}
+
+model PartnerRequest {
+  id          Int           @id @default(autoincrement())
+  centre_name String
+  ceo_name    String
+  email       String        @unique
+  phone       String
+  location    String
+  status      PartnerStatus @default(PENDING)
+  password    String
+  createdAt   DateTime      @default(now())
+}
+
+model MockSession {
+  id        Int                 @id @default(autoincrement())
+  centreId  Int
+  dateTime  DateTime
+  type      String              @default("Academic")
+  format    String              @default("Paper-Based")
+  location  String              @default("TBD")
+  capacity  Int                 @default(30)
+  price     Float               @default(0)
+  notes     String?
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  results   MockResult[]
+  bookings  MockSessionBooking[]
+  centre    EducationCentre     @relation(fields: [centreId], references: [id], onDelete: Cascade)
+}
+
+model MockResult {
+  id        Int          @id @default(autoincrement())
+  studentId Int
+  sessionId Int?
+  listening Float?
+  reading   Float?
+  writing   Float?
+  speaking  Float?
+  overall   Float?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  session   MockSession? @relation(fields: [sessionId], references: [id])
+  student   User         @relation(fields: [studentId], references: [id], onDelete: Cascade)
+}
+
+model MockSessionBooking {
+  id        Int               @id @default(autoincrement())
+  sessionId Int
+  firstName String
+  lastName  String
+  phone     String
+  centre    String?
+  telegram  String?
+  status    ApplicationStatus @default(PENDING)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  session   MockSession       @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
+
+model StudyGroup {
+  id           Int                @id @default(autoincrement())
+  centreId     Int
+  teacherId    Int?
+  teacherName  String?
+  name         String
+  level        String             @default("All levels")
+  schedule     String             @default("TBD")
+  startDate    DateTime?
+  endDate      DateTime?
+  capacity     Int                @default(15)
+  status       GroupStatus        @default(OPEN)
+  description  String?
+  location     String?
+  mapUrl       String?
+  latitude     Float?
+  longitude    Float?
+  price        Int?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  applications GroupApplication[]
+  centre       EducationCentre    @relation(fields: [centreId], references: [id], onDelete: Cascade)
+  teacher      User?              @relation("TeacherGroups", fields: [teacherId], references: [id])
+}
+
+model GroupApplication {
+  id             Int               @id @default(autoincrement())
+  studentId      Int?
+  groupId        Int
+  firstName      String?
+  lastName       String?
+  phone          String?
+  previousScore  Float?
+  status         ApplicationStatus @default(PENDING)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  group          StudyGroup        @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  student        User?             @relation(fields: [studentId], references: [id], onDelete: Cascade)
+}
+
+model Inquiry {
+  id           Int             @id @default(autoincrement())
+  centreId     Int
+  studentName  String
+  studentEmail String
+  message      String
+  isRead       Boolean         @default(false)
+  createdAt    DateTime        @default(now())
+  centre       EducationCentre @relation(fields: [centreId], references: [id], onDelete: Cascade)
+}
+
+model AdminTask {
+  id           Int          @id @default(autoincrement())
+  adminId      Int
+  title        String
+  notes        String?
+  label        TaskLabel    @default(CUSTOMER_SERVICE)
+  priority     TaskPriority @default(MEDIUM)
+  isDone       Boolean      @default(false)
+  doneAt       DateTime?
+  assignedDate DateTime     @default(now()) @db.Date
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  admin        User         @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@index([adminId])
+  @@index([isDone])
+}
+
+model Device {
+  id           Int        @id @default(autoincrement())
+  userId       Int
+  deviceType   DeviceType @default(DESKTOP)
+  deviceName   String
+  browser      String
+  os           String?
+  ipAddress    String?
+  location     String?
+  latitude     Float?
+  longitude    Float?
+  userAgent    String?
+  isActive     Boolean    @default(true)
+  lastActiveAt DateTime   @default(now())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model StrategicGoal {
+  id        Int          @id @default(autoincrement())
+  title     String
+  priority  TaskPriority @default(MEDIUM)
+  column    String       @default("TODO")
+  dueDate   DateTime?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  icon      String   @default("🔔")
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model LoginLog {
+  id         Int      @id @default(autoincrement())
+  userId     Int?
+  ipAddress  String?
+  deviceInfo String?
+  userAgent  String?
+  success    Boolean
+  reason     String?
+  timestamp  DateTime @default(now())
+  user       User?    @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([timestamp])
+}
+
+model TypingResult {
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  wpm             Float
+  accuracy        Float
+  date            DateTime @default(now())
+  durationMinutes Int?     @default(2)
+  difficulty      String   @default("intermediate")
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([date])
+}
+
+model TypingRanking {
+  id            Int      @id @default(autoincrement())
+  userId        Int      @unique
+  bestWpm       Float
+  avgAccuracy   Float
+  testsCount    Int      @default(1)
+  score         Int      // Calculated: (bestWpm * 0.7) + (avgAccuracy * 0.3)
+  rank          Int      @default(0)
+  lastTestDate  DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  createdAt     DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([score])
+  @@index([rank])
+  @@index([userId])
+  @@map("typing_rankings")
+}
+
+model TypingPracticeText {
+  id         String   @id @default(cuid())
+  title      String
+  content    String
+  difficulty String   @default("intermediate")
+  wordCount  Int
+  topics     String
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([difficulty])
+  @@index([isActive])
+  @@map("typing_practice_texts")
+}
+
+model StudyStreak {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  date        DateTime @db.Date
+  isCompleted Boolean  @default(false)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+}
+
+model WeeklyProgress {
+  id                 Int      @id @default(autoincrement())
+  userId             Int
+  weekStartDate      DateTime @db.Date
+  perfectScoresCount Int      @default(0)
+  progressPercentage Float    @default(0)
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, weekStartDate])
+}
+
+model AiChatSession {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  topic        String   @default("General")
+  question     String?  @db.Text
+  response     String?  @db.Text
+  category     String   @default("General")  // GENERAL_MENTORING, WRITING_TIPS, etc.
+  messageCount Int      @default(0)
+  
+  history      Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([category])
+}
+
+model AIWritingAssessment {
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  user           User     @relation("AIWritingAssessments", fields: [userId], references: [id], onDelete: Cascade)
+  
+  writingText    String   @db.Text
+  taskType       String   @default("Task2")  // Task1 or Task2
+  assessment     Json
+  overallBand    Float?
+  
+  wordCount      Int?
+  grammarErrors  Int?
+  lexicalScore   Float?
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model PracticeTest {
+  id                  Int                  @id @default(autoincrement())
+  title               String
+  testType            TestType
+  practiceMode        PracticeMode         @default(FULL)
+  focusArea           String?
+  durationMins        Int                  @default(60)
+  instructions        String?
+  passage             String?
+  audioUrl            String?
+  isPublished         Boolean              @default(false)
+  isArchived          Boolean              @default(false)
+  createdById         Int
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  createdBy           User                 @relation("TestsCreated", fields: [createdById], references: [id])
+  practiceTestResults PracticeTestResult[]
+  questions           Question[]
+  reports             Report[]
+
+  @@index([testType])
+}
+
+model Question {
+  id            Int          @id @default(autoincrement())
+  testId        Int
+  questionText  String
+  type          QuestionType @default(MULTIPLE_CHOICE)
+  options       Json?
+  correctAnswer String
+  orderIndex    Int          @default(0)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  test          PracticeTest @relation(fields: [testId], references: [id], onDelete: Cascade)
+  reports       Report[]
+}
+
+model Report {
+  id             Int          @id @default(autoincrement())
+  studentId      Int
+  testId         Int
+  questionId     Int?
+  type           ReportType   @default(CONTENT_ERROR)
+  status         ReportStatus @default(OPEN)
+  description    String
+  resolvedById   Int?
+  resolutionNote String?
+  resolvedAt     DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  question       Question?    @relation(fields: [questionId], references: [id])
+  resolvedBy     User?        @relation("ReportsResolved", fields: [resolvedById], references: [id])
+  student        User         @relation("ReportsSubmitted", fields: [studentId], references: [id])
+  test           PracticeTest @relation(fields: [testId], references: [id])
+}
+
+model PracticeTestResult {
+  id               Int          @id @default(autoincrement())
+  userId           Int
+  testId           Int
+  testIdentifier   String
+  testCategory     String
+  testSubcategory  String?
+  setNumber        Int
+  score            Float        @default(0)
+  bandScore        Float?
+  correctAnswers   Int          @default(0)
+  totalQuestions   Int          @default(0)
+  timeSpentSeconds Int          @default(0)
+  answers          Json?
+  isCompleted      Boolean      @default(false)
+  isUnlocked       Boolean      @default(true)
+  completedAt      DateTime?
+  aiAnalysis       String?
+  progressNote     String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  test             PracticeTest @relation(fields: [testId], references: [id], onDelete: Cascade)
+  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, testIdentifier])
+  @@index([userId])
+  @@index([testCategory])
+  @@index([testIdentifier])
+}
+
+model TestUnlock {
+  id               Int      @id @default(autoincrement())
+  userId           Int
+  category         String
+  subcategory      String?
+  maxUnlockedSet   Int      @default(1)
+  minScoreRequired Float    @default(70.0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, category, subcategory])
+}
+
+model ProgressSnapshot {
+  id               Int      @id @default(autoincrement())
+  userId           Int
+  listeningAvg     Float?   @default(0)
+  readingAvg       Float?   @default(0)
+  writingAvg       Float?   @default(0)
+  speakingAvg      Float?   @default(0)
+  overallAvg       Float?   @default(0)
+  estimatedBand    Float?   @default(5.0)
+  targetBand       Float?   @default(8.0)
+  testsCompleted   Int      @default(0)
+  currentStreak    Int      @default(0)
+  bestStreak       Int      @default(0)
+  weakAreas        String?
+  strongAreas      String?
+  isMakingProgress Boolean  @default(true)
+  aiConclusion     String?
+  recommendation   String?
+  snapshotDate     DateTime @default(now())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([snapshotDate])
+}
+
+model TestSubmission {
+  id          String    @id @default(cuid())
+  userId      Int
+  testId      String
+  testType    TestType
+  answers     Json
+  score       Float
+  bandScore   Float?
+  timeSpent   Int
+  submittedAt DateTime  @default(now())
+  gradedAt    DateTime?
+  feedback    Json?
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("test_submissions")
+}
+
+model UserProgress {
+  id             String   @id @default(cuid())
+  userId         Int
+  testType       TestType
+  latestScore    Float
+  testsCompleted Int      @default(0)
+  lastTestDate   DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, testType])
+  @@map("user_progress")
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  type      String   @default("GENERAL")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy Int
+  author    User     @relation("AuthorAnnouncements", fields: [createdBy], references: [id])
+
+  @@map("announcements")
+}
+
+model Lesson {
+  id        Int        @id @default(autoincrement())
+  title     String
+  zoomLink  String?
+  roomId    String?    @unique
+  startTime DateTime
+  status    String     @default("SCHEDULED")
+  teacherId Int
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  teacher   User       @relation("TeacherLessons", fields: [teacherId], references: [id], onDelete: Cascade)
+  materials Material[]
+}
+
+model Material {
+  id        Int      @id @default(autoincrement())
+  fileName  String
+  fileUrl   String
+  fileType  String
+  teacherId Int
+  lessonId  Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  lesson    Lesson?  @relation(fields: [lessonId], references: [id])
+  teacher   User     @relation("TeacherMaterials", fields: [teacherId], references: [id], onDelete: Cascade)
+}
+
+model Follow {
+  id        Int      @id @default(autoincrement())
+  studentId Int
+  teacherId Int
+  createdAt DateTime @default(now())
+  student   User     @relation("Following", fields: [studentId], references: [id], onDelete: Cascade)
+  teacher   User     @relation("Followers", fields: [teacherId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, teacherId])
+}
+
+model LiveSession {
+  id              String               @id @default(cuid())
+  title           String
+  description     String?
+  teacherId       Int
+  sessionType     String               @default("speaking")
+  startTime       DateTime
+  endTime         DateTime?
+  maxParticipants Int                  @default(20)
+  status          String               @default("scheduled")
+  isFeatured      Boolean              @default(false)
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  participants    SessionParticipant[]
+  teacher         User                 @relation("TeacherSessions", fields: [teacherId], references: [id])
+
+  @@index([teacherId])
+  @@index([startTime])
+  @@map("live_sessions")
+}
+
+model SessionParticipant {
+  id        String      @id @default(cuid())
+  sessionId String
+  userId    Int
+  joinedAt  DateTime    @default(now())
+  leftAt    DateTime?
+  role      String      @default("student")
+  createdAt DateTime    @default(now())
+  session   LiveSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user      User        @relation("SessionParticipants", fields: [userId], references: [id])
+
+  @@unique([sessionId, userId])
+  @@index([sessionId])
+  @@index([userId])
+  @@map("live_session_participants")
+}
+
+model Leaderboard {
+  id          Int                 @id @default(autoincrement())
+  category    LeaderboardCategory @unique
+  title       String
+  description String?
+  isActive    Boolean             @default(true)
+  updatedAt   DateTime            @updatedAt
+  createdAt   DateTime            @default(now())
+  entries     LeaderboardEntry[]
+
+  @@map("leaderboards")
+}
+
+model LeaderboardEntry {
+  id            Int         @id @default(autoincrement())
+  leaderboardId Int
+  userId        Int
+  rank          Int
+  score         Float
+  trend         String      @default("stable")
+  trendAmount   Int         @default(0)
+  userName      String
+  userCountry   String?
+  userAvatar    String?
+  isPlaceholder Boolean     @default(false)
+  updatedAt     DateTime    @updatedAt
+  createdAt     DateTime    @default(now())
+  leaderboard   Leaderboard @relation(fields: [leaderboardId], references: [id], onDelete: Cascade)
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([leaderboardId, userId])
+  @@index([leaderboardId, rank])
+  @@map("leaderboard_entries")
+}
+
+model VerificationCode {
+  id        Int      @id @default(autoincrement())
+  email     String
+  code      String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model PasswordResetToken {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model TestAttempt {
+  id               Int        @id @default(autoincrement())
+  userId           Int
+  testType         TestType
+  testId           String
+  testName         String
+  skillArea        String?
+  score            Float?
+  maxScore         Float      @default(9.0)
+  percentageScore  Float?
+  timeSpentSeconds Int?
+  status           TestStatus @default(COMPLETED)
+  answersCorrect   Int?
+  answersTotal     Int?
+  feedback         String?
+  completedAt      DateTime   @default(now())
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  user             User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([testType])
+  @@index([completedAt])
+  @@index([userId, testType])
+  @@map("test_attempts")
+}
+
+model SkillStatistics {
+  id                      Int       @id @default(autoincrement())
+  userId                  Int
+  skill                   TestType
+  totalAttempts           Int       @default(0)
+  completedAttempts       Int       @default(0)
+  averageScore            Float     @default(0)
+  bestScore               Float     @default(0)
+  worstScore              Float     @default(0)
+  totalTimeSpentSeconds   Int       @default(0)
+  averageTimeSpentSeconds Int       @default(0)
+  improvementRate         Float     @default(0)
+  consistencyScore        Float     @default(0)
+  lastAttemptAt           DateTime?
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, skill])
+  @@map("skill_statistics")
+}
+
+model WeaknessAnalysis {
+  id              Int       @id @default(autoincrement())
+  userId          Int
+  skillArea       SkillArea
+  testType        TestType
+  difficultyLevel Int       @default(5)
+  failureCount    Int       @default(0)
+  attemptCount    Int       @default(0)
+  successRate     Float     @default(0)
+  averageScore    Float     @default(0)
+  lastFailedAt    DateTime?
+  priority        Int       @default(1)
+  recommendation  String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, skillArea])
+  @@index([userId, priority])
+  @@map("weakness_analysis")
+}
+
+model UserStudyStreak {
+  id             Int       @id @default(autoincrement())
+  userId         Int       @unique
+  currentStreak  Int       @default(0)
+  longestStreak  Int       @default(0)
+  totalStudyDays Int       @default(0)
+  lastStudyDate  DateTime?
+  weeklyGoal     Int       @default(5)
+  weeklyProgress Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_study_streaks")
+}
+
+model DailyStudyLog {
+  id               Int      @id @default(autoincrement())
+  userId           Int
+  studyDate        DateTime
+  testsCompleted   Int      @default(0)
+  timeSpentMinutes Int      @default(0)
+  skillsPracticed  String[]
+  createdAt        DateTime @default(now())
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, studyDate])
+  @@index([userId, studyDate])
+  @@map("daily_study_logs")
+}
+
+model Staff {
+  A       Int
+  B       Int
+  centres EducationCentre @relation(fields: [A], references: [id], onDelete: Cascade)
+  User    User            @relation(fields: [B], references: [id], onDelete: Cascade)
+
+  @@id([A, B], map: "_Staff_AB_pkey")
+  @@index([B], map: "_Staff_B_index")
+  @@map("_Staff")
+}
+
+enum Role {
+  STUDENT
+  ADMIN
+  CEO
+  CENTRE
+  TEACHER
+  GRADER
+  SUPPORT
+  CONTENT
+  ANALYST
+  MANAGER
+}
+
+enum PartnerStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum TaskLabel {
+  CUSTOMER_SERVICE
+  TECHNICAL_ANALYSIS
+  CONTENT_MANAGEMENT
+  OPERATIONS
+}
+
+enum TaskPriority {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum DeviceType {
+  DESKTOP
+  LAPTOP
+  MOBILE
+  TABLET
+}
+
+enum TestType {
+  READING
+  LISTENING
+  WRITING
+  SPEAKING
+}
+
+enum PracticeMode {
+  FULL
+  PARTIAL
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  FILL_BLANKS
+  TRUE_FALSE
+}
+
+enum ReportType {
+  CONTENT_ERROR
+  TECHNICAL_BUG
+  SCORE_ERROR
+  TYPO
+  OTHER
+}
+
+enum ReportStatus {
+  OPEN
+  REVIEWING
+  RESOLVED
+  WONT_FIX
+}
+
+enum GroupLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum GroupStatus {
+  OPEN
+  CLOSED
+}
+
+enum ApplicationStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+enum LeaderboardCategory {
+  HIGHEST_SCORER
+  TYPING_DOJO
+  STUDY_STREAK
+  WEEKLY_TEST
+}
+
+enum TestStatus {
+  COMPLETED
+  ABANDONED
+  IN_PROGRESS
+}
+
+enum SkillArea {
+  READING_COMPREHENSION
+  LISTENING_COMPREHENSION
+  WRITING_TASK_1
+  WRITING_TASK_2
+  SPEAKING_PART_1
+  SPEAKING_PART_2
+  SPEAKING_PART_3
+  VOCABULARY
+  GRAMMAR
+  PRONUNCIATION
+  FLUENCY
+  COHERENCE
+}
+
+enum SubscriptionPlan {
+  FREE_TRIAL
+  FREE
+  BASIC
+  PREMIUM
+}
+
+enum PaymentMethod {
+  VISA_MASTERCARD
+  HUMO
+  UZCARD
+  MANUAL
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  REFUNDED
+}
+
+model PaymentRequest {
+  id            Int              @id @default(autoincrement())
+  userId        Int
+  plan          SubscriptionPlan
+  amount        Float
+  currency      String           @default("UZS")
+  method        PaymentMethod
+  status        PaymentStatus    @default(PENDING)
+  proofImageUrl String?
+  lsOrderId     String?          // LemonSqueezy order ID
+  note          String?
+  reviewedBy    Int?
+  reviewedAt    DateTime?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@map("payment_requests")
+}

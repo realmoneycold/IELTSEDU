@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="./js/page-transitions.js?v=2"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | IELTS Practice</title>
+    <link rel="icon" type="image/png" href="./favicon/image.png">
+    <link rel="stylesheet" href="./output.css">
+    <link rel="stylesheet" href="./css/logo.css">
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <meta name="view-transition" content="same-origin">
+    <style>
+        @import url('https://api.fontshare.com/v2/css?f[]=clash-grotesk@700,600,400&f[]=satoshi@700,500,400&display=swap');
+
+        :root {
+            --lavender-main: #8B5CF6;
+            --brand-orange: #FF6B35;
+            --bg-soft: #F9F5FF;
+            --dark: #111827;
+        }
+
+        body {
+            font-family: 'Satoshi', sans-serif;
+            background-color: var(--bg-soft);
+            color: var(--dark);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Clash Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .scroll-reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .transition-playful {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .card-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(139, 92, 246, 0.2);
+        }
+
+        .btn-bounce:hover {
+            transform: scale(1.05);
+        }
+
+        .orange-text {
+            color: var(--brand-orange);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F9F5FF;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D4C5E2;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8B5CF6;
+        }
+
+        .strength-seg {
+            transition: all 0.3s ease;
+        }
+
+        #countryDropdown::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        @view-transition {
+            navigation: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen relative flex flex-col">
+        <!-- Header (Persistent Navigation) -->
+        <nav class="flex items-center justify-between px-8 md:px-16 py-8 bg-white z-40 sticky top-0 border-b border-purple-50">
+            <div class="flex items-center gap-12">
+                <a href="/" class="ielts-logo-horizontal">
+                    <div class="logo-text">
+                        <span class="logo-ielts">IELTS</span>
+                        <div class="logo-divider"></div>
+                        <span class="logo-practice">PRACTICE</span>
+                    </div>
+                </a>
+                <div class="hidden lg:flex items-center gap-8 font-semibold text-gray-600">
+                    <a id="nav-home-link" href="/" class="hover:text-black transition-colors">Home</a>
+                    <a id="nav-courses-link" href="/courses" class="hover:text-black transition-colors">Courses</a>
+                    <a id="nav-exam-link" href="/exam-dates" class="hover:text-black transition-colors">Exam &amp; Mock dates</a>
+                    <a id="nav-centres-link" href="/education-centres" class="hover:text-black transition-colors">Educational Centres</a>
+                    <a id="nav-contact-link" href="/contact" class="hover:text-black transition-colors">Contact</a>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <a id="nav-signup-link" href="/signup" class="font-bold text-[#000000] transition-colors">Sign up</a>
+                <a id="nav-login-btn" href="/login" class="bg-[#FF6B35] !text-white px-8 py-3 rounded-2xl font-bold hover:bg-[#e85a2a] transition-all transform hover:scale-105" style="color: white !important;">
+                    Login
+                </a>
+            </div>
+        </nav>
+
+        <main class="flex-grow flex items-center justify-center py-12 md:py-16 px-6">
+            <div class="max-w-[1360px] w-full grid grid-cols-1 lg:grid-cols-2 gap-12 bg-white rounded-[48px] p-8 md:p-12 lg:p-16 shadow-2xl shadow-purple-100/50 relative overflow-hidden">
+                
+                <!-- Left Side: Motivation & Stats (Desktop Only) -->
+                <div class="hidden lg:flex flex-col justify-between">
+                    <div>
+                        <div class="inline-block px-4 py-2 rounded-xl bg-[#FFF8F5] text-[#FF6B35] text-xs font-black uppercase mb-6">New Journey</div>
+                        <h1 class="text-6xl font-black mb-6 leading-tight">
+                            Start Your <br/><span class="orange-text">IELTS Story</span> <br/>Today
+                        </h1>
+                        <p class="text-xl text-gray-500 mb-10 max-w-sm font-medium leading-relaxed">
+                            Unlock full access to AI mock tests, band tracking, and the world's best IELTS resources.
+                        </p>
+
+                        <div class="space-y-6 mb-12">
+                            <div class="flex items-center gap-5 group cursor-default">
+                                <div class="w-12 h-12 rounded-2xl bg-orange-100 flex items-center justify-center text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-all">
+                                    <iconify-icon icon="ph:rocket-launch-bold" class="text-2xl"></iconify-icon>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-gray-700">AI-Powered Mock Tests</p>
+                                    <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Realistic Feedback</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-5 group cursor-default">
+                                <div class="w-12 h-12 rounded-2xl bg-purple-100 flex items-center justify-center text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-all">
+                                    <iconify-icon icon="ph:chart-line-up-bold" class="text-2xl"></iconify-icon>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-gray-700">Band Score Tracking</p>
+                                    <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Visual Progress</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-5 group cursor-default">
+                                <div class="w-12 h-12 rounded-2xl bg-yellow-100 flex items-center justify-center text-yellow-600 group-hover:bg-yellow-600 group-hover:text-white transition-all">
+                                    <iconify-icon icon="ph:users-three-bold" class="text-2xl"></iconify-icon>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-gray-700">Live Expert Tutoring</p>
+                                    <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Direct Guidance</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-6">
+                        <div class="bg-[#F9F5FF] p-6 rounded-[32px] card-lift transition-playful">
+                            <div class="text-3xl font-black text-dark">1K+</div>
+                            <div class="text-[10px] font-black uppercase text-gray-400 tracking-wider">Students</div>
+                        </div>
+                        <div class="bg-[#F5F1FF] p-6 rounded-[32px] card-lift transition-playful">
+                            <div class="text-3xl font-black text-dark">2+</div>
+                            <div class="text-[10px] font-black uppercase text-gray-400 tracking-wider">Centres</div>
+                        </div>
+                        <div class="bg-[#FFFBEB] p-6 rounded-[32px] card-lift transition-playful">
+                            <div class="text-3xl font-black text-dark">98%</div>
+                            <div class="text-[10px] font-black uppercase text-gray-400 tracking-wider">Pass Rate</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side: Signup Form -->
+                <div class="relative z-10">
+                    <div class="max-w-md mx-auto">
+                        <!-- Stepper -->
+                        <div class="flex items-center justify-between mb-10 px-4">
+                            <div class="flex flex-col items-center gap-2">
+                                <div class="w-10 h-10 rounded-full bg-[#8B5CF6] text-white flex items-center justify-center font-black shadow-lg shadow-purple-200">1</div>
+                                <span class="text-[10px] font-black uppercase tracking-widest text-[#8B5CF6]">Details</span>
+                            </div>
+                            <div class="h-1 flex-1 mx-4 bg-gray-100 rounded-full relative overflow-hidden">
+                                <div class="absolute inset-0 bg-purple-100 w-1/3"></div>
+                            </div>
+                            <div class="flex flex-col items-center gap-2 opacity-30">
+                                <div class="w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-black">2</div>
+                                <span class="text-[10px] font-black uppercase tracking-widest">Verify</span>
+                            </div>
+                            <div class="h-1 flex-1 mx-4 bg-gray-100 rounded-full"></div>
+                            <div class="flex flex-col items-center gap-2 opacity-30">
+                                <div class="w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-black">3</div>
+                                <span class="text-[10px] font-black uppercase tracking-widest">Ready</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h2 class="text-4xl font-black mb-2">Create Account</h2>
+                            <p class="text-gray-500 font-medium">Start your free 7-day trial today</p>
+                        </div>
+
+                        <form id="signup-form-main" class="space-y-5">
+                            <!-- Full Name -->
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-black text-gray-600 ml-2 uppercase tracking-widest">Full Name</label>
+                                <div class="relative">
+                                    <span class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400">
+                                        <iconify-icon icon="ph:user-bold" class="text-xl"></iconify-icon>
+                                    </span>
+                                    <input type="text" id="fullname-input" placeholder="John Doe" class="w-full bg-[#F9F5FF] border-2 border-transparent focus:border-[#8B5CF6] focus:bg-white rounded-2xl px-14 py-4 font-medium transition-all duration-300 outline-none">
+                                </div>
+                                <div id="fullname-error" class="hidden text-red-500 text-xs font-bold mt-1 ml-2">Please enter your full name</div>
+                            </div>
+
+                            <!-- Username -->
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-black text-gray-600 ml-2 uppercase tracking-widest">Username</label>
+                                <div class="relative">
+                                    <span class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400">
+                                        <iconify-icon icon="ph:at-bold" class="text-xl"></iconify-icon>
+                                    </span>
+                                    <input type="text" id="username-input" placeholder="john123" class="w-full bg-[#F9F5FF] border-2 border-transparent focus:border-[#8B5CF6] focus:bg-white rounded-2xl px-14 py-4 font-medium transition-all duration-300 outline-none">
+                                </div>
+                                <div id="username-error" class="hidden text-red-500 text-xs font-bold mt-1 ml-2">Username required</div>
+                                <div id="username-success" class="hidden text-green-500 text-xs font-bold mt-1 ml-2">Username is available</div>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-black text-gray-600 ml-2 uppercase tracking-widest">Email Address</label>
+                                <div class="relative">
+                                    <span class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400">
+                                        <iconify-icon icon="ph:envelope-bold" class="text-xl"></iconify-icon>
+                                    </span>
+                                    <input type="email" id="email-input" placeholder="you@example.com" class="w-full bg-[#F9F5FF] border-2 border-transparent focus:border-[#8B5CF6] focus:bg-white rounded-2xl px-14 py-4 font-medium transition-all duration-300 outline-none">
+                                </div>
+                                <div id="email-error" class="hidden text-red-500 text-xs font-bold mt-1 ml-2">Valid email required</div>
+                            </div>
+
+                            <!-- Country Searchable -->
+                            <div class="space-y-1.5 relative">
+                                <label class="text-xs font-black text-gray-600 ml-2 uppercase tracking-widest">Country</label>
+                                <div class="relative">
+                                    <span class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400">
+                                        <iconify-icon icon="ph:globe-hemisphere-west-bold" class="text-xl"></iconify-icon>
+                                    </span>
+                                    <input type="text" id="country-input" name="country" placeholder="Select your country" readonly class="w-full bg-[#F9F5FF] border-2 border-transparent focus:border-[#8B5CF6] focus:bg-white rounded-2xl px-14 py-4 font-medium transition-all duration-300 outline-none cursor-pointer">
+                                    <span class="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                                        <iconify-icon icon="ph:caret-down-bold"></iconify-icon>
+                                    </span>
+                                </div>
+                                <div id="country-error" class="hidden text-red-500 text-xs font-bold mt-1 ml-2">Please select a country</div>
+                                <!-- Dropdown Mock -->
+                                <div id="countryDropdown" class="hidden absolute z-50 left-0 right-0 top-full mt-2 bg-white border border-purple-100 rounded-2xl shadow-2xl max-h-60 overflow-y-auto p-2">
+                                    <div class="p-2 border-b border-gray-50">
+                                        <input type="text" id="country-search" placeholder="Search countries..." class="w-full bg-gray-50 border-none rounded-xl px-4 py-2 text-sm outline-none">
+                                    </div>
+                                    <div class="space-y-1 pt-2" id="country-list">
+                                        <!-- Javascript Populated -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Password -->
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-black text-gray-600 ml-2 uppercase tracking-widest">Password</label>
+                                <div class="relative">
+                                    <span class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400">
+                                        <iconify-icon icon="ph:lock-bold" class="text-xl"></iconify-icon>
+                                    </span>
+                                    <input type="password" id="password-input" placeholder="••••••••" class="w-full bg-[#F9F5FF] border-2 border-transparent focus:border-[#8B5CF6] focus:bg-white rounded-2xl px-14 py-4 font-medium transition-all duration-300 outline-none">
+                                    <button type="button" id="pw-toggle" class="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#8B5CF6]">
+                                        <iconify-icon id="pw-icon" icon="ph:eye-bold" class="text-xl"></iconify-icon>
+                                    </button>
+                                </div>
+                                <div id="password-error" class="hidden text-red-500 text-xs font-bold mt-1 ml-2">Password must be at least 8 characters</div>
+                                <!-- Strength Bar -->
+                                <div class="flex gap-1.5 px-2 pt-1">
+                                    <div class="h-1.5 flex-1 rounded-full strength-seg bg-gray-100" id="seg-1"></div>
+                                    <div class="h-1.5 flex-1 rounded-full strength-seg bg-gray-100" id="seg-2"></div>
+                                    <div class="h-1.5 flex-1 rounded-full strength-seg bg-gray-100" id="seg-3"></div>
+                                    <div class="h-1.5 flex-1 rounded-full strength-seg bg-gray-100" id="seg-4"></div>
+                                </div>
+                            </div>
+
+                            <!-- Terms -->
+                            <div class="px-2">
+                                <label class="flex items-center gap-3 cursor-pointer group w-max max-w-none">
+                                    <input type="checkbox" id="terms-checkbox" class="w-5 h-5 rounded-lg border-2 border-purple-100 text-[#8B5CF6] focus:ring-[#8B5CF6] transition-all flex-shrink-0">
+                                    <span class="text-xs font-medium text-gray-500 !whitespace-nowrap inline-block">
+                                        I agree to the <a href="./termsconditions" class="text-[#8B5CF6] font-black hover:underline inline">Terms of Service</a> and <a href="./privacypolicy" class="text-[#8B5CF6] font-black hover:underline inline">Privacy Policy</a>.
+                                    </span>
+                                </label>
+                            </div>
+                            <div id="terms-error" class="hidden text-red-500 text-xs font-bold ml-2">You must agree to the Terms</div>
+
+                            <div id="signup-error" class="hidden p-4 rounded-xl bg-red-50 text-red-600 font-bold text-sm text-center"></div>
+                            <button type="submit" id="submit-btn" class="w-full bg-[#FF6B35] !text-white py-4 rounded-2xl font-bold text-lg transition-playful btn-bounce shadow-xl shadow-orange-200 mt-2 flex items-center justify-center gap-3" style="color: white !important;">
+                                <span id="btn-spinner" class="hidden animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></span>
+                                <span id="btn-text" style="color: white !important;">Create Free Account</span>
+                            </button>
+                        </form>
+
+                        <div class="relative my-8">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-gray-100"></div>
+                            </div>
+                            <div class="relative flex justify-center text-xs uppercase">
+                                <span class="bg-white px-4 font-black text-gray-400 tracking-widest">Or signup with</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <button id="google-oauth-btn" onclick="window.location.href='/api/v1/auth/oauth/google'" class="flex items-center justify-center gap-3 bg-white border-2 border-gray-100 px-6 py-3.5 rounded-2xl font-bold hover:bg-gray-50 transition-all">
+                                <iconify-icon icon="logos:google-icon" class="text-lg"></iconify-icon>
+                                <span class="text-sm">Google</span>
+                            </button>
+                            <button id="telegram-oauth-btn" onclick="initTelegramAuth()" class="flex items-center justify-center gap-3 bg-white border-2 border-gray-100 px-6 py-3.5 rounded-2xl font-bold hover:bg-gray-50 transition-all">
+                                <iconify-icon icon="logos:telegram" class="text-lg"></iconify-icon>
+                                <span class="text-sm">Telegram</span>
+                            </button>
+                        </div>
+
+                        <p class="mt-8 text-center font-medium text-gray-500">
+                            Already have an account? <a id="login-footer-link" href="/login" class="text-[#8B5CF6] font-black hover:underline">Sign in here</a>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Floating Decorative Elements -->
+                <div class="absolute -bottom-10 -left-10 w-80 h-80 bg-orange-100 rounded-full blur-[100px] opacity-40 -z-10"></div>
+                <div class="absolute -top-10 -right-10 w-80 h-80 bg-purple-100 rounded-full blur-[100px] opacity-40 -z-10"></div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="px-6 md:px-16 py-24 bg-white border-t border-purple-50">
+            <div class="max-w-[1360px] mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 items-start">
+                    <div class="lg:col-span-5">
+                        <div class="ielts-logo-horizontal mb-8">
+                            <div class="logo-text">
+                                <span class="logo-ielts">IELTS</span>
+                                <div class="logo-divider"></div>
+                                <span class="logo-practice">PRACTICE</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-lg font-medium max-w-sm mb-10 leading-relaxed">
+                            Empowering students worldwide to achieve their dreams through innovative, technology-driven IELTS preparation tools.
+                        </p>
+                        <div class="flex gap-4">
+                            <a id="foot-soc-1" href="https://t.me/ieltspractice_net" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:telegram-logo-bold"></iconify-icon></a>
+                            <a id="foot-soc-2" href="https://x.com/ieltspracticeUz" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:twitter-logo-bold"></iconify-icon></a>
+                            <a id="foot-soc-3" href="https://www.instagram.com/ieltspractice_net?igsh=MWR3OGw3ZmxjcjF1Ng%3D%3D&utm_source=qr" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-playful"><iconify-icon icon="ph:instagram-logo-bold"></iconify-icon></a>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-3 grid grid-cols-2 gap-10">
+                        <div>
+                            <h6 class="font-black uppercase text-xs tracking-widest text-gray-400 mb-8">Quick Links</h6>
+                            <ul class="space-y-4 font-bold text-gray-700">
+                                <li><a id="foot-1" href="/" class="hover:text-purple-600 transition-colors">Home</a></li>
+                                <li><a id="foot-2" href="/courses" class="hover:text-purple-600 transition-colors">Courses</a></li>
+                                <li><a id="foot-3" href="/education-centres" class="hover:text-purple-600 transition-colors">Centers</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h6 class="font-black uppercase text-xs tracking-widest text-gray-400 mb-8">Support</h6>
+                            <ul class="space-y-4 font-bold text-gray-700">
+                                <li><a id="foot-5" href="#" class="hover:text-purple-600 transition-colors">Help Center</a></li>
+                                <li><a id="foot-6" href="#" class="hover:text-purple-600 transition-colors">FAQ</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-4 bg-[#F5F1FF] p-8 rounded-[40px]">
+                        <h6 class="font-black uppercase text-xs tracking-widest text-purple-600 mb-6">Contact Us</h6>
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-purple-600 shadow-sm"><iconify-icon icon="ph:envelope-bold"></iconify-icon></div>
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 uppercase">Email</p>
+                                    <p class="font-black">support@ieltsedu.net</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-24 pt-10 border-t border-purple-50 flex flex-col md:flex-row justify-between items-center gap-6 text-xs font-black text-gray-400 tracking-widest">
+                    <div>© 2026 IELTSPRACTICE LEARNING PLATFORM</div>
+                    <div class="flex gap-8">
+                        <span style="color: #6B7280;">Created by <a href="https://xalimov-ahrorbek-portfolio.netlify.app/" target="_blank" style="color: #374151; text-decoration: underline; font-weight: 700; transition: color 0.3s;">Xalimov Ahrorbek</a></span>
+                        <a id="policy-link" href="./privacypolicy" class="hover:text-purple-600 transition-colors">PRIVACY POLICY</a>
+                        <a id="terms-link" href="./termsconditions" class="hover:text-purple-600 transition-colors">TERMS OF SERVICE</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Interactive Password Strength Logic
+        const passwordInput = document.getElementById('password-input');
+        const segments = [document.getElementById('seg-1'), document.getElementById('seg-2'), document.getElementById('seg-3'), document.getElementById('seg-4')];
+
+        passwordInput.addEventListener('input', (e) => {
+            const val = e.target.value;
+            const len = val.length;
+
+            segments.forEach(seg => seg.className = 'h-1.5 flex-1 rounded-full strength-seg bg-gray-100');
+
+            if (len > 0) {
+                if (len < 4) {
+                    segments[0].className = 'h-1.5 flex-1 rounded-full strength-seg bg-red-400';
+                } else if (len < 8) {
+                    segments[0].className = 'h-1.5 flex-1 rounded-full strength-seg bg-orange-400';
+                    segments[1].className = 'h-1.5 flex-1 rounded-full strength-seg bg-orange-400';
+                } else if (len < 12) {
+                    segments[0].className = 'h-1.5 flex-1 rounded-full strength-seg bg-yellow-400';
+                    segments[1].className = 'h-1.5 flex-1 rounded-full strength-seg bg-yellow-400';
+                    segments[2].className = 'h-1.5 flex-1 rounded-full strength-seg bg-yellow-400';
+                } else {
+                    segments.forEach(seg => seg.className = 'h-1.5 flex-1 rounded-full strength-seg bg-[#8B5CF6]');
+                }
+            }
+        });
+
+        // Country Dropdown Mock Interaction
+        const countryInput = document.getElementById('country-input');
+        const countryDropdown = document.getElementById('countryDropdown');
+
+        countryInput.addEventListener('click', () => {
+            countryDropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!countryInput.contains(e.target) && !countryDropdown.contains(e.target)) {
+                countryDropdown.classList.add('hidden');
+            }
+        });
+
+
+
+        // Toggle Password Eye
+        const pwToggle = document.getElementById('pw-toggle');
+        const pwIcon = document.getElementById('pw-icon');
+        pwToggle.addEventListener('click', () => {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                pwIcon.setAttribute('icon', 'ph:eye-slash-bold');
+            } else {
+                passwordInput.type = 'password';
+                pwIcon.setAttribute('icon', 'ph:eye-bold');
+            }
+        });
+
+        // Live Username Validation
+        const usernameInput = document.getElementById('username-input');
+        const usernameError = document.getElementById('username-error');
+        const usernameSuccess = document.getElementById('username-success');
+        let unTimer;
+
+        usernameInput.addEventListener('input', () => {
+            clearTimeout(unTimer);
+            const val = usernameInput.value.trim();
+            const regex = /^[a-z0-9]{3,20}$/;
+
+            usernameError.classList.add('hidden');
+            usernameSuccess.classList.add('hidden');
+
+            if (!val) {
+                usernameError.textContent = "Username is required";
+                usernameError.classList.remove('hidden');
+                return;
+            }
+
+            if (!regex.test(val)) {
+                usernameError.textContent = "Username can only contain lowercase letters and numbers (a-z, 0-9) and must be 3-20 characters";
+                usernameError.classList.remove('hidden');
+                return;
+            }
+
+            unTimer = setTimeout(async () => {
+                try {
+                    const res = await fetch(`/api/auth/check-username?username=${encodeURIComponent(val)}`);
+                    const data = await res.json();
+                    
+                    if (!data.available) {
+                        usernameError.textContent = data.message || "Username already taken";
+                        usernameError.classList.remove('hidden');
+                        usernameSuccess.classList.add('hidden');
+                    } else {
+                        usernameSuccess.textContent = "Username is available";
+                        usernameSuccess.classList.remove('hidden');
+                        usernameError.classList.add('hidden');
+                    }
+                } catch (e) {
+                    console.error("Username check failed", e);
+                }
+            }, 400);
+        });
+
+        // Load Countries
+        const COUNTRIES = [
+          "Afghanistan","Albania","Algeria","Andorra","Angola","Antigua & Barbuda","Argentina","Armenia","Australia","Austria","Azerbaijan",
+          "Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia & Herz.","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon","Canada","Central African Rep.","Chad","Chile","China","Colombia","Comoros","Congo","Costa Rica","Croatia","Cuba","Cyprus","Czechia","Denmark","Djibouti","Dominica","Dominican Rep.","East Timor","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","North Korea","South Korea","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Macedonia","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania","Russia","Rwanda","Saint Kitts & Nevis","Saint Lucia","Samoa","San Marino","Sao Tome & Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Togo","Tonga","Trinidad & Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","United Arab Emir.","United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"
+        ];
+        
+        const countryList = document.getElementById('country-list');
+        const searchCountry = document.getElementById('country-search');
+        
+        function populateCountries(filter = '') {
+            countryList.innerHTML = '';
+            const filtered = COUNTRIES.filter(c => c.toLowerCase().includes(filter.toLowerCase()));
+            if (!filtered.length) {
+                countryList.innerHTML = '<div class="px-4 py-2 text-sm text-gray-400">No countries found</div>';
+                return;
+            }
+            filtered.forEach(c => {
+                const div = document.createElement('div');
+                div.className = "px-4 py-2.5 hover:bg-[#F5F1FF] hover:text-[#8B5CF6] rounded-xl cursor-pointer font-bold text-sm transition-colors";
+                div.textContent = c;
+                div.onclick = (e) => {
+                    countryInput.value = c;
+                    countryDropdown.classList.add('hidden');
+                    document.getElementById('country-error').classList.add('hidden');
+                };
+                countryList.appendChild(div);
+            });
+        }
+        populateCountries();
+        searchCountry.addEventListener('input', (e) => populateCountries(e.target.value));
+
+        // Form Validation & Submit
+        document.getElementById('signup-form-main').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('fullname-input').value.trim();
+            const username = document.getElementById('username-input').value.trim();
+            const email = document.getElementById('email-input').value.trim();
+            const password = passwordInput.value;
+            const country = countryInput.value;
+            const terms = document.getElementById('terms-checkbox').checked;
+            
+            let isValid = true;
+            
+            const setErr = (id, valid) => {
+                const el = document.getElementById(id);
+                if(!valid) { el.classList.remove('hidden'); isValid = false; }
+                else { el.classList.add('hidden'); }
+            };
+
+            setErr('fullname-error', fullName.length >= 2);
+
+            // Check username regex and availability
+            const usernameRegex = /^[a-z0-9]{3,20}$/;
+            const unErrEl = document.getElementById('username-error');
+            const unSuccessEl = document.getElementById('username-success');
+            
+            if (!username) {
+                unErrEl.textContent = "Username is required";
+                setErr('username-error', false);
+            } else if (!usernameRegex.test(username)) {
+                unErrEl.textContent = "Username can only contain lowercase letters and numbers (a-z, 0-9) and must be 3-20 characters";
+                setErr('username-error', false);
+            } else if (!unErrEl.classList.contains('hidden')) {
+                // If it's already showing an error (from real-time check), keep it
+                isValid = false;
+            } else if (unSuccessEl.classList.contains('hidden')) {
+                // If success is hidden and no error is showing, it means it hasn't been validated yet
+                unErrEl.textContent = "Please wait for username validation";
+                setErr('username-error', false);
+            }
+
+            setErr('email-error', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+            setErr('password-error', password.length >= 8);
+            setErr('country-error', country !== '');
+            setErr('terms-error', terms);
+
+            if (!isValid) return;
+
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.querySelector('#btn-text').textContent = 'Creating...';
+            submitBtn.querySelector('#btn-spinner').classList.remove('hidden');
+
+            try {
+                const res = await fetch('/api/auth/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        full_name: fullName,
+                        username: username,
+                        email: email,
+                        password: password,
+                        country: country,
+                        role: 'STUDENT'
+                    })
+                });
+                const data = await res.json();
+                
+                if (res.ok) {
+                    localStorage.setItem('pendingEmail', email);
+                    window.location.href = './verify-email.html';
+                } else {
+                    const errBox = document.getElementById('signup-error');
+                    errBox.textContent = data.message || 'Registration failed';
+                    errBox.classList.remove('hidden');
+                }
+            } catch (err) {
+                const errBox = document.getElementById('signup-error');
+                errBox.textContent = 'Network error. Please try again later.';
+                errBox.classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.querySelector('#btn-text').textContent = 'Create Free Account';
+                submitBtn.querySelector('#btn-spinner').classList.add('hidden');
+            }
+        });
+        // Save returnUrl if present
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const returnUrl = params.get('returnUrl');
+            if (returnUrl) {
+                sessionStorage.setItem('returnUrl', returnUrl);
+                
+                // Update login footer link to include returnUrl
+                const loginLink = document.getElementById('login-footer-link');
+                if (loginLink) {
+                    loginLink.href = `/login?returnUrl=${encodeURIComponent(returnUrl)}`;
+                }
+            }
+        });
+    </script>
+
+    <script>
+        // ─── TELEGRAM AUTHENTICATION ─────────────────────────────────────
+        function initTelegramAuth() {
+            // Open Telegram login widget popup
+            const botId = 'YOUR_TELEGRAM_BOT_ID'; // Numeric bot ID from token // Replace with your actual bot name
+            const authUrl = encodeURIComponent(`${window.location.origin}/api/v1/auth/oauth/telegram`);
+            
+            const width = 550;
+            const height = 450;
+            const left = (window.innerWidth - width) / 2;
+            const top = (window.innerHeight - height) / 2;
+            
+            const popup = window.open(
+                `https://oauth.telegram.org/auth?bot_id=${botId}&origin=${encodeURIComponent(window.location.origin)}&embed=0&request_access=write`,
+                'telegram_oauth',
+                `width=${width},height=${height},top=${top},left=${left},scrollbars=yes`
+            );
+            
+            // Listen for message from popup
+            let tgHandled = false;
+            window.addEventListener('message', async (e) => {
+                if (e.source !== popup || tgHandled) return;
+
+                // Telegram sends { event: 'auth_result', result: { id, first_name, ... } }
+                const tgData = e.data?.result || e.data;
+                if (!tgData || (!tgData.id && !e.data?.event === 'auth_result')) return;
+
+                tgHandled = true;
+                try {
+                    const res = await fetch('/api/v1/auth/oauth/telegram', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(tgData)
+                    });
+
+                    const data = await res.json();
+
+                    if (data.success) {
+                        // Store JWT and user data
+                        localStorage.setItem('authToken', data.token);
+                        localStorage.setItem('role', (data.user.role || 'student').toLowerCase());
+                        localStorage.setItem('user', JSON.stringify(data.user || {}));
+                        // Also store individual keys that dashboard.html reads on startup
+                        if (data.user) {
+                            if (data.user.full_name) localStorage.setItem('userName', data.user.full_name);
+                            if (data.user.email)    localStorage.setItem('userEmail', data.user.email);
+                            if (data.user.id)       localStorage.setItem('userId', String(data.user.id));
+                            const handle = data.user.username ? '@' + data.user.username : (data.user.email ? '@' + data.user.email.split('@')[0] : '');
+                            if (handle) localStorage.setItem('userHandle', handle);
+                        }
+
+                        // Close popup and redirect
+                        popup.close();
+                        window.location.href = '/dashboard';
+                    } else {
+                        popup.close();
+                        alert(data.message || 'Telegram authentication failed');
+                    }
+                } catch (err) {
+                    popup.close();
+                    console.error('Telegram auth error:', err);
+                    alert('Authentication failed. Please try again.');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Xalimov Ahrorbek — Resume</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 10.5pt;
+      color: #1a1a1a;
+      background: #fff;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 36px 44px;
+      line-height: 1.45;
+    }
+
+    /* ── HEADER ── */
+    .header { text-align: center; margin-bottom: 14px; }
+    .header h1 {
+      font-size: 22pt;
+      font-weight: bold;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    .contact {
+      font-size: 9.5pt;
+      color: #333;
+    }
+    .contact a { color: #1a1a1a; text-decoration: none; }
+    .contact span { margin: 0 5px; color: #999; }
+
+    /* ── SECTION TITLES ── */
+    h2 {
+      font-size: 10pt;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      border-bottom: 1.5px solid #1a1a1a;
+      padding-bottom: 2px;
+      margin: 16px 0 8px;
+    }
+
+    /* ── ENTRY ROWS ── */
+    .entry { margin-bottom: 10px; }
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .entry-title { font-weight: bold; font-size: 10.5pt; }
+    .entry-date { font-size: 9.5pt; color: #444; white-space: nowrap; }
+    .entry-sub {
+      display: flex;
+      justify-content: space-between;
+      font-style: italic;
+      font-size: 9.5pt;
+      color: #444;
+      margin-bottom: 3px;
+    }
+    .entry-sub .location { font-style: normal; color: #555; }
+
+    ul {
+      padding-left: 18px;
+      margin-top: 3px;
+    }
+    ul li { margin-bottom: 2px; font-size: 10.2pt; }
+
+    /* ── PROJECTS ── */
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .project-name { font-weight: bold; }
+    .project-tech { font-weight: normal; font-style: italic; font-size: 9.5pt; }
+    .project-date { font-size: 9.5pt; color: #444; white-space: nowrap; }
+
+    /* ── SKILLS ── */
+    .skills-grid { display: flex; flex-direction: column; gap: 3px; }
+    .skill-row { font-size: 10.2pt; }
+    .skill-row strong { font-weight: bold; }
+
+    /* ── PRINT ── */
+    @media print {
+      body { padding: 20px 30px; }
+      @page { margin: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>Xalimov Ahrorbek</h1>
+    <div class="contact">
+      +998 (88) 532-4701
+      <span>|</span>
+      <a href="mailto:khalimovahrorbek@gmail.com">khalimovahrorbek@gmail.com</a>
+      <span>|</span>
+      <a href="https://linkedin.com/in/khalimov-ahrorbek/" target="_blank">linkedin.com/in/khalimov-ahrorbek</a>
+      <span>|</span>
+      <a href="https://github.com/realmoneycold" target="_blank">github.com/realmoneycold</a>
+    </div>
+  </div>
+
+  <!-- EDUCATION -->
+  <h2>Education</h2>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-title">Muzrabot District Secondary School No. 56</span>
+      <span class="entry-date">Sep. 2022 – May 2025</span>
+    </div>
+    <div class="entry-sub">
+      <span>High School</span>
+      <span class="location">Muzrabot District</span>
+    </div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-title">Billion School</span>
+      <span class="entry-date">Oct. 2024 – Feb. 2025</span>
+    </div>
+    <div class="entry-sub">
+      <span>"Programming – Frontend" Bootcamp</span>
+      <span class="location">Kichik Dahastr, Termiz</span>
+    </div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-title">Joylinks Academy</span>
+      <span class="entry-date">Nov. 2025 – Present</span>
+    </div>
+    <div class="entry-sub">
+      <span>"Full-Stack Web Development" Bootcamp</span>
+      <span class="location">Alpomish str, Termiz</span>
+    </div>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-title">IT PARK</span>
+      <span class="entry-date">March 2026 – May 2026</span>
+    </div>
+    <div class="entry-sub">
+      <span>Startup Incubation Program 2026</span>
+      <span class="location">Alpomish str, Termiz</span>
+    </div>
+  </div>
+
+  <!-- EXPERIENCE -->
+  <h2>Experience</h2>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-title">Founder &amp; Lead Developer</span>
+      <span class="entry-date">Feb. 2026 – Present</span>
+    </div>
+    <div class="entry-sub">
+      <span>IELTSPRACTICE</span>
+      <span class="location">Alpomish str, Termiz</span>
+    </div>
+    <ul>
+      <li>Built a full-stack web app for computer-based IELTS simulation using Node.js and Express.js on the backend, with HTML, CSS, and Tailwind CSS on the frontend and PostgreSQL for data storage.</li>
+      <li>Won 1st Place at IT Park Incubation Demo Day for product innovation, user execution, and growth strategy.</li>
+      <li>Handled end-to-end deployment and built real-time features with Socket.io and WebRTC for live speaking exam practice.</li>
+    </ul>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <span class="entry-title">Co-Founder &amp; Frontend Developer</span>
+      <span class="entry-date">Dec. 2024 – Apr. 2025</span>
+    </div>
+    <div class="entry-sub">
+      <span>ISHMARKAZ</span>
+      <span class="location">Termiz</span>
+    </div>
+    <ul>
+      <li>Co-founded a digital job-seeking platform that matched unemployed individuals with regional employment opportunities across Uzbekistan.</li>
+      <li>Built the frontend with dynamic filtering components and a multi-criteria job search system.</li>
+    </ul>
+  </div>
+
+  <!-- PROJECTS -->
+  <h2>Projects</h2>
+
+  <div class="entry">
+    <div class="project-header">
+      <span>
+        <span class="project-name">IELTSPRACTICE</span>
+        <span class="project-tech"> | Node.js, Express.js, PostgreSQL, Tailwind CSS, Socket.io, WebRTC</span>
+      </span>
+      <span class="project-date">Feb. 2026 – Present</span>
+    </div>
+    <ul>
+      <li>Built a clean exam simulation interface in plain HTML, CSS, and Tailwind CSS covering all four IELTS sections.</li>
+      <li>Developed a progress tracking system with PostgreSQL to monitor student performance and estimate their band scores.</li>
+      <li>Integrated the browser's camera API and WebRTC for live webcam streaming during speaking exam sessions.</li>
+    </ul>
+  </div>
+
+  <div class="entry">
+    <div class="project-header">
+      <span>
+        <span class="project-name">Teledock</span>
+        <span class="project-tech"> | Python, Aiogram, PostgreSQL, Docker, Linux</span>
+      </span>
+      <span class="project-date">Apr. 2026 – Present</span>
+    </div>
+    <ul>
+      <li>Built a Telegram bot using Python and Aiogram that lets users buy Telegram Stars and Premium.</li>
+      <li>Integrated local payment methods (Humo &amp; Uzcard) for secure checkout transactions.</li>
+      <li>Used PostgreSQL to store transaction logs and manage user account data.</li>
+    </ul>
+  </div>
+
+  <!-- TECHNICAL SKILLS -->
+  <h2>Technical Skills</h2>
+  <div class="skills-grid">
+    <div class="skill-row">
+      <strong>Languages:</strong> Python, JavaScript, SQL (PostgreSQL), HTML/CSS
+    </div>
+    <div class="skill-row">
+      <strong>Frameworks &amp; Libraries:</strong> Node.js, Express.js, Aiogram, Socket.io, Tailwind CSS
+    </div>
+    <div class="skill-row">
+      <strong>Databases &amp; ORM:</strong> PostgreSQL, Prisma
+    </div>
+    <div class="skill-row">
+      <strong>Developer Tools:</strong> Git, Docker, VS Code, PyCharm, Linux
+    </div>
+    <div class="skill-row">
+      <strong>Other:</strong> WebRTC, JWT Authentication, Google OAuth, REST APIs
+    </div>
+  </div>
+
+</body>
+</html>

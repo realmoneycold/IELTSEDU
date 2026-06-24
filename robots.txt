@@ -1,0 +1,26 @@
+# =============================================================================
+# robots.txt for https://ieltsedu.net
+# =============================================================================
+
+# Allow every crawler full access for maximum SEO coverage
+User-agent: *
+Disallow: /admin*
+Disallow: /ceo*
+Disallow: /staff*
+Disallow: /api/
+Disallow: /scratch/
+Disallow: /backups/
+
+# (Optional) Explicitly allow public pages
+Allow: /
+Allow: /courses
+Allow: /pricing
+Allow: /contact
+Allow: /exam-dates
+Allow: /education-centres
+
+# Point crawlers to your sitemap for efficient indexing
+Sitemap: https://ieltsedu.net/sitemap.xml
+
+# Specify your preferred canonical host
+Host: ieltsedu.net
